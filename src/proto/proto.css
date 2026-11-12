@@ -7,5 +7,5 @@ button { cursor: pointer; }
 :focus-visible { outline: 2px solid #3b4ce8; outline-offset: 2px; }
 th { font-weight: 600; }
 .sr { position: absolute; left: -9999px; }
-#pl12::placeholder { color: #aeb6d6; opacity: 1; }
+#pl12::placeholder, #nt12::placeholder { color: #aeb6d6; opacity: 1; }
 kbd { font-family: inherit; font-size: 10px; font-weight: 600; padding: 1px 5px; border-radius: 4px; border: 1px solid currentColor; opacity: 0.75; }

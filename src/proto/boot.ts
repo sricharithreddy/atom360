@@ -1,6 +1,6 @@
 // Production screen: the latest design-canvas board, run as is.
 // To ship a newer board, add it under prototype/ and change the import below.
-import board from '../../prototype/V33.dc.html?raw';
+import board from '../../prototype/V35.dc.html?raw';
 import { DCLogic, mountPrototype } from './runtime';
 import './proto.css';
 

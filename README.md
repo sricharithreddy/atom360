@@ -4,7 +4,7 @@ Motor insurance renewal CRM for dealer insurance desks. This repository is the r
 
 ## What production runs
 
-The live app at `/` is the latest design board, `prototype/V33.dc.html`, run exactly as designed by a small engine in `src/proto/`. It has every section: Today, lead panel, Stats, Learn, Admin and Messages. It runs on sample data held in memory, so a page reload starts fresh.
+The live app at `/` is the latest design board, `prototype/V35.dc.html`, run exactly as designed by a small engine in `src/proto/`. It has every section: Today, lead panel, Stats, Learn, Admin and Messages. It runs on sample data held in memory, so a page reload starts fresh.
 
 To ship a newer board: add the file under `prototype/` and change the one import in `src/proto/boot.ts`.
 
