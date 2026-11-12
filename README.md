@@ -2,20 +2,15 @@
 
 Motor insurance renewal CRM for dealer insurance desks. This repository is the real application (React + TypeScript). The clickable design prototype is separate and serves as the spec.
 
-## What works today (milestone 1: telecaller core)
+## What production runs
 
-- Sign in with mobile number and PIN, for telecaller, team lead and admin
-- Today: summary strip, callback banner, tabs, key filters, grouped queue
-- Search across all leads; other people's leads open as view only
-- Lead panel: who renewed before, AI flags, masked contact with recorded reveal, quotes with payment-link timer, previous policy, call and outcome, history
-- WhatsApp from the caller's own number (opens WhatsApp with the message filled in)
-- Ownership, calling rules, allocation, AI pick-up and queue order enforced on the server side, with tests
+The live app at `/` is the latest design board, `prototype/V33.dc.html`, run exactly as designed by a small engine in `src/proto/`. It has every section: Today, lead panel, Stats, Learn, Admin and Messages. It runs on sample data held in memory, so a page reload starts fresh.
 
-Not built yet: lead upload, Admin (team, targets, rules, move leads), Stats, Learn, Messages journey, documents, claims, coupons, policy issue after payment.
+To ship a newer board: add the file under `prototype/` and change the one import in `src/proto/boot.ts`.
 
-## Sample data, and what "mock" means
+## The backend-ready screens
 
-There is no backend yet. With `VITE_API_MODE=mock` (the default) a fake server runs inside the browser and answers the app's network calls. Data is saved in that browser only: two people do not see each other's changes, and clearing site data resets it. The sign-in page lists the sample logins and has a "Reset sample data" button.
+`/next` serves the screens rebuilt on the API layer (sign-in, Today, lead panel, call outcomes, quotes). They are behind the board in features and look. Each section moves from the board to this foundation over time, without changing how it looks. Its sample logins and reset button are on the `/next` sign-in page; its data is saved in the browser.
 
 ## Run it
 
@@ -40,7 +35,9 @@ npm run build      # type check + production build into dist/
 | `src/rules/` | Business rules as pure functions, with tests. These move to the backend unchanged. |
 | `src/api/` | The only place screens talk to the server. See `docs/API.md` for the contract. |
 | `src/mock/` | The fake server: sample data, storage in the browser, request handlers. Deleted from the bundle once a real backend exists. |
-| `src/features/` | Screens: sign-in, today, lead. |
+| `prototype/` | The design board that production runs. |
+| `src/proto/` | The engine that runs the board as a React app. |
+| `src/features/` | Backend-ready screens served under `/next`: sign-in, today, lead. |
 | `src/styles/app.css` | Design tokens and styles. Sizes are in rem, so density changes in one place. |
 
 ## Adding the real backend later
