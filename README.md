@@ -26,11 +26,11 @@ npm test           # rule tests
 npm run build      # type check + production build into dist/
 ```
 
-## Deploy to Cloudflare Pages
+## Deploy to Cloudflare (Workers)
 
-1. In Cloudflare, create a Pages project connected to this repository.
-2. Build command `npm run build`, output directory `dist`.
-3. Deploy. `public/_redirects` already sends every path to the app, so links to a lead work after a refresh.
+1. In Cloudflare, go to Workers & Pages, Create, and import this repository.
+2. Build command `npm run build`, deploy command `npx wrangler deploy`. Set the environment variable `NODE_VERSION=22`.
+3. Deploy. `wrangler.jsonc` serves `dist` as a single-page app, so links to a lead work after a refresh.
 
 ## How the code is laid out
 
