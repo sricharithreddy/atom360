@@ -1,7 +1,123 @@
 import type { MobileCtx } from '../logic';
 
-/** Phone-only values for this section, available in the template as m.<section>.* (see logic.ts for the name). */
+const SNOOZE_MS = 10 * 60 * 1000;
+const LIVE_BG = '#166534';
+const BLOCKED_BG = '#DDE1EE';
+const LATE_FG = '#A3134F';
+const MAX_TAGS = 3;
+
+const cap = (t: string) => (t ? t.charAt(0).toUpperCase() + t.slice(1) : '');
+
+/** Phone values for the Today queue (m.today.*). Thin: regroups board values for the phone card and wraps a few handlers. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function (_v: any, _ctx: MobileCtx): any {
-  return {};
+export default function (v: any, ctx: MobileCtx): any {
+  const self = ctx.self;
+  const s = self.state;
+  const on = ctx.shown;
+  const isTeam = on(v.adm && v.adm.navShow);
+  const cb = v.cb || {};
+
+  // A lead opened from the queue always starts on its Overview tab.
+  const landed = () => ctx.set({ mTab: 'sum', mSheet: null });
+  const liveCall = s.cs && s.cs.st === 'live' ? s.cs : null;
+
+  const card = (c: any) => {
+    const live = c.callBg === LIVE_BG;
+    const blocked = c.callBg === BLOCKED_BG;
+
+    // Status tags, most urgent first. The card shows the first three; the lead page has the rest.
+    const tags: any[] = [];
+    if (on(c.pendShow)) tags.push({ text: 'Outcome not logged', cls: '-orange', ai: false });
+    if (on(c.cbShow)) tags.push({ text: c.cbText, cls: c.cbFg === LATE_FG ? '-magenta' : '-blue', ai: false });
+    if (on(c.aiShow)) tags.push({ text: c.aiText, cls: c.aiText === 'AI qualified' ? 'm-today-aifill' : '-purple', ai: true });
+    if (on(c.ownShow)) tags.push({ text: c.ownText, cls: '', ai: false });
+    if (on(c.dupShow)) tags.push({ text: 'Possible duplicate', cls: '-orange', ai: false });
+    if (on(c.kycShow)) tags.push({ text: 'KYC pending', cls: '-orange', ai: false });
+
+    // The quote the board ranks first among those that have a price.
+    const best = (c.quotes || []).filter((q: any) => q.n > 0)[0] || null;
+
+    // "Next call 3:15 pm" -> "3:15 pm". "Call now" repeats the group heading, so it is not shown.
+    const rawTime = on(c.timeShow) ? String(c.timeChip || '') : '';
+    const time = rawTime === 'Call now' ? '' : rawTime.replace(/^Next call\s+/, '');
+
+    return {
+      name: c.name, model: c.model, reg: c.reg,
+      why: c.why, whyFg: c.whyFg,
+      daysLeft: c.daysLeft, daysFg: c.daysFg, polDate: c.polDate,
+      time, hasTime: !!time,
+      tags: tags.slice(0, MAX_TAGS), hasTags: tags.length > 0,
+      hasQuote: !!best, quoteIns: best ? best.ins : '', quoteAmt: best ? best.amt : '',
+      live, blocked, ready: !live && !blocked,
+      callText: c.callLabel,
+      callCls: live ? '-good' : blocked ? '-off' : '-primary',
+      callAria: live ? 'On call with ' + c.name + '. Open the call' : blocked ? 'Calling is blocked: ' + c.callLabel + '. Open ' + c.name : 'Call ' + c.name,
+      open: () => { c.pick(); landed(); },
+      call: () => {
+        const other = !!liveCall && !live && !blocked;
+        c.call();
+        landed();
+        if (blocked) ctx.note('Calling is blocked for this lead: ' + String(c.callLabel).toLowerCase() + '.');
+        else if (other) ctx.note('Your earlier call was ended. Its outcome is not logged yet.');
+      },
+      wa: () => {
+        c.wa();
+        landed();
+        if (!self.state.msg) ctx.note('Messages are blocked for this lead.');
+      },
+    };
+  };
+
+  const groups = (v.groups || []).map((g: any) => ({
+    title: g.title, fg: g.fg, count: g.count, caption: cap(g.caption),
+    cards: (g.cards || []).map(card),
+  }));
+
+  const tabs = (v.tabs || []).map((t: any) => ({
+    label: t.label, count: t.count, selected: t.selected, pick: t.pick,
+    countCls: t.id === 'due' && t.count > 0 ? 'm-today-due' : '',
+  }));
+  const curTab = (v.tabs || []).filter((t: any) => t.selected === 'true')[0] || null;
+  const allTab = (v.tabs || []).filter((t: any) => t.id === 'all')[0] || null;
+  const onAll = !curTab || curTab.id === 'all';
+
+  const filtered = !!v.hasChips;
+  const empty = groups.length === 0;
+  const emptyTitle = filtered ? 'No leads match these filters' : onAll ? 'No leads in your queue' : 'No leads in ' + curTab.label;
+  const emptyBody = filtered
+    ? (onAll ? 'Clear the filters to see all your leads.' : 'Clear the filters, or look in All.')
+    : onAll ? 'New leads appear here when they are given to you.' : 'Nothing needs you here right now.';
+
+  // The board's snooze has no timer. Bring the banner back after 10 minutes, as the button promises.
+  const snooze = () => {
+    cb.snooze();
+    if (self.__mTodaySnz) clearTimeout(self.__mTodaySnz);
+    self.__mTodaySnz = setTimeout(() => {
+      self.__mTodaySnz = null;
+      if (self.state.snz) ctx.fresh().cb.unsnooze();
+    }, SNOOZE_MS);
+  };
+  const unsnooze = () => {
+    if (self.__mTodaySnz) { clearTimeout(self.__mTodaySnz); self.__mTodaySnz = null; }
+    cb.unsnooze();
+  };
+
+  return {
+    scope: isTeam ? 'Team today' : 'Your day so far',
+    // callback banner
+    cbShow: on(cb.homeShow), cbSnoozed: on(cb.snoozedShow),
+    cbSnoozeText: String(cb.snoozeText || '').replace(/\s*It comes back on its own\.?/, ''),
+    cbCall: () => { cb.callNow(); landed(); },
+    snooze, unsnooze,
+    // tabs and filters
+    tabs,
+    fOn: Number(v.fCount) > 0,
+    quick: (v.quick || []).map((q: any) => ({ label: q.label, count: q.count, press: q.press, pick: q.pick, ai: on(q.sparkShow), cls: on(q.sparkShow) ? '-ai' : '' })),
+    filtered,
+    // queue
+    groups, empty, emptyTitle, emptyBody,
+    emptyClear: empty && filtered,
+    emptyAll: empty && !onAll && !!allTab,
+    showAll: () => { if (allTab) allTab.pick(); },
+  };
 }
