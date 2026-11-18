@@ -124,9 +124,14 @@ DCLogic.prototype.setState = function (p, cb) {
   if (typeof cb === 'function') cb();
 };
 
-/** Renders a design-canvas component (template + Component class) as a React app. */
-export function mountPrototype(Component, tplSrc, el) {
-  var ast = parse(tplSrc);
+/** Renders a design-canvas component (template + Component class) as a React app.
+ *  `alt` is optional: a second template shown while its media query matches (the phone layout).
+ *  Both layouts share one Component instance, so state survives a rotate or a window resize. */
+export function mountPrototype(Component, tplSrc, el, alt?) {
+  var ast = parse(tplSrc), altAst = null;
+  var mq = alt && window.matchMedia ? window.matchMedia(alt.query) : null;
+  function watch(cb) { mq.addEventListener('change', cb); return function () { mq.removeEventListener('change', cb); }; }
+  function matches() { return mq.matches; }
   class Boundary extends React.Component {
     constructor(p) { super(p); this.state = { err: null }; }
     static getDerivedStateFromError(e) { return { err: e }; }
@@ -134,10 +139,15 @@ export function mountPrototype(Component, tplSrc, el) {
   }
   function App() {
     var force = React.useReducer(function (x) { return x + 1; }, 0)[1];
+    var useAlt = mq ? React.useSyncExternalStore(watch, matches) : false;
     var ref = React.useRef(null);
     if (!ref.current) ref.current = new Component({});
     ref.current.__force = force;
-    return h(React.Fragment, null, renderKids(ast.kids, [ref.current.renderVals()], null));
+    ref.current.__alt = useAlt;
+    if (useAlt && !altAst) altAst = parse(alt.template);
+    var vals = ref.current.renderVals();
+    React.useEffect(function () { if (ref.current.afterRender) ref.current.afterRender(); });
+    return h(React.Fragment, null, renderKids((useAlt ? altAst : ast).kids, [vals], null));
   }
   createRoot(el).render(h(Boundary, null, h(App)));
 }
