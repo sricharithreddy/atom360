@@ -102,7 +102,7 @@ export default function (v: any, ctx: MobileCtx): any {
     closeEdit,
     cmpShow, cmpCls: tone(ed.cmpFg),
     ncbShow, ncbCls: tone(ed.ncbFg), ncbAsk: ncbShow && canEdit && on(ed.ncbActShow), ncbPlain: ncbShow && !(canEdit && on(ed.ncbActShow)),
-    toClaims: (e: any) => { v.toClaims(e); ctx.set({ mTab: 'cust' }); },
+    toClaims: (e: any) => { v.toClaims(e); ctx.set({ mTab: 'cust', mCustJump: Date.now() }); },
     // form
     formTitle: adding ? 'New quote' : ed.title,
     otherShow: on(ed.otherShow), getLiveShow: adding && on(ed.getLiveShow),

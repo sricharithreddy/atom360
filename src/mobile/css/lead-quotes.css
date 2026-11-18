@@ -102,4 +102,3 @@ button.m-quotes-ncb:active { background: var(--tint); }
 .m-quotes-facts dd > span { font-size: 12px; color: var(--muted); }
 
 /* The shell's toast would sit on top of this tab's bottom bar: lift it above the bar while the Quotes tab is showing. */
-.m-app:has(.m-quotes-bar) .m-toast.-high { bottom: calc(196px + var(--safe-b)); }

@@ -107,7 +107,6 @@ function shellVals(v: any, ctx: MobileCtx) {
     confirmNo: () => { self.__m.run = null; set({ mConfirm: null }); },
     confirmYes: () => { const run = self.__m.run; self.__m.run = null; set({ mConfirm: null }); if (run) run(); },
     callOffCls: v.callBg === '#8A93B3' ? '-off' : '',
-    toastCls: isLead || !!v.fOpen ? '-high' : '',
     // toast
     toast, toastOn: !!toast, toastOff: () => set({ mToast: '', toast: '' }),
   };
@@ -124,7 +123,7 @@ function layersOf(v: any, m: any, self: any): Layer[] {
   const extra: Layer[] = [];
   Object.keys(SECTIONS).forEach((k) => { const ls = m[k] && m[k].layers; if (Array.isArray(ls)) ls.forEach((l: Layer) => extra.push(l)); });
   const top: Layer[] = [
-    { id: 'message', open: !!v.msgOpen, close: () => (v.mg && v.mg.close ? v.mg.close() : set({ msg: null })) },
+    { id: 'message', open: !!v.msgOpen, close: () => (m.msg && m.msg.close ? m.msg.close() : v.mg && v.mg.close ? v.mg.close() : set({ msg: null })) },
     { id: 'search', open: !!m.searchOpen, close: () => m.closeSearch() },
     { id: 'menu', open: !!m.menuOpen, close: () => set({ mSheet: null }) },
     { id: 'confirm', open: !!m.confirmOpen, close: () => m.confirmNo() },
@@ -138,7 +137,7 @@ export function withMobile(Base: any): any {
     constructor(props: any) {
       super(props);
       const self: any = this;
-      self.__m = { hist: 0, sel: null, tab: null, view: null, top: null, toast: '', timer: null, bound: false, on: false, run: null };
+      self.__m = { hist: 0, sel: null, tab: null, view: null, top: null, toast: '', timer: null, bound: false, on: false, run: null, place: null };
     }
 
     renderVals() {
@@ -190,8 +189,13 @@ export function withMobile(Base: any): any {
         else if (depth < st.hist) { const d = depth - st.hist; st.hist = depth; window.history.go(d); }
       } catch { /* ignore */ }
 
-      // Scroll: a new lead or a new tab starts at the top.
       const s = self.state;
+      // A closed lead forgets its tab and its outcome sheet, so the next lead opens on Overview.
+      if (!m.isLead && ((s.mTab && s.mTab !== 'sum') || s.mSheet === 'outcome')) { self.setState({ mTab: 'sum', mSheet: s.mSheet === 'outcome' ? null : s.mSheet }); return; }
+      // A message belongs to the screen it was shown on: drop an old one when the user moves on.
+      const place = m.view + '|' + (m.isLead ? s.sel : '');
+      if (st.place !== place) { const was = st.place; st.place = place; if (was != null && m.toast && m.toast === st.toast) { self.setState({ mToast: '', toast: '' }); return; } }
+      // Scroll: a new lead or a new tab starts at the top.
       if (m.isLead && (st.sel !== s.sel || st.tab !== m.leadTab)) {
         const el = document.querySelector('[data-m-scroll="lead"]');
         if (el) el.scrollTop = 0;

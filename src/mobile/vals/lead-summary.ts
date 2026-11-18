@@ -119,6 +119,6 @@ export default function (v: any, ctx: MobileCtx): any {
     hist, hasHist: hist.length > 0,
     histAllLabel: more > 0 ? 'See all history (' + all.length + ')' : 'Open full history',
     // the board's handler picks the History records tab; then show the Customer tab where it lives
-    seeHist: () => { if (typeof v.viewHistory === 'function') v.viewHistory(); ctx.set({ mTab: 'cust' }); },
+    seeHist: () => { if (typeof v.viewHistory === 'function') v.viewHistory(); ctx.set({ mTab: 'cust', mCustJump: Date.now() }); },
   };
 }
