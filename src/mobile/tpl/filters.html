@@ -1,1 +1,63 @@
-<!-- filters: phone layout (to be built) -->
+<!-- Filters sheet for the Today queue. Filtering is live: the blue button only closes the sheet. -->
+<sc-if value="{{ fOpen }}">
+<div class="m-sheet -full">
+<button type="button" class="m-backdrop" aria-label="Close filters" onClick="{{ toggleFilters }}"></button>
+<section class="m-sheet-card" role="dialog" aria-modal="true" aria-labelledby="mfT" data-m-layer="filters" tabindex="-1">
+<div class="m-sheet-head"><h2 class="m-h2" id="mfT">Filters</h2><button type="button" class="m-iconbtn" aria-label="Close filters" onClick="{{ toggleFilters }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div class="m-sheet-body -nopad m-filters-body">
+
+<div class="m-filters-key">
+<svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="#F5A623" stroke="#E08E0B" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"></path></svg>
+<p class="m-grow m-small"><span class="m-strong">{{ m.filters.keyNote }}</span><br>Tap a star to add or remove one.</p>
+<sc-if value="{{ m.filters.keyCustom }}"><button type="button" class="m-link m-fixed" onClick="{{ m.filters.keyReset }}">Reset key filters</button></sc-if>
+</div>
+
+<sc-for list="{{ m.filters.cats }}" as="cat">
+<div class="m-filters-sec {{ cat.openCls }}">
+<h3 class="m-filters-h"><button type="button" class="m-filters-cat" aria-expanded="{{ cat.openStr }}" aria-controls="{{ cat.panelId }}" onClick="{{ cat.toggle }}"><span class="m-item-main"><span class="m-filters-cat-t">{{ cat.label }}</span><sc-if value="{{ cat.summary }}"><span class="m-item-sub m-clip">{{ cat.summary }}</span></sc-if></span><sc-if value="{{ cat.hasBadge }}"><span class="m-count m-filters-badge" aria-label="{{ cat.badgeLabel }}">{{ cat.badge }}</span></sc-if><svg class="m-chev m-filters-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button></h3>
+
+<sc-if value="{{ cat.isExp }}">
+<div class="m-filters-panel" id="{{ cat.panelId }}">
+<fieldset class="m-filters-set"><legend class="m-sr">Policy expires</legend>
+<sc-if value="{{ m.filters.canClearExp }}">
+<div class="m-filters-row"><label class="m-check m-filters-opt"><input type="radio" name="mfexp" checked="{{ m.filters.anyOn }}" onChange="{{ m.filters.pickAny }}"><span class="m-grow">Any date</span></label><span class="m-filters-gap" aria-hidden="true"></span></div>
+</sc-if>
+<sc-for list="{{ m.filters.presets }}" as="pre">
+<div class="m-filters-row"><label class="m-check m-filters-opt {{ pre.zeroCls }}"><input type="radio" name="mfexp" checked="{{ pre.on }}" onChange="{{ pre.pick }}"><span class="m-grow">{{ pre.label }}</span><span class="m-filters-n m-num">{{ pre.count }}</span></label><button type="button" class="m-filters-star {{ pre.starCls }}" aria-pressed="{{ pre.favOn }}" aria-label="{{ pre.starLabel }}" onClick="{{ pre.star }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="{{ pre.favFill }}" stroke="{{ pre.favStroke }}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"></path></svg></button></div>
+</sc-for>
+<div class="m-filters-row"><label class="m-check m-filters-opt"><input type="radio" name="mfexp" checked="{{ m.filters.dragOn }}" onChange="{{ m.filters.pickDrag }}"><span class="m-grow">Custom: within <strong>{{ m.filters.daysText }}</strong></span></label><span class="m-filters-gap" aria-hidden="true"></span></div>
+</fieldset>
+<div class="m-filters-range {{ m.filters.rangeCls }}">
+<button type="button" class="m-iconbtn -line" aria-label="One day less" disabled="{{ m.filters.decOff }}" onClick="{{ m.filters.dec }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<div class="m-grow"><label for="mfrange" class="m-sr">Expiring in the next number of days, 1 to 90</label><input id="mfrange" type="range" min="1" max="90" step="1" value="{{ expMax }}" onChange="{{ onExpMax }}"><div class="m-filters-ends m-tiny" aria-hidden="true"><span>1 day</span><span>90 days</span></div></div>
+<button type="button" class="m-iconbtn -line" aria-label="One day more" disabled="{{ m.filters.incOff }}" onClick="{{ m.filters.inc }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+</div>
+<fieldset class="m-filters-set"><legend class="m-label m-filters-legend">Or by expiry month</legend>
+<sc-for list="{{ m.filters.months }}" as="mon">
+<div class="m-filters-row"><label class="m-check m-filters-opt {{ mon.zeroCls }}"><input type="checkbox" checked="{{ mon.on }}" onChange="{{ mon.toggle }}"><span class="m-grow">{{ mon.label }}</span><span class="m-filters-n m-num">{{ mon.count }}</span></label><span class="m-filters-gap" aria-hidden="true"></span></div>
+</sc-for>
+</fieldset>
+</div>
+</sc-if>
+
+<sc-if value="{{ cat.isList }}">
+<div class="m-filters-panel" id="{{ cat.panelId }}">
+<fieldset class="m-filters-set"><legend class="m-sr">{{ cat.label }}</legend>
+<sc-for list="{{ m.filters.opts }}" as="opt">
+<div class="m-filters-row"><label class="m-check m-filters-opt {{ opt.zeroCls }}"><input type="checkbox" checked="{{ opt.on }}" onChange="{{ opt.toggle }}"><span class="m-grow m-wrap">{{ opt.label }}</span><span class="m-filters-n m-num">{{ opt.count }}</span></label><button type="button" class="m-filters-star {{ opt.starCls }}" aria-pressed="{{ opt.favOn }}" aria-label="{{ opt.starLabel }}" onClick="{{ opt.star }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="{{ opt.favFill }}" stroke="{{ opt.favStroke }}" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"></path></svg></button></div>
+</sc-for>
+</fieldset>
+</div>
+</sc-if>
+</div>
+</sc-for>
+
+</div>
+<div class="m-sheet-foot m-filters-foot">
+<sc-if value="{{ m.filters.hasFootNote }}"><p class="m-filters-note m-small" role="status">{{ m.filters.footNote }}</p></sc-if>
+<sc-if value="{{ m.filters.hasActive }}"><button type="button" class="m-btn -quiet m-fixed" onClick="{{ clearAll }}">Clear all</button></sc-if>
+<button type="button" class="m-btn -primary -grow" onClick="{{ toggleFilters }}">{{ m.filters.showText }}</button>
+</div>
+</section>
+</div>
+</sc-if>

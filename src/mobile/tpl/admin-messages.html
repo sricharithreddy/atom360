@@ -1,1 +1,181 @@
-<!-- admin-messages: phone layout (to be built) -->
+<!-- Admin > Messages: journey, templates (list + detail page), sent log, sending rules. Inserted inside the Admin screen. -->
+<div class="m-seg -scroll m-admin-messages-seg" role="group" aria-label="Messages views">
+<sc-for list="{{ adm.msTabs }}" as="mst"><button type="button" aria-pressed="{{ mst.press }}" onClick="{{ mst.pick }}">{{ mst.label }}</button></sc-for>
+</div>
+
+<!-- ============ Journey ============ -->
+<sc-if value="{{ m.admMsg.isJourney }}">
+<section class="m-stack" aria-labelledby="mamJourneyH">
+<div class="m-admin-messages-sec"><h2 class="m-h2" id="mamJourneyH">What goes out, and when</h2><p class="m-small">Every step stops by itself when the sending rules say so.</p></div>
+<sc-if value="{{ m.admMsg.waOwn }}"><div class="m-banner -warn m-admin-messages-banner">{{ adm.waBanner }}</div></sc-if>
+<sc-if value="{{ m.admMsg.waOwn }}" not><div class="m-banner -good m-admin-messages-banner">{{ adm.waBanner }}</div></sc-if>
+<select class="m-select" aria-label="Stage" onChange="{{ adm.onJG }}"><sc-for list="{{ adm.jGs }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select>
+<sc-for list="{{ m.admMsg.groups }}" as="grp">
+<section class="m-card -nopad m-admin-messages-stage" aria-label="{{ grp.g }}">
+<h3 class="m-admin-messages-stage-h"><span class="m-admin-messages-dot" aria-hidden="true" style="background: {{ grp.color }}"></span><span class="m-grow">{{ grp.g }}</span><span class="m-tiny m-fixed">{{ grp.countText }}</span></h3>
+<ol class="m-admin-messages-steps">
+<sc-for list="{{ grp.steps }}" as="stp"><li class="m-admin-messages-step">
+<div class="m-admin-messages-when"><strong>{{ stp.when }}</strong><span class="m-small">{{ stp.sub }}</span></div>
+<div class="m-admin-messages-tps">
+<sc-for list="{{ stp.tps }}" as="tpl"><button type="button" class="m-admin-messages-tp" aria-label="Open the template {{ tpl.name }}, {{ tpl.ch }}" onClick="{{ tpl.open }}"><span class="m-tag m-fixed {{ tpl.chCls }}">{{ tpl.ch }}</span><span class="m-grow m-wrap">{{ tpl.name }}</span><svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button></sc-for>
+</div>
+<sc-if value="{{ m.admMsg.isAdmin }}"><label class="m-admin-messages-mode"><span class="m-small">How it is sent</span><select class="m-select" aria-label="How {{ stp.when }} is sent" onChange="{{ stp.onMode }}"><sc-for list="{{ stp.modeOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></label></sc-if>
+<sc-if value="{{ m.admMsg.isAdmin }}" not><p class="m-admin-messages-mode"><span class="m-small">How it is sent</span><span class="m-tag {{ stp.modeCls }}">{{ stp.modeText }}</span></p></sc-if>
+<p class="m-admin-messages-eff" style="color: {{ stp.effFg }}">{{ stp.effText }}</p>
+<sc-if value="{{ stp.hasStat }}"><p class="m-tiny m-num">Last 30 days: {{ stp.stat }}</p></sc-if>
+</li></sc-for>
+</ol>
+</section>
+</sc-for>
+</section>
+</sc-if>
+
+<!-- ============ Templates: list ============ -->
+<sc-if value="{{ m.admMsg.isTpl }}">
+<section class="m-stack" aria-labelledby="mamTplH">
+<div class="m-admin-messages-sec"><h2 class="m-h2" id="mamTplH">Templates</h2><p class="m-small">Tap a template to see what the customer gets.</p></div>
+<select class="m-select" aria-label="Channel" onChange="{{ adm.onTplCh }}"><sc-for list="{{ adm.tplChs }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select>
+<div class="m-admin-messages-search"><label class="m-sr" for="mamTplQ">Search templates</label><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input id="mamTplQ" class="m-input" type="search" enterkeyhint="search" autocomplete="off" placeholder="Search templates" value="{{ adm.tplQ }}" onChange="{{ adm.onTplQ }}"></div>
+<p class="m-tiny m-admin-messages-count" role="status">{{ m.admMsg.tplCountText }}</p>
+<sc-if value="{{ m.admMsg.tplNone }}"><div class="m-empty">No template matches. Try another word or channel.</div></sc-if>
+<sc-if value="{{ m.admMsg.tplNone }}" not>
+<ul class="m-card -nopad m-list">
+<sc-for list="{{ m.admMsg.tplRows }}" as="row"><li><button type="button" class="m-item" onClick="{{ row.open }}"><span class="m-item-main"><span class="m-item-title">{{ row.name }}</span><span class="m-admin-messages-meta"><span class="m-tag {{ row.chCls }}">{{ row.ch }}</span><span class="m-admin-messages-st" style="color: {{ row.stFg }}">{{ row.st }}</span></span></span><svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button></li></sc-for>
+</ul>
+</sc-if>
+</section>
+</sc-if>
+
+<!-- ============ Sent log ============ -->
+<sc-if value="{{ m.admMsg.isSent }}">
+<section class="m-stack" aria-labelledby="mamSentH">
+<ul class="m-grid2" aria-label="Last 30 days">
+<sc-for list="{{ adm.sentKpis }}" as="kpi"><li class="m-stat"><span class="m-stat-k">{{ kpi.k }}</span><strong class="m-stat-v">{{ kpi.v }}</strong><span class="m-stat-sub">{{ kpi.s }}</span></li></sc-for>
+</ul>
+<div class="m-admin-messages-sec"><h2 class="m-h2" id="mamSentH">Latest messages</h2></div>
+<select class="m-select" aria-label="Channel" onChange="{{ adm.onSlCh }}"><sc-for list="{{ adm.slChs }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select>
+<select class="m-select" aria-label="Status" onChange="{{ adm.onSlSt }}"><sc-for list="{{ adm.slSts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select>
+<sc-if value="{{ m.admMsg.sentNone }}"><div class="m-empty" role="status">No message matches. Try another channel or status.</div></sc-if>
+<sc-if value="{{ m.admMsg.sentNone }}" not>
+<p class="m-tiny m-admin-messages-count" role="status">{{ m.admMsg.sentCountText }}</p>
+<ul class="m-card -nopad m-list">
+<sc-for list="{{ m.admMsg.sentRows }}" as="row"><li class="m-admin-messages-sent">
+<div class="m-inline -between"><strong class="m-clip">{{ row.who }}</strong><span class="m-tag m-fixed {{ row.stCls }}">{{ row.st }}</span></div>
+<div class="m-admin-messages-meta"><span class="m-tag m-fixed {{ row.chCls }}">{{ row.ch }}</span><span class="m-admin-messages-msg m-clip">{{ row.msg }}</span></div>
+<sc-if value="{{ row.hasNote }}"><p class="m-small m-admin-messages-note">{{ row.note }}</p></sc-if>
+<p class="m-tiny">{{ row.when }} · {{ row.byText }}</p>
+</li></sc-for>
+</ul>
+</sc-if>
+</section>
+</sc-if>
+
+<!-- ============ Sending rules ============ -->
+<sc-if value="{{ m.admMsg.isRules }}">
+<sc-if value="{{ m.admMsg.waOwn }}"><div class="m-banner -warn m-admin-messages-banner">{{ adm.waBanner }}</div></sc-if>
+<sc-if value="{{ m.admMsg.waOwn }}" not><div class="m-banner -good m-admin-messages-banner">{{ adm.waBanner }}</div></sc-if>
+
+<sc-if value="{{ m.admMsg.isAdmin }}">
+<section class="m-card m-stack" aria-labelledby="mamHowH">
+<h2 class="m-h2" id="mamHowH">How messages are sent</h2>
+<div class="m-field"><label for="mamWa">WhatsApp goes from</label><select id="mamWa" class="m-select" onChange="{{ adm.onWaMode }}"><sc-for list="{{ m.admMsg.waModes }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select><p class="m-hint">{{ m.admMsg.waHint }}</p></div>
+<fieldset class="m-admin-messages-fs"><legend>No automatic message between</legend>
+<div class="m-grid2">
+<div class="m-field"><label for="mamQFrom">From</label><select id="mamQFrom" class="m-select" onChange="{{ adm.onQFrom }}"><sc-for list="{{ adm.qFrom }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="mamQTo">Until</label><select id="mamQTo" class="m-select" onChange="{{ adm.onQTo }}"><sc-for list="{{ adm.qTo }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+</div>
+<p class="m-hint">A message due in these hours waits for the morning.</p>
+</fieldset>
+<fieldset class="m-admin-messages-fs"><legend>Most automatic messages for one customer</legend>
+<div class="m-grid2">
+<div class="m-field"><label for="mamCapDay">In a day</label><select id="mamCapDay" class="m-select" onChange="{{ adm.onCapDay }}"><sc-for list="{{ m.admMsg.capDayOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="mamCapWeek">In a week</label><select id="mamCapWeek" class="m-select" onChange="{{ adm.onCapWeek }}"><sc-for list="{{ m.admMsg.capWeekOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+</div>
+<p class="m-hint">Payment and policy messages always go.</p>
+</fieldset>
+<div class="m-admin-messages-block">
+<button type="button" class="m-admin-messages-switch" role="switch" aria-checked="{{ adm.fb.press }}" onClick="{{ adm.flipFb }}"><span class="m-grow">Send the SMS version if WhatsApp is not delivered</span><span class="m-fixed m-admin-messages-sw-wrap" aria-hidden="true"><span class="m-admin-messages-sw"></span><span class="m-tiny m-admin-messages-sw-text">{{ m.admMsg.fbText }}</span></span></button>
+<sc-if value="{{ m.admMsg.fbOn }}"><div class="m-field"><label for="mamFbH">Wait for delivery for</label><select id="mamFbH" class="m-select" onChange="{{ adm.onFbH }}"><sc-for list="{{ m.admMsg.fbHOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div></sc-if>
+</div>
+<div class="m-field m-admin-messages-block"><label for="mamLang">Language</label><select id="mamLang" class="m-select" onChange="{{ adm.onLang }}"><sc-for list="{{ m.admMsg.langOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select><p class="m-hint">{{ m.admMsg.langHint }}</p></div>
+</section>
+</sc-if>
+
+<sc-if value="{{ m.admMsg.isAdmin }}" not>
+<section class="m-card" aria-labelledby="mamHowH">
+<div class="m-inline -between m-admin-messages-rohead"><h2 class="m-h2" id="mamHowH">How messages are sent</h2><span class="m-tag m-fixed">View only</span></div>
+<dl>
+<div class="m-kv"><dt>WhatsApp goes from</dt><dd>{{ m.admMsg.ro.waMode }}</dd></div>
+<div class="m-kv"><dt>No automatic message between</dt><dd>{{ m.admMsg.ro.quiet }}</dd></div>
+<div class="m-kv"><dt>Most automatic messages for one customer</dt><dd>{{ m.admMsg.ro.caps }}</dd></div>
+<div class="m-kv"><dt>SMS version if WhatsApp is not delivered</dt><dd>{{ m.admMsg.ro.fb }}</dd></div>
+<div class="m-kv"><dt>Language</dt><dd>{{ m.admMsg.ro.lang }}</dd></div>
+</dl>
+<p class="m-hint m-admin-messages-rofoot">A message due in the quiet hours waits for the morning. Payment and policy messages always go. {{ m.admMsg.langHint }}</p>
+</section>
+</sc-if>
+
+<section class="m-card m-stack" aria-labelledby="mamStopH">
+<h2 class="m-h2" id="mamStopH">When messages stop</h2>
+<sc-if value="{{ m.admMsg.isAdmin }}"><button type="button" class="m-admin-messages-switch" role="switch" aria-checked="{{ adm.pause.press }}" onClick="{{ adm.flipPause }}"><span class="m-grow">When the customer replies, pause automatic messages and flag the lead for its owner</span><span class="m-fixed m-admin-messages-sw-wrap" aria-hidden="true"><span class="m-admin-messages-sw"></span><span class="m-tiny m-admin-messages-sw-text">{{ m.admMsg.pauseText }}</span></span></button></sc-if>
+<sc-if value="{{ m.admMsg.isAdmin }}" not><div class="m-inline -top"><p class="m-grow m-admin-messages-rotext">When the customer replies, pause automatic messages and flag the lead for its owner</p><sc-if value="{{ m.admMsg.pauseOn }}"><span class="m-tag -green m-fixed">On</span></sc-if><sc-if value="{{ m.admMsg.pauseOn }}" not><span class="m-tag m-fixed">Off</span></sc-if></div></sc-if>
+<div class="m-admin-messages-block">
+<h3 class="m-label">These always stop every reminder</h3>
+<ul class="m-admin-messages-stops">
+<sc-for list="{{ adm.stops }}" as="stop"><li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M9 9h6v6H9z"></path></svg><span>{{ stop.t }}</span></li></sc-for>
+</ul>
+</div>
+</section>
+</sc-if>
+
+<!-- ============ Template detail (full-screen page) ============ -->
+<sc-if value="{{ m.admMsg.tplOpen }}">
+<section class="m-layer" data-m-layer="admin-template" tabindex="-1" aria-label="Template: {{ adm.tName }}">
+<div class="m-layer-head">
+<button type="button" class="m-iconbtn" aria-label="Back" onClick="{{ m.admMsg.closeTpl }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<h2 class="m-layer-title"><strong>{{ adm.tName }}</strong><span>{{ adm.tCh }} · {{ adm.tCat }}</span></h2>
+</div>
+<div class="m-layer-body">
+<p class="m-inline -wrap"><span class="m-tag -wrap {{ m.admMsg.tStCls }}">{{ adm.tSt }}</span><sc-if value="{{ m.admMsg.isAdmin }}" not><span class="m-tag">View only</span></sc-if></p>
+
+<section class="m-card m-stack" aria-labelledby="mamPrevH">
+<h3 class="m-h3" id="mamPrevH">What the customer sees</h3>
+<sc-if value="{{ m.admMsg.tIsWa }}"><div class="m-admin-messages-bubble -wa"><p class="m-wrap">{{ adm.tPrev }}</p><sc-if value="{{ m.admMsg.tHasBtns }}"><ul class="m-admin-messages-replies" aria-label="Reply buttons"><sc-for list="{{ adm.tBtns }}" as="tbtn"><li>{{ tbtn.b }}</li></sc-for></ul></sc-if></div></sc-if>
+<sc-if value="{{ m.admMsg.tIsWa }}" not><div class="m-admin-messages-bubble"><p class="m-wrap">{{ adm.tPrev }}</p></div></sc-if>
+<div class="m-field"><label for="mamTLang">Preview language</label><select id="mamTLang" class="m-select" onChange="{{ adm.onTLang }}"><sc-for list="{{ adm.tLangs }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<sc-if value="{{ m.admMsg.tHasLangNote }}"><p class="m-hint">{{ adm.tLangNote }}</p></sc-if>
+<p class="m-small m-admin-messages-used">{{ adm.tUsed }}</p>
+</section>
+
+<sc-if value="{{ m.admMsg.isAdmin }}">
+<section class="m-card m-stack" aria-labelledby="mamWordH">
+<div class="m-field"><label class="m-admin-messages-wordlabel" id="mamWordH" for="mamTBody">Wording</label><textarea id="mamTBody" class="m-textarea m-admin-messages-body" value="{{ adm.tBody }}" onChange="{{ adm.onTBody }}"></textarea>
+<sc-if value="{{ m.admMsg.tCountWarn }}"><p class="m-hint m-admin-messages-warn" role="status">{{ adm.tCount }}</p></sc-if>
+<sc-if value="{{ m.admMsg.tCountWarn }}" not><p class="m-hint" role="status">{{ adm.tCount }}</p></sc-if>
+</div>
+<div class="m-stack -tight" role="group" aria-labelledby="mamVarsH">
+<h4 class="m-field-label m-admin-messages-varsh" id="mamVarsH">Add a detail that fills itself in</h4>
+<div class="m-admin-messages-vars"><sc-for list="{{ adm.tVars }}" as="tvar"><button type="button" class="m-chip" onClick="{{ tvar.add }}">{{ tvar.label }}</button></sc-for></div>
+<p class="m-hint">It is added at the end of the wording.</p>
+</div>
+<sc-if value="{{ m.admMsg.tHasWarn }}"><div class="m-banner -warn" role="status">{{ adm.tWarn }}</div></sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{ m.admMsg.isAdmin }}" not>
+<section class="m-card m-stack" aria-labelledby="mamWordH">
+<h3 class="m-h3" id="mamWordH">Wording</h3>
+<p class="m-admin-messages-rowording m-wrap">{{ adm.tBody }}</p>
+<p class="m-hint">{{ adm.tCount }}</p>
+<p class="m-hint">Only the admin can change the wording.</p>
+</section>
+</sc-if>
+</div>
+<sc-if value="{{ m.admMsg.tFoot }}">
+<div class="m-layer-foot">
+<sc-if value="{{ m.admMsg.tCanUndo }}"><button type="button" class="m-btn -grow" onClick="{{ m.admMsg.tUndo }}">Undo changes</button></sc-if>
+<sc-if value="{{ m.admMsg.tCanSend }}"><button type="button" class="m-btn -primary -grow" onClick="{{ m.admMsg.tSend }}">Send for approval</button></sc-if>
+</div>
+</sc-if>
+</section>
+</sc-if>

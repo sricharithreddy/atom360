@@ -1,1 +1,79 @@
-<!-- today: phone layout (to be built) -->
+<!-- Today: day summary, callback alert, tabs, filters, then the queue of lead cards. -->
+
+<section class="m-card -tight m-today-sum" aria-label="{{ m.today.scope }}">
+<h2 class="m-label">{{ m.today.scope }}</h2>
+<dl class="m-today-stats">
+<div><dt>Calls</dt><dd class="m-num">{{ hs.calls }}<span>/ {{ hs.callsT }}</span></dd></div>
+<div><dt>Connected</dt><dd class="m-num">{{ hs.conn }}<span>{{ hs.connP }}</span></dd></div>
+<div><dt>Renewed</dt><dd class="m-num m-today-good">{{ hs.ren }}</dd></div>
+<div><dt>Lost</dt><dd class="m-num m-today-bad">{{ hs.lost }}</dd></div>
+</dl>
+<div class="m-today-month"><span class="m-fixed">Month target</span><span class="m-track m-grow" aria-hidden="true"><span style="width: {{ hs.monW }}"></span></span><strong class="m-fixed m-num">{{ hs.mon }} / {{ hs.monT }}</strong></div>
+</section>
+
+<sc-if value="{{ m.today.cbShow }}">
+<section class="m-today-cb" role="alert">
+<p class="m-today-cb-k"><span class="m-today-cb-dot" aria-hidden="true"></span>Callback due</p>
+<p class="m-today-cb-t">{{ cb.text }}</p>
+<p class="m-small">{{ cb.sub }}</p>
+<div class="m-today-cb-acts">
+<button type="button" class="m-btn m-today-cb-call -grow" onClick="{{ m.today.cbCall }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"></path></svg>Call now</button>
+<button type="button" class="m-btn m-today-cb-snz" onClick="{{ m.today.snooze }}">Snooze 10 min</button>
+</div>
+</section>
+</sc-if>
+<sc-if value="{{ m.today.cbSnoozed }}">
+<div class="m-today-snz" role="status"><span class="m-grow">{{ m.today.cbSnoozeText }}</span><button type="button" class="m-link m-fixed" onClick="{{ m.today.unsnooze }}">Show again</button></div>
+</sc-if>
+
+<div class="m-seg -scroll m-today-tabs" role="tablist" aria-label="Lead lists">
+<sc-for list="{{ m.today.tabs }}" as="tb"><button type="button" role="tab" aria-selected="{{ tb.selected }}" onClick="{{ tb.pick }}">{{ tb.label }} <span class="m-count {{ tb.countCls }}">{{ tb.count }}</span></button></sc-for>
+</div>
+
+<div class="m-scroller m-today-filters" role="group" aria-label="Filters">
+<button type="button" class="m-chip m-today-fbtn" aria-haspopup="dialog" aria-expanded="{{ fOpenStr }}" onClick="{{ toggleFilters }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>Filters<sc-if value="{{ m.today.fOn }}"><span class="m-count m-today-fcount">{{ fCount }}<span class="m-sr"> on</span></span></sc-if></button>
+<sc-for list="{{ m.today.quick }}" as="pill"><button type="button" class="m-chip {{ pill.cls }}" aria-pressed="{{ pill.press }}" onClick="{{ pill.pick }}"><sc-if value="{{ pill.ai }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>{{ pill.label }} <span class="m-chip-count">{{ pill.count }}</span></button></sc-for>
+<sc-for list="{{ chips }}" as="chip"><button type="button" class="m-chip -on m-today-chip" aria-label="Remove filter {{ chip.label }}" onClick="{{ chip.remove }}">{{ chip.label }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for>
+</div>
+
+<sc-if value="{{ m.today.filtered }}">
+<div class="m-today-shown"><p class="m-small" role="status">Showing <strong class="m-strong">{{ shownCount }}</strong> of {{ totalCount }}</p><button type="button" class="m-link" onClick="{{ clearAll }}">Clear all</button></div>
+</sc-if>
+
+<sc-for list="{{ m.today.groups }}" as="grp">
+<section class="m-today-grp" aria-label="{{ grp.title }}">
+<div class="m-today-grp-head">
+<div class="m-inline -between"><h2 class="m-h2" style="color: {{ grp.fg }}">{{ grp.title }}</h2><span class="m-small m-fixed">{{ grp.count }}</span></div>
+<p class="m-tiny">{{ grp.caption }}</p>
+</div>
+<ul class="m-stack">
+<sc-for list="{{ grp.cards }}" as="card">
+<li class="m-card -nopad m-today-card">
+<button type="button" class="m-today-main" onClick="{{ card.open }}">
+<span class="m-today-top"><span class="m-today-name m-clip">{{ card.name }}</span><sc-if value="{{ card.hasTime }}"><span class="m-today-time"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ card.time }}</span></sc-if></span>
+<span class="m-today-car m-clip">{{ card.model }} · {{ card.reg }}</span>
+<span class="m-today-why m-clip2" style="color: {{ card.whyFg }}">{{ card.why }}</span>
+<span class="m-today-days"><strong style="color: {{ card.daysFg }}">{{ card.daysLeft }}</strong> · policy ends {{ card.polDate }}</span>
+<sc-if value="{{ card.hasTags }}"><span class="m-today-tags"><sc-for list="{{ card.tags }}" as="tag"><span class="m-tag {{ tag.cls }}"><sc-if value="{{ tag.ai }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>{{ tag.text }}</span></sc-for></span></sc-if>
+<sc-if value="{{ card.hasQuote }}"><span class="m-today-quote"><span class="m-fixed">Best quote</span><span class="m-today-quote-v m-clip">{{ card.quoteIns }} <strong>{{ card.quoteAmt }}</strong></span></span></sc-if>
+<sc-if value="{{ card.hasQuote }}" not><span class="m-today-quote"><span>No quotes yet</span></span></sc-if>
+</button>
+<div class="m-today-acts">
+<button type="button" class="m-btn -grow {{ card.callCls }}" aria-label="{{ card.callAria }}" onClick="{{ card.call }}"><sc-if value="{{ card.ready }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"></path></svg></sc-if><sc-if value="{{ card.live }}"><span class="m-live-dot" aria-hidden="true"></span></sc-if><sc-if value="{{ card.blocked }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg></sc-if><span class="m-clip">{{ card.callText }}</span></button>
+<button type="button" class="m-iconbtn -line m-today-wa" aria-label="WhatsApp {{ card.name }}" onClick="{{ card.wa }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path></svg></button>
+</div>
+</li>
+</sc-for>
+</ul>
+</section>
+</sc-for>
+
+<sc-if value="{{ m.today.empty }}">
+<div class="m-empty m-today-empty">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13h4l1.5 3h5L16 13h4"></path><path d="M6 5h12l2 8v6H4v-6z"></path></svg>
+<h2 class="m-h3">{{ m.today.emptyTitle }}</h2>
+<p>{{ m.today.emptyBody }}</p>
+<sc-if value="{{ m.today.emptyClear }}"><button type="button" class="m-btn -primary" onClick="{{ clearAll }}">Clear filters</button></sc-if>
+<sc-if value="{{ m.today.emptyAll }}"><button type="button" class="m-btn" onClick="{{ m.today.showAll }}">Show all leads</button></sc-if>
+</div>
+</sc-if>

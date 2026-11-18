@@ -1,1 +1,42 @@
-<!-- message: phone layout (to be built) -->
+<!-- Message composer (WhatsApp or email): full-height sheet over the lead page. -->
+<sc-if value="{{ msgOpen }}">
+<div class="m-sheet -full -z3">
+<button type="button" class="m-backdrop" aria-label="Close message" onClick="{{ m.msg.close }}"></button>
+<section class="m-sheet-card m-msg" role="dialog" aria-modal="true" aria-labelledby="mmsgT" data-m-layer="message" tabindex="-1">
+<div class="m-sheet-head m-msg-head">
+<span class="m-msg-chip" aria-hidden="true" style="background: {{ mg.chipBg }}; color: {{ mg.chipFg }}">
+<sc-if value="{{ m.msg.isWa }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path><path d="M9.3 8.6c-.3 1.2.3 2.7 1.6 4s2.8 1.9 4 1.6"></path></svg></sc-if>
+<sc-if value="{{ m.msg.isMail }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></sc-if>
+</span>
+<div class="m-grow"><h2 class="m-h2 m-clip2" id="mmsgT">{{ mg.title }}</h2><p class="m-small m-clip">{{ mg.to }}</p></div>
+<button type="button" class="m-iconbtn" aria-label="Close message" onClick="{{ m.msg.close }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div class="m-sheet-body m-msg-body">
+<sc-if value="{{ m.msg.blocked }}">
+<div class="m-banner -bad" role="status"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg><span><strong>Messages are off for this lead.</strong> {{ m.msg.blockedWhy }}</span></div>
+</sc-if>
+<div class="m-msg-pick">
+<div class="m-field"><label for="mmsgTpl">Template</label><select id="mmsgTpl" class="m-select" onChange="{{ m.msg.onTpl }}"><sc-for list="{{ mg.tplOpts }}" as="opt"><option value="{{ opt.id }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="mmsgLang">Language</label><select id="mmsgLang" class="m-select" onChange="{{ mg.onLang }}"><sc-for list="{{ mg.langOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+</div>
+<sc-if value="{{ m.msg.hasLangNote }}">
+<p class="m-msg-note" role="status"><svg class="m-fixed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 7.5v.5"></path></svg><span>{{ mg.langNote }}</span></p>
+</sc-if>
+<sc-if value="{{ m.msg.isMail }}">
+<div class="m-field"><label for="mmsgSubj">Subject</label><input id="mmsgSubj" class="m-input" type="text" autocomplete="off" enterkeyhint="next" value="{{ mg.subj }}" onChange="{{ mg.onSubj }}"></div>
+</sc-if>
+<div class="m-field m-msg-field">
+<div class="m-msg-labelrow"><label for="mmsgText">Message</label><span class="m-tiny">Filled in from this lead. Edit if needed.</span></div>
+<textarea id="mmsgText" class="m-textarea m-msg-text" aria-describedby="mmsgCount" style="background: {{ mg.bubble }}" value="{{ mg.text }}" onChange="{{ mg.onText }}"></textarea>
+<div class="m-msg-under"><span class="m-tiny m-num" id="mmsgCount">{{ m.msg.count }}</span><sc-if value="{{ m.msg.edited }}"><button type="button" class="m-link m-msg-reset" onClick="{{ m.msg.reset }}">Undo my edits</button></sc-if></div>
+</div>
+<sc-if value="{{ m.msg.hasWarn }}">
+<div class="m-banner -warn" role="status"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg><span>{{ mg.warn }}</span></div>
+</sc-if>
+</div>
+<div class="m-sheet-foot">
+<button type="button" class="m-btn -block {{ m.msg.sendCls }}" aria-disabled="{{ m.msg.sendOff }}" onClick="{{ m.msg.send }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10 14"></path><path d="M21 3l-7 18-4-7-7-4z"></path></svg>{{ mg.sendLabel }}</button>
+</div>
+</section>
+</div>
+</sc-if>

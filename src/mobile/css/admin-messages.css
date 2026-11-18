@@ -1,1 +1,71 @@
-/* admin-messages */
+/* Admin > Messages: journey, templates, sent log, sending rules. Built from base.css; only what is specific lives here. */
+
+.m-admin-messages-seg { flex: 0 0 auto; }
+.m-admin-messages-seg > button { min-height: 44px; padding: 0 12px; scroll-margin: 0 24px; }
+.m-admin-messages-sec { display: flex; flex-direction: column; gap: 2px; padding: 4px 2px 0; }
+.m-admin-messages-banner { font-size: 13px; line-height: 1.4; padding: 10px 12px; }
+.m-app .m-admin-messages-count { padding: 0 2px; }
+
+/* base.css resets padding on headings, p and lists (.m-app p), so padded ones carry the .m-app prefix */
+
+/* journey: one card per stage, steps separated by lines */
+.m-app .m-admin-messages-stage-h { display: flex; align-items: center; gap: 8px; padding: 12px var(--pad); font-size: 15px; font-weight: 700; background: var(--tint); border-bottom: 1px solid var(--line-soft); }
+.m-admin-messages-dot { flex: 0 0 10px; width: 10px; height: 10px; border-radius: 50%; }
+.m-admin-messages-steps { display: flex; flex-direction: column; }
+.m-admin-messages-step { display: flex; flex-direction: column; gap: 8px; padding: 14px var(--pad); }
+.m-admin-messages-step + .m-admin-messages-step { border-top: 1px solid var(--line-soft); }
+.m-admin-messages-when { display: flex; flex-direction: column; gap: 1px; }
+.m-admin-messages-when > strong { font-size: 15px; font-weight: 700; }
+.m-admin-messages-tps { display: flex; flex-direction: column; gap: 8px; }
+.m-admin-messages-tp { display: flex; align-items: center; gap: 8px; width: 100%; min-height: var(--tap); padding: 8px 8px 8px 10px; border: 1px solid var(--line); border-radius: var(--r); background: #FFFFFF; text-align: left; font-size: 14px; line-height: 1.3; font-weight: 600; color: var(--ink); }
+.m-admin-messages-tp:active { background: var(--tint); }
+.m-admin-messages-mode { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.m-admin-messages-mode > .m-select { flex: 0 0 190px; width: 190px; }
+.m-admin-messages-eff { font-size: 13px; line-height: 1.35; font-weight: 600; }
+
+/* template list and sent log rows */
+.m-admin-messages-search { position: relative; }
+.m-admin-messages-search > svg { position: absolute; left: 12px; top: 14px; color: var(--muted); pointer-events: none; }
+.m-admin-messages-search > .m-input { padding-left: 40px; }
+.m-admin-messages-meta { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.m-admin-messages-st { font-size: 13px; font-weight: 600; min-width: 0; }
+.m-admin-messages-sent { display: flex; flex-direction: column; gap: 6px; padding: 12px var(--pad); }
+.m-admin-messages-sent strong { font-size: 15px; font-weight: 600; }
+.m-admin-messages-msg { font-size: 14px; color: var(--text); }
+.m-admin-messages-note { color: var(--text); }
+
+/* template detail */
+.m-admin-messages-bubble { align-self: flex-start; max-width: 92%; padding: 10px 12px; border-radius: 4px 14px 14px 14px; background: #F1F3FA; border: 1px solid var(--line-soft); font-size: 15px; line-height: 1.45; color: var(--ink); }
+.m-admin-messages-bubble.-wa { background: #E7F8EC; border-color: #C4E6CD; }
+.m-admin-messages-replies { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.m-admin-messages-replies > li { padding: 8px 10px; border-radius: 10px; background: #FFFFFF; border: 1px solid #C4E6CD; text-align: center; font-size: 14px; font-weight: 600; color: var(--primary-dark); }
+.m-app .m-admin-messages-used { padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.m-field > .m-admin-messages-wordlabel { font-size: 15px; font-weight: 700; color: var(--ink); }
+.m-admin-messages-body { min-height: 184px; }
+.m-admin-messages-warn { color: var(--orange); font-weight: 600; }
+.m-admin-messages-varsh { font-size: 13px; font-weight: 600; color: var(--text); }
+.m-admin-messages-vars { display: flex; flex-wrap: wrap; gap: 8px; }
+.m-admin-messages-vars > .m-chip { min-height: 44px; font-weight: 500; }
+.m-app .m-admin-messages-rowording { padding: 12px; border-radius: var(--r); background: var(--tint); border: 1px solid var(--line-soft); font-size: 15px; line-height: 1.45; color: var(--ink); }
+
+/* sending rules */
+.m-admin-messages-fs { margin: 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line-soft); min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.m-admin-messages-fs > legend { float: left; width: 100%; padding: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
+.m-admin-messages-fs > legend + * { clear: both; }
+.m-admin-messages-block { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+.m-admin-messages-switch { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 4px 0; border: 0; background: transparent; text-align: left; font-size: 14px; font-weight: 600; color: var(--ink); }
+.m-admin-messages-switch:active { background: var(--tint); }
+.m-admin-messages-sw-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 48px; }
+.m-admin-messages-sw { position: relative; width: 44px; height: 26px; border-radius: 13px; background: #B4BAD0; transition: background 0.15s; }
+.m-admin-messages-sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(11, 26, 71, 0.3); transition: transform 0.15s; }
+[aria-checked="true"] > .m-admin-messages-sw-wrap > .m-admin-messages-sw { background: var(--green); }
+[aria-checked="true"] > .m-admin-messages-sw-wrap > .m-admin-messages-sw::after { transform: translateX(18px); }
+.m-admin-messages-sw-text { font-weight: 700; }
+[aria-checked="true"] > .m-admin-messages-sw-wrap > .m-admin-messages-sw-text { color: var(--green); }
+@media (prefers-reduced-motion: reduce) { .m-admin-messages-sw, .m-admin-messages-sw::after { transition: none; } }
+.m-admin-messages-rohead { padding-bottom: 4px; }
+.m-app .m-admin-messages-rofoot { padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.m-admin-messages-rotext { font-size: 15px; color: var(--ink); }
+.m-admin-messages-stops { display: flex; flex-direction: column; gap: 10px; }
+.m-admin-messages-stops > li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text); }
+.m-admin-messages-stops > li > svg { flex: 0 0 auto; margin-top: 1px; color: var(--magenta); }

@@ -1,1 +1,213 @@
-<!-- stats: phone layout (to be built) -->
+<!-- Stats: read-only dashboard. Controls first (view, period, filters), then the chosen view. -->
+<div class="m-seg -scroll m-stats-tabs" role="tablist" aria-label="Stats views">
+<sc-for list="{{ st.tabs }}" as="tb"><button type="button" role="tab" aria-selected="{{ tb.selected }}" onClick="{{ tb.pick }}">{{ tb.label }}</button></sc-for>
+</div>
+
+<div class="m-scroller m-stats-per" role="group" aria-label="Period">
+<sc-for list="{{ st.periods }}" as="per"><button type="button" class="m-chip" aria-pressed="{{ per.press }}" onClick="{{ per.pick }}">{{ per.label }}</button></sc-for>
+</div>
+
+<sc-if value="{{ m.stats.custom }}">
+<div class="m-grid2">
+<div class="m-field"><label for="mstFrom">From</label><input id="mstFrom" class="m-input m-stats-date" type="date" value="{{ st.from }}" min="{{ st.minD }}" max="{{ st.maxD }}" onChange="{{ st.onFrom }}"></div>
+<div class="m-field"><label for="mstTo">To</label><input id="mstTo" class="m-input m-stats-date" type="date" value="{{ st.to }}" min="{{ st.minD }}" max="{{ st.maxD }}" onChange="{{ st.onTo }}"></div>
+</div>
+<p class="m-tiny m-stats-hint">Numbers are available from 1 Sep to 11 Nov 2026.</p>
+</sc-if>
+
+<div class="m-card -nopad m-stats-filters {{ m.stats.fCls }}">
+<button type="button" class="m-stats-fhead" aria-expanded="{{ m.stats.fOpenStr }}" aria-controls="mstFilters" onClick="{{ m.stats.fToggle }}">
+<svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+<span class="m-stats-ftitle">Filters</span>
+<sc-if value="{{ m.stats.fAny }}"><span class="m-count m-stats-fcount">{{ m.stats.fCount }} on</span></sc-if>
+<sc-if value="{{ m.stats.fAny }}" not><span class="m-small">None</span></sc-if>
+<span class="m-grow"></span>
+<svg class="m-chev m-stats-fchev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{ m.stats.fOpen }}">
+<div class="m-stats-fbody" id="mstFilters">
+<sc-for list="{{ m.stats.filters }}" as="flt">
+<div class="m-field"><label for="{{ flt.mid }}">{{ flt.label }}</label><select id="{{ flt.mid }}" class="m-select m-stats-fsel {{ flt.cls }}" onChange="{{ flt.on }}"><sc-for list="{{ flt.opts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ m.stats.fAny }}">
+<div class="m-stats-fsum"><span class="m-grow m-small">{{ m.stats.fSummary }}</span><button type="button" class="m-link m-fixed" onClick="{{ st.clear }}">Clear filters</button></div>
+</sc-if>
+</div>
+
+<sc-if value="{{ m.stats.notBoard }}">
+<p class="m-stats-scope"><svg class="m-fixed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg><span>{{ st.overNote }}</span></p>
+</sc-if>
+
+<!-- ============ Overview ============ -->
+<sc-if value="{{ st.overShow }}" eq="flex">
+<div class="m-grid2 m-stats-tiles">
+<sc-for list="{{ m.stats.tiles }}" as="tile">
+<div class="m-stat">
+<span class="m-stat-k">{{ tile.k }}</span>
+<span class="m-stat-v">{{ tile.v }}</span>
+<sc-if value="{{ tile.hasOf }}"><span class="m-stat-sub">{{ tile.of }}</span></sc-if>
+<sc-if value="{{ tile.hasBar }}"><span class="m-track m-stats-track" aria-hidden="true"><span style="width: {{ tile.w }}; background: {{ tile.sFg }}"></span></span></sc-if>
+<sc-if value="{{ tile.hasPace }}"><span class="m-stats-pace"><span class="m-tag {{ tile.paceCls }}">{{ tile.pace }}</span></span></sc-if>
+<span class="m-stat-sub m-stats-tile-s">{{ tile.s }}</span>
+</div>
+</sc-for>
+</div>
+
+<section class="m-card m-stats-card" aria-labelledby="mstAttH">
+<div><h2 class="m-h3" id="mstAttH">Needs attention</h2><p class="m-small">Right now. The period and the filters do not change these.</p></div>
+<ul class="m-stats-att">
+<sc-for list="{{ st.att }}" as="att"><li><strong class="m-num" style="color: {{ att.fg }}">{{ att.n }}</strong><span>{{ att.k }}</span></li></sc-for>
+</ul>
+</section>
+
+<section class="m-card m-stats-card" aria-labelledby="mstLostH">
+<div><h2 class="m-h3" id="mstLostH">Why we lost</h2><p class="m-small">{{ st.lostNote }}</p></div>
+<sc-if value="{{ m.stats.lostEmpty }}"><p class="m-empty m-stats-empty">No lead was lost in this period.</p></sc-if>
+<sc-if value="{{ m.stats.lostEmpty }}" not>
+<ul class="m-stats-bars">
+<sc-for list="{{ st.lostRows }}" as="lost"><li><span class="m-stats-bar-top"><span class="m-stats-bar-k">{{ lost.k }}</span><span class="m-stats-bar-n m-num"><strong>{{ lost.n }}</strong> · {{ lost.p }}</span></span><span class="m-stats-bar -lost" aria-hidden="true"><span style="width: {{ lost.w }}"></span></span></li></sc-for>
+</ul>
+</sc-if>
+</section>
+</sc-if>
+
+<!-- ============ Leads ============ -->
+<sc-if value="{{ st.leadsShow }}" eq="flex">
+<section class="m-card m-stats-card" aria-labelledby="mstFunH">
+<div><h2 class="m-h3" id="mstFunH">Lead funnel</h2><p class="m-small">{{ st.cohortNote }}</p></div>
+<sc-if value="{{ m.stats.cohortEmpty }}"><p class="m-empty m-stats-empty">No leads match these filters in this period.</p></sc-if>
+<sc-if value="{{ m.stats.cohortEmpty }}" not>
+<ul class="m-stats-bars">
+<sc-for list="{{ st.funnel }}" as="fun"><li><span class="m-stats-bar-top"><span class="m-stats-bar-k">{{ fun.label }}</span><span class="m-stats-bar-n m-num"><strong>{{ fun.n }}</strong> · {{ fun.pct }}</span></span><span class="m-stats-bar -tall" aria-hidden="true"><span style="width: {{ fun.w }}; background: {{ fun.bg }}"></span></span></li></sc-for>
+</ul>
+<p class="m-stats-rule">Where they are now</p>
+<ul class="m-stats-bars">
+<sc-for list="{{ st.exits }}" as="exi"><li><span class="m-stats-bar-top"><span class="m-stats-bar-k" style="color: {{ exi.fg }}">{{ exi.label }}</span><span class="m-stats-bar-n m-num"><strong style="color: {{ exi.fg }}">{{ exi.n }}</strong> · {{ exi.pct }}</span></span><span class="m-stats-bar" aria-hidden="true"><span style="width: {{ exi.w }}; background: {{ exi.bg }}"></span></span></li></sc-for>
+</ul>
+<p class="m-tiny">Policy issued + Lost + Still open = Leads allotted.</p>
+</sc-if>
+</section>
+
+<section class="m-card m-stats-card" aria-labelledby="mstCcH">
+<div><h2 class="m-h3" id="mstCcH">Calls and contacts</h2><p class="m-small">All calls on these leads so far. A contact is a call the customer picked up.</p></div>
+<table class="m-stats-cc m-num">
+<thead><tr><th scope="col"><span class="m-sr">Measure</span></th><th scope="col">Total</th><th scope="col" class="-caller">Caller</th><th scope="col" class="-ai">AI</th></tr></thead>
+<tbody>
+<sc-for list="{{ st.ccRows }}" as="cc"><tr style="border-top: {{ cc.top }}"><th scope="row">{{ cc.k }}</th><td>{{ cc.t }}</td><td class="-caller">{{ cc.c }}</td><td class="-ai">{{ cc.a }}</td></tr></sc-for>
+</tbody>
+</table>
+<p class="m-tiny">Per lead means divided by all leads allotted, so Caller and AI add up to Total (apart from rounding).</p>
+</section>
+
+<section class="m-card m-stats-card" aria-labelledby="mstByH">
+<h2 class="m-h3" id="mstByH">Breakdown</h2>
+<div class="m-field"><label for="mstBy">Break down by</label><select id="mstBy" class="m-select" onChange="{{ st.onBy }}"><sc-for list="{{ st.byOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<sc-if value="{{ m.stats.cohortEmpty }}"><p class="m-empty m-stats-empty">No leads to break down in this period.</p></sc-if>
+<sc-if value="{{ m.stats.cohortEmpty }}" not>
+<p class="m-tiny">% under Allotted is the share of all leads. Other % are of that row's allotted leads.</p>
+<ul class="m-stats-groups">
+<sc-for list="{{ m.stats.groups }}" as="grp">
+<li class="m-stats-group {{ grp.cls }}">
+<div class="m-stats-group-top"><span class="m-stats-group-name">{{ grp.label }}</span><span class="m-stats-group-head m-num"><strong>{{ grp.head.n }}</strong><span>{{ grp.head.k }} · {{ grp.head.p }}</span></span></div>
+<dl class="m-stats-pairs -three">
+<sc-for list="{{ grp.rest }}" as="pair"><div><dt>{{ pair.k }}</dt><dd class="m-num"><strong>{{ pair.n }}</strong> {{ pair.p }}</dd></div></sc-for>
+</dl>
+</li>
+</sc-for>
+</ul>
+</sc-if>
+</section>
+</sc-if>
+
+<!-- ============ Calling ============ -->
+<sc-if value="{{ st.callsShow }}" eq="flex">
+<div class="m-grid2 m-stats-tiles -lead">
+<sc-for list="{{ st.kpis }}" as="kpi">
+<div class="m-stat"><span class="m-stat-k">{{ kpi.k }}</span><span class="m-stat-v">{{ kpi.v }}</span><span class="m-stat-sub">{{ kpi.s }}</span></div>
+</sc-for>
+</div>
+
+<section class="m-card m-stats-card" aria-labelledby="mstHrH">
+<div><h2 class="m-h3" id="mstHrH">Caller calls by hour</h2>
+<p class="m-stats-legend"><span><span class="m-stats-key -calls" aria-hidden="true"></span>Calls</span><span><span class="m-stats-key -conn" aria-hidden="true"></span>Picked up</span></p></div>
+<sc-if value="{{ st.bestText }}"><p class="m-stats-best"><svg class="m-fixed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg><span>{{ st.bestText }}</span></p></sc-if>
+<div class="m-stats-hours" role="img" aria-label="Caller calls and pick-ups by hour of day, 8 am to 5 pm. The numbers are in the list below the chart.">
+<sc-for list="{{ m.stats.hours }}" as="hr"><div class="m-stats-hour {{ hr.cls }}"><span class="m-stats-hour-rate m-num">{{ hr.rate }}</span><span class="m-stats-hour-plot"><span class="-calls" style="height: {{ hr.callH }}"></span><span class="-conn" style="height: {{ hr.connH }}"></span></span><span class="m-stats-hour-n">{{ hr.n }}</span><span class="m-stats-hour-ap">{{ hr.ap }}</span></div></sc-for>
+</div>
+<p class="m-tiny">% above each hour is the share of calls the customer picked up.</p>
+<button type="button" class="m-btn -block m-stats-more" aria-expanded="{{ m.stats.hoursOpenStr }}" aria-controls="mstHours" onClick="{{ m.stats.hoursToggle }}">{{ m.stats.hoursText }}</button>
+<sc-if value="{{ m.stats.hoursOpen }}">
+<table class="m-stats-hrs m-num" id="mstHours">
+<thead><tr><th scope="col">Hour</th><th scope="col">Calls and pick-ups</th><th scope="col">Pick-up</th></tr></thead>
+<tbody>
+<sc-for list="{{ m.stats.hours }}" as="hr"><tr class="{{ hr.cls }}"><th scope="row">{{ hr.label }}</th><td>{{ hr.counts }}</td><td>{{ hr.rate }}</td></tr></sc-for>
+</tbody>
+</table>
+</sc-if>
+</section>
+
+<section class="m-card m-stats-card" aria-labelledby="mstDayH">
+<div><h2 class="m-h3" id="mstDayH">Day by day</h2><p class="m-small">{{ st.dayNote }}</p></div>
+<ul class="m-stats-days">
+<sc-for list="{{ m.stats.days }}" as="day"><li><span class="m-stats-day-top"><span class="m-stats-day-k" style="color: {{ day.fg }}">{{ day.day }}</span><strong class="m-num">{{ day.calls }}</strong></span><span class="m-small m-num">{{ day.line }}</span></li></sc-for>
+</ul>
+<sc-if value="{{ m.stats.daysMore }}"><button type="button" class="m-btn -block m-stats-more" onClick="{{ m.stats.daysToggle }}">{{ m.stats.daysText }}</button></sc-if>
+</section>
+
+<section class="m-stats-sec" aria-labelledby="mstCallerH">
+<div class="m-stats-sechead"><h2 class="m-h3" id="mstCallerH">By caller</h2><p class="m-small">{{ st.callNote }}</p></div>
+<sc-for list="{{ m.stats.callers }}" as="clr">
+<div class="m-card m-stats-caller {{ clr.cls }}">
+<div class="m-stats-group-top"><span class="m-stats-caller-who"><span class="m-stats-group-name">{{ clr.name }}</span><span class="m-small">{{ clr.sub }}</span></span><span class="m-stats-group-head m-num"><strong>{{ clr.head.v }}</strong><span>{{ clr.head.k }}</span></span></div>
+<dl class="m-stats-pairs">
+<sc-for list="{{ clr.rest }}" as="pair"><div><dt>{{ pair.k }}</dt><dd class="m-num"><strong>{{ pair.v }}</strong></dd></div></sc-for>
+</dl>
+</div>
+</sc-for>
+</section>
+</sc-if>
+
+<!-- ============ Leaderboard ============ -->
+<sc-if value="{{ st.boardShow }}" eq="flex">
+<sc-if value="{{ m.stats.hasLbNote }}">
+<p class="m-banner -info m-stats-you"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"></path></svg><strong>{{ st.lbNote }}</strong></p>
+</sc-if>
+<div class="m-field"><label for="mstLbBy">Rank by</label><select id="mstLbBy" class="m-select" onChange="{{ st.onLbBy }}"><sc-for list="{{ st.lbByOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-seg m-stats-scopeseg" role="group" aria-label="Who is ranked">
+<sc-for list="{{ m.stats.scope }}" as="opt"><button type="button" aria-pressed="{{ opt.press }}" onClick="{{ opt.pick }}">{{ opt.label }}</button></sc-for>
+</div>
+<p class="m-small m-stats-hint">{{ st.lbSub }}</p>
+
+<section class="m-stats-sec" aria-labelledby="mstTopH">
+<h2 class="m-h3 m-stats-sechead" id="mstTopH">Top three</h2>
+<ol class="m-grid3 m-stats-podium">
+<sc-for list="{{ m.stats.top }}" as="pod">
+<li class="m-stats-pod {{ pod.cls }}"><span class="m-stats-medal" style="background: {{ pod.medalBg }}"><span class="m-sr">Rank </span>{{ pod.rank }}</span><span class="m-stats-pod-name">{{ pod.name }}</span><span class="m-tiny m-clip">{{ pod.br }}</span><strong class="m-stats-pod-val m-num">{{ pod.val }}</strong><sc-if value="{{ pod.hasMove }}"><span class="m-stats-move m-num" style="color: {{ pod.moveFg }}">{{ pod.move }}</span></sc-if></li>
+</sc-for>
+</ol>
+</section>
+
+<section class="m-stats-sec" aria-labelledby="mstRankH">
+<div class="m-stats-sechead"><h2 class="m-h3" id="mstRankH">Ranking by {{ st.lbMetric }}</h2><p class="m-small">Tap a caller to see all their numbers.</p></div>
+<div class="m-card -nopad"><ol class="m-list">
+<sc-for list="{{ m.stats.ranks }}" as="row">
+<li class="m-stats-rank {{ row.cls }}">
+<button type="button" class="m-stats-rank-btn" aria-expanded="{{ row.openStr }}" onClick="{{ row.toggle }}">
+<span class="m-stats-medal -sm" style="background: {{ row.medalBg }}; color: {{ row.medalFg }}"><span class="m-sr">Rank </span>{{ row.rank }}</span>
+<span class="m-item-main"><span class="m-stats-rank-name m-clip">{{ row.name }}</span><span class="m-item-sub m-clip">{{ row.br }}</span></span>
+<span class="m-stats-rank-val"><strong class="m-num">{{ row.val }}</strong><sc-if value="{{ row.hasMove }}"><span class="m-stats-move m-num" style="color: {{ row.moveFg }}">{{ row.move }}</span></sc-if></span>
+<svg class="m-chev m-stats-rank-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{ row.open }}">
+<dl class="m-stats-pairs m-stats-rank-more">
+<sc-for list="{{ row.pairs }}" as="pair"><div class="{{ pair.cls }}"><dt>{{ pair.k }}</dt><dd class="m-num"><strong>{{ pair.v }}</strong></dd></div></sc-for>
+</dl>
+</sc-if>
+</li>
+</sc-for>
+</ol></div>
+<p class="m-tiny m-stats-hint">Everyone sees totals only. Lead details stay with the owner and the team lead.</p>
+</section>
+</sc-if>

@@ -38,7 +38,6 @@ export default function (v: any, ctx: MobileCtx): any {
       star: (e: any) => {
         if (blocked) { ctx.note(LIMIT); return; }
         o.fav(e);
-        ctx.note(on ? 'Removed from key filters on Today.' : 'Added to key filters on Today.');
       },
     };
   };

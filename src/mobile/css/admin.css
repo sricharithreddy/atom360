@@ -1,1 +1,77 @@
-/* admin */
+/* Admin: frame, Team, Targets and rules, Activity. Built from base.css; only what is specific lives here. */
+
+/* frame */
+.m-admin-tabs { flex: 0 0 auto; }
+.m-seg.-scroll.m-admin-tabs > button { min-height: 44px; padding: 0 10px; }
+.m-admin-card { display: flex; flex-direction: column; gap: 8px; }
+/* base.css sets 16 px on .m-input/.m-select, but its `font: inherit` reset wins; restate it so iOS does not zoom */
+.m-app .m-admin-ctl { font-size: 16px; }
+.m-admin-note { padding: 0 2px; }
+.m-admin-sec { display: flex; flex-direction: column; gap: 2px; padding: 4px 2px 0; }
+.m-admin-sec.-in { padding: 0 0 4px; }
+
+/* people */
+.m-admin-person { display: flex; flex-direction: column; gap: 12px; padding: 14px var(--pad); }
+.m-admin-who { display: flex; flex-direction: column; gap: 2px; }
+.m-admin-open { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
+.m-admin-open > strong { font-size: 20px; font-weight: 700; }
+.m-app .m-admin-st { font-weight: 700; }
+.m-admin-hint { font-size: 13px; padding: 10px 12px; }
+
+/* move leads */
+.m-admin-match { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: var(--r); background: var(--tint); border: 1px solid var(--line-soft); }
+
+/* targets: name + two number columns */
+.m-admin-tg { display: flex; flex-direction: column; }
+.m-admin-tg-row { display: grid; grid-template-columns: minmax(0, 1fr) 84px 84px; align-items: center; gap: 8px; min-height: 44px; padding: 6px 0; font-size: 15px; font-weight: 600; border-top: 1px solid var(--line-soft); }
+.m-admin-tg-row > :nth-child(n + 2) { text-align: right; }
+.m-admin-tg-row.-head { min-height: 0; padding: 0 0 6px; border-top: 0; align-items: end; font-size: 12px; line-height: 1.25; font-weight: 600; color: var(--muted); }
+.m-admin-tg-row.-total { margin: 0 -8px; padding: 6px 8px; border-top: 0; border-radius: var(--r-sm); background: var(--tint); font-weight: 700; }
+.m-admin-tg.-edit .m-admin-tg-row.-total > :nth-child(n + 2) { padding-right: 13px; }
+.m-admin-tg.-edit .m-admin-tg-row { padding: 4px 0; border-top: 0; }
+.m-app .m-admin-numin { width: 84px; padding: 0 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield; }
+.m-admin-numin::-webkit-outer-spin-button, .m-admin-numin::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* allocation rules */
+.m-admin-rules { display: flex; flex-direction: column; }
+.m-admin-rules > li + li { border-top: 1px solid var(--line-soft); }
+.m-admin-rule { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 0; border: 0; background: transparent; text-align: left; }
+.m-admin-rule.-tap:active { background: var(--tint); }
+.m-admin-rule-text { display: flex; flex-direction: column; gap: 2px; }
+.m-admin-rule-text > strong { font-size: 15px; font-weight: 600; color: var(--ink); }
+.m-admin-n { flex: 0 0 24px; width: 24px; height: 24px; border-radius: 50%; background: var(--primary-soft); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+
+/* switch: the whole row is the button; this is its picture, with On/Off in words */
+.m-admin-sw-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 48px; }
+.m-admin-sw { position: relative; width: 44px; height: 26px; border-radius: 13px; background: #B4BAD0; transition: background 0.15s; }
+.m-admin-sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(11, 26, 71, 0.3); transition: transform 0.15s; }
+[aria-checked="true"] > .m-admin-sw-wrap > .m-admin-sw { background: var(--green); }
+[aria-checked="true"] > .m-admin-sw-wrap > .m-admin-sw::after { transform: translateX(18px); }
+.m-admin-sw-text { font-weight: 700; }
+[aria-checked="true"] > .m-admin-sw-wrap > .m-admin-sw-text { color: var(--green); }
+@media (prefers-reduced-motion: reduce) { .m-admin-sw, .m-admin-sw::after { transition: none; } }
+
+/* a number rule: sentence, number, unit */
+.m-admin-num { display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 8px 0 4px; border-top: 1px solid var(--line-soft); font-size: 14px; color: var(--text); }
+.m-admin-num.-first { border-top: 0; padding-top: 0; }
+.m-admin-num > input { flex: 0 0 auto; width: 76px; }
+.m-admin-unit { flex: 0 0 52px; font-size: 13px; color: var(--muted); }
+.m-admin-fs { margin: 0; padding: 10px 0 0; border: 0; border-top: 1px solid var(--line-soft); min-width: 0; }
+.m-admin-fs > legend { float: left; width: 100%; padding: 0 0 2px; font-size: 14px; font-weight: 600; color: var(--ink); }
+.m-admin-check { clear: both; }
+.m-admin-check input[type="checkbox"] { accent-color: var(--purple); }
+
+/* read-only values for the team lead */
+.m-admin-kvs { display: flex; flex-direction: column; border-top: 1px solid var(--line-soft); }
+.m-admin-card > h2 + .m-admin-kvs { border-top: 0; }
+.m-admin-kvs > .m-kv > dt { max-width: 62%; }
+.m-admin-kvs > .m-kv > dd { flex: 0 1 auto; }
+
+/* activity timeline */
+.m-app .m-admin-log { display: flex; flex-direction: column; padding: 6px var(--pad); }
+.m-admin-ent { position: relative; display: flex; gap: 12px; padding: 12px 0; }
+.m-admin-dot { flex: 0 0 10px; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%; background: #FFFFFF; border: 2px solid var(--primary); }
+.m-admin-ent::before { content: ''; position: absolute; left: 4px; top: 32px; bottom: -12px; width: 2px; background: var(--line-soft); }
+.m-admin-ent:last-child::before { display: none; }
+.m-admin-ent-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.m-admin-ent-t { font-size: 14px; color: var(--ink); }

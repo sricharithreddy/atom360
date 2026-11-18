@@ -1,1 +1,15 @@
-/* message */
+/* message: composer sheet (WhatsApp / email) */
+.m-msg-head { gap: 12px; min-height: 64px; }
+.m-msg-chip { flex: 0 0 auto; width: 40px; height: 40px; border-radius: var(--r); display: flex; align-items: center; justify-content: center; }
+.m-msg-pick { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 10px; }
+.m-msg-pick .m-select { text-overflow: ellipsis; }
+.m-msg-note { display: flex; align-items: flex-start; gap: 8px; margin-top: -4px; font-size: 13px; line-height: 1.4; color: var(--text); }
+.m-msg-note > svg { margin-top: 1px; color: var(--primary); }
+/* The message takes whatever height is left; below 180 px the sheet body scrolls instead. */
+.m-sheet-body > .m-msg-field { flex: 1 0 auto; }
+.m-msg-labelrow { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 2px 10px; }
+.m-msg-labelrow > label { font-size: 13px; font-weight: 600; color: var(--text); }
+.m-msg-text { flex: 1 1 auto; min-height: 180px; resize: none; line-height: 1.45; padding: 12px 14px; }
+.m-msg-under { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 20px; }
+.m-msg-reset { margin: -6px 0 -8px; }
+.m-msg .m-msg-reset { color: var(--primary); }

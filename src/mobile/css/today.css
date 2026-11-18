@@ -1,1 +1,73 @@
-/* today */
+/* Today queue. Built from base.css; only what is specific to this screen lives here. */
+
+/* day summary */
+.m-today-sum { display: flex; flex-direction: column; gap: 10px; }
+.m-today-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.m-today-stats > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.m-today-stats dt { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.m-today-stats dd { font-size: 20px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
+.m-today-stats dd > span { margin-left: 4px; font-size: 12px; font-weight: 600; letter-spacing: 0; color: var(--muted); }
+.m-today-good { color: var(--green); }
+.m-today-bad { color: var(--magenta); }
+.m-today-month { display: flex; align-items: center; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); font-size: 13px; color: var(--muted); }
+.m-today-month > strong { color: var(--ink); }
+.m-today-month .m-track > span { background: var(--grad); }
+
+/* callback due */
+.m-today-cb { display: flex; flex-direction: column; gap: 2px; padding: 14px; border-radius: var(--r-lg); background: var(--magenta-soft); border: 1px solid #EDB4CE; }
+.m-today-cb-k { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--magenta); }
+.m-today-cb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--magenta); }
+.m-today-cb-t { font-size: 16px; line-height: 1.3; font-weight: 700; color: var(--ink); }
+.m-today-cb .m-small { color: var(--text); }
+.m-today-cb-acts { display: flex; gap: 8px; margin-top: 10px; }
+.m-btn.m-today-cb-call { background: var(--magenta); border-color: var(--magenta); color: #FFFFFF; }
+.m-btn.m-today-cb-call:active { background: #86103F; }
+.m-btn.m-today-cb-snz { border-color: transparent; background: transparent; color: var(--magenta); font-size: 14px; padding: 0 10px; }
+.m-today-snz { display: flex; align-items: center; gap: 12px; padding: 2px 14px; border-radius: var(--r); border: 1px solid var(--line); background: var(--card); font-size: 13px; color: var(--text); }
+
+/* tabs */
+.m-seg.m-today-tabs > button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 0 6px; font-size: 13px; }
+.m-today-tabs .m-count { min-width: 18px; height: 18px; padding: 0 5px; }
+.m-today-tabs .m-count { background: #D5D9E8; }
+.m-today-tabs > button[aria-selected="true"] .m-count { background: var(--ink); color: #FFFFFF; }
+.m-today-tabs .m-count.m-today-due, .m-today-tabs > button[aria-selected="true"] .m-count.m-today-due { background: #C2410C; color: #FFFFFF; }
+
+/* filters row */
+.m-today-filters .m-chip { min-height: 44px; }
+.m-today-fbtn { border-radius: var(--r); padding: 0 12px; }
+.m-today-fcount { background: var(--ink); color: #FFFFFF; }
+.m-today-chip { padding-right: 10px; }
+.m-today-shown { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -6px 2px; }
+
+/* groups */
+.m-today-grp { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.m-today-grp-head { display: flex; flex-direction: column; gap: 1px; padding: 0 2px; }
+
+/* lead card */
+.m-today-card { display: flex; flex-direction: column; }
+.m-today-main { display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 14px 14px 12px; border: 0; background: transparent; text-align: left; }
+.m-today-main:active { background: var(--tint); }
+.m-today-main:focus-visible { outline-offset: -2px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+.m-today-top { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.m-today-name { flex: 1 1 0; font-size: 17px; line-height: 1.3; font-weight: 700; color: var(--ink); }
+.m-today-time { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+.m-today-time > svg { position: relative; top: 2px; align-self: flex-start; }
+.m-today-car { display: block; font-size: 13px; color: var(--muted); }
+.m-today-why { margin-top: 4px; font-size: 15px; line-height: 1.35; font-weight: 700; }
+.m-today-days { display: block; font-size: 13px; color: var(--muted); }
+.m-today-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.m-tag.m-today-aifill { background: var(--purple); color: #FFFFFF; }
+.m-today-quote { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line-soft); font-size: 13px; color: var(--muted); }
+.m-today-quote-v { color: var(--text); text-align: right; }
+.m-today-quote-v > strong { margin-left: 2px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.m-today-acts { display: flex; align-items: center; gap: 8px; padding: 0 14px 14px; }
+.m-iconbtn.m-today-wa { width: 48px; height: 48px; color: #128C4A; border-color: #128C4A; }
+
+/* empty */
+.m-today-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 32px 20px; }
+.m-today-empty > svg { color: var(--faint); }
+.m-today-empty > .m-h3 { color: var(--ink); }
+.m-today-empty > .m-btn { margin-top: 8px; }
+
+/* base.css: `.m-app button { color: inherit }` outranks `.m-link`; restore the link colour here. */
+.m-today-shown .m-link, .m-today-snz .m-link { color: var(--primary); }

@@ -1,1 +1,146 @@
-<!-- admin: phone layout (to be built) -->
+<!-- Admin: team, targets and rules, messages (own part), activity. Only the team lead and the admin get here. -->
+<div class="m-seg -scroll m-admin-tabs" role="tablist" aria-label="Admin views">
+<sc-for list="{{ m.admin.tabs }}" as="tb"><button type="button" role="tab" aria-selected="{{ tb.selected }}" onClick="{{ tb.pick }}">{{ tb.label }}</button></sc-for>
+</div>
+<p class="m-small m-admin-note">{{ adm.roleNote }}</p>
+
+<!-- ============ Team ============ -->
+<sc-if value="{{ adm.teamShow }}" eq="flex">
+<section class="m-stack" aria-labelledby="madPeopleH">
+<div class="m-admin-sec"><h2 class="m-h2" id="madPeopleH">People</h2><p class="m-small">Status decides who gets new leads.</p></div>
+<ul class="m-stack m-admin-people">
+<sc-for list="{{ m.admin.people }}" as="per">
+<li class="m-card m-admin-person">
+<div class="m-inline -top">
+<div class="m-grow m-admin-who"><h3 class="m-h3 m-inline"><span class="m-clip">{{ per.nm }}</span><sc-if value="{{ per.you }}"><span class="m-tag -blue m-fixed">You</span></sc-if></h3><p class="m-small">{{ per.role }} · {{ per.branch }}</p></div>
+<sc-if value="{{ per.canEdit }}"><span class="m-fixed m-admin-open"><strong class="m-num">{{ per.open }}</strong><span class="m-tiny">{{ per.openLabel }}</span></span></sc-if>
+<sc-if value="{{ per.canEdit }}" not><span class="m-tag -green m-fixed">Active</span></sc-if>
+</div>
+<sc-if value="{{ per.canEdit }}">
+<div class="m-grid2">
+<label class="m-field"><span class="m-field-label">Status</span><select class="m-select m-admin-ctl m-admin-st" aria-label="Status of {{ per.nm }}" onChange="{{ per.onSt }}" style="color: {{ per.stFg }}"><sc-for list="{{ per.stOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></label>
+<label class="m-field"><span class="m-field-label">Reports to</span><select class="m-select m-admin-ctl" aria-label="Who {{ per.nm }} reports to" onChange="{{ per.onRep }}"><sc-for list="{{ per.repOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></label>
+</div>
+<sc-if value="{{ per.hasHint }}"><div class="m-banner -warn m-admin-hint">{{ per.hint }}</div></sc-if>
+</sc-if>
+<sc-if value="{{ per.canEdit }}" not><sc-if value="{{ per.repLine }}"><p class="m-small">{{ per.repLine }}</p></sc-if></sc-if>
+</li>
+</sc-for>
+</ul>
+</section>
+
+<section class="m-card m-stack" aria-labelledby="madMoveH">
+<div class="m-admin-sec -in"><h2 class="m-h2" id="madMoveH">Move leads</h2><p class="m-small">For leave, a person leaving, or an uneven load. The sale counts for the new owner from the move onwards.</p></div>
+<div class="m-field"><label for="madMvFrom">Move from</label><select id="madMvFrom" class="m-select m-admin-ctl" onChange="{{ adm.onMvFrom }}"><sc-for list="{{ adm.mvFrom }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="madMvSrc">Which leads</label><select id="madMvSrc" class="m-select m-admin-ctl" aria-label="Renewal type" onChange="{{ adm.onMvSrc }}"><sc-for list="{{ adm.mvSrc }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select><select class="m-select m-admin-ctl" aria-label="Expiry" onChange="{{ adm.onMvExp }}"><sc-for list="{{ adm.mvExp }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="madMvTo">Move to</label><select id="madMvTo" class="m-select m-admin-ctl" onChange="{{ adm.onMvTo }}"><sc-for list="{{ adm.mvTo }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-admin-match" role="status">
+<p class="m-strong">{{ adm.mvCount }}</p>
+<sc-if value="{{ m.admin.mvHas }}"><p class="m-small m-wrap">{{ adm.mvNames }}</p></sc-if>
+<sc-if value="{{ m.admin.hasMvWhy }}"><p class="m-small">{{ m.admin.mvWhy }}</p></sc-if>
+</div>
+<button type="button" class="m-btn -primary -block" disabled="{{ m.admin.mvOff }}" onClick="{{ m.admin.doMove }}">{{ adm.mvBtn }}</button>
+</section>
+</sc-if>
+
+<!-- ============ Targets and rules ============ -->
+<sc-if value="{{ adm.rulesShow }}" eq="flex">
+
+<!-- Team lead: values as plain text. The board locks these with CSS only, so no input is rendered at all. -->
+<sc-if value="{{ m.admin.isLead }}">
+<div class="m-banner -warn" role="note"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><span><strong>View only.</strong> Only the admin can change these.</span></div>
+
+<section class="m-card m-admin-card" aria-labelledby="madTgH">
+<div class="m-admin-sec -in"><h2 class="m-h2" id="madTgH">Targets</h2><p class="m-small">Set per telecaller. Stats and the Today strip use these.</p></div>
+<div class="m-admin-tg" role="table" aria-label="Targets">
+<div class="m-admin-tg-row -head" role="row"><span role="columnheader">Telecaller</span><span role="columnheader">Policies a month</span><span role="columnheader">Calls a day</span></div>
+<sc-for list="{{ adm.tgRows }}" as="row"><div class="m-admin-tg-row" role="row"><span role="rowheader" class="m-clip">{{ row.name }}</span><span role="cell" class="m-num">{{ row.pol }}</span><span role="cell" class="m-num">{{ row.calls }}</span></div></sc-for>
+<div class="m-admin-tg-row -total" role="row"><span role="rowheader">Team</span><span role="cell" class="m-num">{{ adm.tgTotPol }}</span><span role="cell" class="m-num">{{ adm.tgTotCalls }}</span></div>
+</div>
+</section>
+
+<section class="m-card m-admin-card" aria-labelledby="madAllocH">
+<div class="m-admin-sec -in"><h2 class="m-h2" id="madAllocH">Who gets a new lead</h2><p class="m-small">Checked from the top. The first rule that fits decides.</p></div>
+<ol class="m-admin-rules">
+<sc-for list="{{ m.admin.rules }}" as="rule"><li class="m-admin-rule"><span class="m-admin-n" aria-hidden="true">{{ rule.n }}</span><span class="m-grow m-admin-rule-text"><strong>{{ rule.k }}</strong><span class="m-small">{{ rule.d }}</span></span><span class="m-tag m-fixed {{ rule.stateCls }}">{{ rule.stateText }}</span></li></sc-for>
+</ol>
+<dl class="m-admin-kvs"><div class="m-kv"><dt>Daily cap of new leads for each caller</dt><dd>{{ m.admin.capText }}</dd></div></dl>
+</section>
+
+<section class="m-card m-admin-card" aria-labelledby="madAiH">
+<h2 class="m-h2" id="madAiH">AI calling</h2>
+<dl class="m-admin-kvs">
+<div class="m-kv"><dt>AI picks up a call that has been pending for more than</dt><dd>{{ m.admin.aiDaysText }}</dd></div>
+<div class="m-kv"><dt>AI makes the first call for</dt><dd>{{ m.admin.aiFirstText }}</dd></div>
+</dl>
+<p class="m-small">The caller stays the owner. AI follows the same calling hours and do-not-call rules as callers.</p>
+</section>
+
+<section class="m-card m-admin-card" aria-labelledby="madEscH">
+<h2 class="m-h2" id="madEscH">Tell the team lead when</h2>
+<dl class="m-admin-kvs">
+<div class="m-kv"><dt>A lead expires soon and nobody has spoken to the customer</dt><dd>{{ m.admin.escDaysText }} before expiry</dd></div>
+<div class="m-kv"><dt>A promised callback is late</dt><dd>{{ m.admin.cbMinText }} late</dd></div>
+</dl>
+</section>
+</sc-if>
+
+<!-- Admin: editable. The board saves (and logs) on every change; there is no Save button. -->
+<sc-if value="{{ m.admin.isAdmin }}">
+<p class="m-small m-admin-note">Changes save as you type. Each one is listed in Activity.</p>
+
+<section class="m-card m-admin-card" aria-labelledby="madTgH">
+<div class="m-admin-sec -in"><h2 class="m-h2" id="madTgH">Targets</h2><p class="m-small">Set per telecaller. The team number adds up by itself. Stats and the Today strip use these.</p></div>
+<div class="m-admin-tg -edit">
+<div class="m-admin-tg-row -head" aria-hidden="true"><span>Telecaller</span><span>Policies a month</span><span>Calls a day</span></div>
+<sc-for list="{{ m.admin.tgRows }}" as="row"><div class="m-admin-tg-row"><span class="m-clip">{{ row.name }}</span><input class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="0" max="999" aria-label="Policies a month for {{ row.name }}" value="{{ row.polN.val }}" onChange="{{ row.polN.on }}" onBlur="{{ row.polN.blur }}" onFocus="{{ m.admin.selAll }}"><input class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="0" max="999" aria-label="Calls a day for {{ row.name }}" value="{{ row.callsN.val }}" onChange="{{ row.callsN.on }}" onBlur="{{ row.callsN.blur }}" onFocus="{{ m.admin.selAll }}"></div></sc-for>
+<div class="m-admin-tg-row -total"><span>Team</span><span class="m-num">{{ adm.tgTotPol }}</span><span class="m-num">{{ adm.tgTotCalls }}</span></div>
+</div>
+</section>
+
+<section class="m-card m-admin-card" aria-labelledby="madAllocH">
+<div class="m-admin-sec -in"><h2 class="m-h2" id="madAllocH">Who gets a new lead</h2><p class="m-small">Checked from the top. The first rule that fits decides.</p></div>
+<ol class="m-admin-rules">
+<sc-for list="{{ m.admin.rules }}" as="rule"><li>
+<sc-if value="{{ rule.hasSwitch }}"><button type="button" class="m-admin-rule -tap" role="switch" aria-checked="{{ rule.press }}" onClick="{{ rule.flip }}"><span class="m-admin-n" aria-hidden="true">{{ rule.n }}</span><span class="m-grow m-admin-rule-text"><strong>{{ rule.k }}</strong><span class="m-small">{{ rule.d }}</span></span><span class="m-fixed m-admin-sw-wrap" aria-hidden="true"><span class="m-admin-sw"></span><span class="m-tiny m-admin-sw-text">{{ rule.stateText }}</span></span></button></sc-if>
+<sc-if value="{{ rule.hasSwitch }}" not><div class="m-admin-rule"><span class="m-admin-n" aria-hidden="true">{{ rule.n }}</span><span class="m-grow m-admin-rule-text"><strong>{{ rule.k }}</strong><span class="m-small">{{ rule.d }}</span></span><span class="m-tag m-fixed">Always on</span></div></sc-if>
+</li></sc-for>
+</ol>
+<div class="m-admin-num"><label class="m-grow" for="madCap">Daily cap of new leads for each caller</label><input id="madCap" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="500" value="{{ m.admin.capN.val }}" onChange="{{ m.admin.capN.on }}" onBlur="{{ m.admin.capN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">leads</span></div>
+</section>
+
+<section class="m-card m-admin-card" aria-labelledby="madAiH">
+<h2 class="m-h2" id="madAiH">AI calling</h2>
+<div class="m-admin-num -first"><label class="m-grow" for="madAiDays">AI picks up a call that has been pending for more than</label><input id="madAiDays" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="15" value="{{ m.admin.aiDaysN.val }}" onChange="{{ m.admin.aiDaysN.on }}" onBlur="{{ m.admin.aiDaysN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">days</span></div>
+<p class="m-small">The caller stays the owner.</p>
+<fieldset class="m-admin-fs"><legend>AI makes the first call for</legend>
+<sc-for list="{{ adm.aiFirst }}" as="aif"><label class="m-check m-admin-check"><input type="checkbox" checked="{{ aif.checked }}" onChange="{{ aif.flip }}"><span>{{ aif.label }}</span></label></sc-for>
+</fieldset>
+<p class="m-small">AI follows the same calling hours and do-not-call rules as callers.</p>
+</section>
+
+<section class="m-card m-admin-card" aria-labelledby="madEscH">
+<h2 class="m-h2" id="madEscH">Tell the team lead when</h2>
+<div class="m-admin-num -first"><label class="m-grow" for="madEsc">A lead expires within this many days and nobody has spoken to the customer</label><input id="madEsc" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="30" value="{{ m.admin.escDaysN.val }}" onChange="{{ m.admin.escDaysN.on }}" onBlur="{{ m.admin.escDaysN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">days</span></div>
+<div class="m-admin-num"><label class="m-grow" for="madCb">A promised callback is late by</label><input id="madCb" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="5" max="240" value="{{ m.admin.cbMinN.val }}" onChange="{{ m.admin.cbMinN.on }}" onBlur="{{ m.admin.cbMinN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">minutes</span></div>
+</section>
+</sc-if>
+</sc-if>
+
+<!-- ============ Messages (owned by another part) ============ -->
+<sc-if value="{{ adm.msgShow }}" eq="flex">
+<!--@admin-messages-->
+</sc-if>
+
+<!-- ============ Activity ============ -->
+<sc-if value="{{ adm.logShow }}" eq="flex">
+<section class="m-stack" aria-labelledby="madLogH">
+<div class="m-admin-sec"><h2 class="m-h2" id="madLogH">Activity</h2><p class="m-small">Every change made in Admin, newest first.</p></div>
+<sc-if value="{{ m.admin.logEmpty }}"><p class="m-empty">No changes yet. Status changes, lead moves, targets and rules show up here.</p></sc-if>
+<sc-if value="{{ m.admin.logEmpty }}" not>
+<ol class="m-card m-admin-log">
+<sc-for list="{{ adm.log }}" as="ent"><li class="m-admin-ent"><span class="m-admin-dot" aria-hidden="true"></span><div class="m-admin-ent-main"><p class="m-admin-ent-t m-wrap">{{ ent.t }}</p><p class="m-tiny"><strong>{{ ent.by }}</strong> · {{ ent.when }}</p></div></li></sc-for>
+</ol>
+</sc-if>
+</section>
+</sc-if>

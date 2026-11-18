@@ -1,1 +1,188 @@
-<!-- lead-quotes: phone layout (to be built) -->
+<!-- Lead page, Quotes tab: pick the insurer quote to send, edit or add a quote, coupons, send. Second view: last year's policy. -->
+<div class="m-seg m-quotes-view" role="tablist" aria-label="Quotes and previous policy">
+<sc-for list="{{ qvTabs }}" as="vt"><button type="button" role="tab" aria-selected="{{ vt.sel }}" onClick="{{ vt.pick }}">{{ vt.label }}</button></sc-for>
+</div>
+
+<sc-if value="{{ m.quotes.isQuotes }}">
+
+<sc-if value="{{ m.quotes.chipsShow }}">
+<div class="m-scroller m-quotes-chips" role="tablist" aria-label="Insurers for this lead">
+<sc-for list="{{ m.quotes.tabs }}" as="qt"><button type="button" role="tab" class="m-quotes-chip" aria-selected="{{ qt.sel }}" onClick="{{ qt.pick }}"><span class="m-quotes-chip-n"><span class="m-quotes-dot" aria-hidden="true" style="background: {{ qt.dot }}"></span>{{ qt.name }}</span><span class="m-quotes-chip-a m-num {{ qt.amtCls }}">{{ qt.amt }}</span></button></sc-for>
+<sc-if value="{{ m.quotes.addShow }}"><button type="button" class="m-quotes-chip -add" onClick="{{ m.quotes.addTab }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add quote</button></sc-if>
+</div>
+</sc-if>
+
+<!-- Selected quote: read-only summary -->
+<sc-if value="{{ m.quotes.summary }}">
+<section class="m-card m-quotes-card" role="tabpanel" aria-label="{{ ed.title }} quote">
+<div class="m-inline -between -top">
+<div class="m-grow"><h2 class="m-h2 m-wrap">{{ ed.title }}</h2><p class="m-small" style="color: {{ ed.statusFg }}">{{ ed.status }}</p></div>
+<span class="m-tag m-fixed {{ m.quotes.card.kindCls }}">{{ m.quotes.card.kind }}</span>
+</div>
+<sc-if value="{{ m.quotes.card.hasAmt }}">
+<div class="m-quotes-total"><span class="m-quotes-total-v m-num">{{ m.quotes.card.total }}</span><span class="m-small">Premium incl. GST</span></div>
+</sc-if>
+<sc-if value="{{ m.quotes.card.noAmt }}">
+<div class="m-quotes-blank"><strong class="m-h3">No premium yet</strong><span class="m-small">Get the figures from the insurer's portal, then fill them in here.</span></div>
+</sc-if>
+<sc-if value="{{ m.quotes.cmpShow }}"><div class="m-banner m-quotes-note {{ m.quotes.cmpCls }}">{{ ed.cmp }}</div></sc-if>
+<sc-if value="{{ m.quotes.aiInCard }}">
+<sc-if value="{{ ed.aiChecked }}" not><div class="m-banner -warn m-quotes-note" role="note"><label class="m-check m-quotes-tick"><input type="checkbox" checked="{{ ed.aiChecked }}" onChange="{{ m.quotes.tickAndSave }}"><span><strong>AI read these figures and can misread them.</strong> I have checked each one against the insurer's quote.</span></label></div></sc-if>
+<sc-if value="{{ ed.aiChecked }}"><label class="m-check m-quotes-tick -done"><input type="checkbox" checked="{{ ed.aiChecked }}" onChange="{{ m.quotes.tickAndSave }}"><span>Read by AI. I have checked each figure against the insurer's quote.</span></label></sc-if>
+</sc-if>
+<sc-if value="{{ m.quotes.aiRo }}"><div class="m-banner -warn m-quotes-note">AI read these figures and nobody has checked them yet.</div></sc-if>
+<sc-if value="{{ m.quotes.card.hasAmt }}">
+<dl class="m-quotes-kv">
+<div class="m-kv"><dt>IDV</dt><dd class="m-num">{{ m.quotes.card.idv }}</dd></div>
+<div class="m-kv"><dt>NCB</dt><dd class="m-num">{{ m.quotes.card.ncb }}</dd></div>
+<div class="m-kv"><dt>Add-ons</dt><dd>{{ m.quotes.card.addons }}</dd></div>
+</dl>
+<sc-if value="{{ m.quotes.ncbPlain }}"><div class="m-banner m-quotes-note m-quotes-ncb {{ m.quotes.ncbCls }}">{{ ed.ncbText }}</div></sc-if>
+<sc-if value="{{ m.quotes.ncbAsk }}"><button type="button" class="m-banner m-quotes-note m-quotes-ncb -ask" onClick="{{ m.quotes.toClaims }}"><span class="m-grow">{{ ed.ncbText }} <span class="m-quotes-ncb-go">Record the answer</span></span><svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button></sc-if>
+<h3 class="m-label m-quotes-sub">Premium split</h3>
+<dl class="m-quotes-split">
+<sc-for list="{{ m.quotes.card.lines }}" as="line"><div><dt>{{ line.k }}</dt><dd class="m-num">{{ line.v }}</dd></div></sc-for>
+<div class="-total"><dt>Premium incl. GST</dt><dd class="m-num">{{ m.quotes.card.total }}</dd></div>
+</dl>
+<h3 class="m-label m-quotes-sub">Payment link</h3>
+<sc-if value="{{ m.quotes.card.hasLink }}">
+<div class="m-quotes-link"><div class="m-grow"><span class="m-quotes-url">{{ m.quotes.card.link }}</span><span class="m-tiny">{{ m.quotes.card.linkNote }}</span></div><button type="button" class="m-btn -sm m-quotes-copy m-fixed" onClick="{{ m.quotes.card.copy }}" aria-label="Copy the payment link"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V6a2 2 0 0 1 2-2h8"></path></svg><span aria-live="polite">{{ m.quotes.card.copyText }}</span></button></div>
+</sc-if>
+<sc-if value="{{ m.quotes.card.noLink }}"><p class="m-small">No payment link on this quote yet.</p></sc-if>
+<sc-if value="{{ m.quotes.card.source }}"><p class="m-tiny">{{ m.quotes.card.source }}</p></sc-if>
+</sc-if>
+<sc-if value="{{ m.quotes.canStartEdit }}">
+<button type="button" class="m-btn -block {{ m.quotes.editCls }}" onClick="{{ m.quotes.startEdit }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path><path d="M13.5 6.5l4 4"></path></svg>{{ m.quotes.editLabel }}</button>
+</sc-if>
+</section>
+</sc-if>
+
+<!-- A lead without quotes, opened view-only -->
+<sc-if value="{{ m.quotes.emptyRo }}">
+<div class="m-empty"><strong class="m-h3">No quotes on this lead yet</strong><br>This lead is view only for you, so you cannot add one.</div>
+</sc-if>
+
+<!-- Edit a manual quote, or add a new one -->
+<sc-if value="{{ m.quotes.form }}">
+<section class="m-card m-quotes-card m-quotes-form" role="tabpanel" aria-label="{{ m.quotes.formTitle }}" onPaste="{{ ed.onPaste }}">
+<div class="m-inline -between -top">
+<div class="m-grow"><h2 class="m-h2 m-wrap">{{ m.quotes.formTitle }}</h2><sc-if value="{{ m.quotes.editing }}"><p class="m-small" style="color: {{ ed.statusFg }}">{{ ed.status }}</p></sc-if><sc-if value="{{ m.quotes.adding }}"><p class="m-small">Pick the insurer, then add the figures.</p></sc-if></div>
+<sc-if value="{{ m.quotes.adding }}"><span class="m-tag -orange m-fixed">Not saved yet</span></sc-if>
+<sc-if value="{{ m.quotes.dirty }}"><span class="m-tag -orange m-fixed">Unsaved changes</span></sc-if>
+<sc-if value="{{ m.quotes.closeShow }}"><span class="m-tag m-fixed">Editing</span></sc-if>
+</div>
+
+<sc-if value="{{ m.quotes.adding }}">
+<div class="m-field"><label for="iqIns">Insurance company</label><select id="iqIns" class="m-select" onChange="{{ ed.onIns }}"><sc-for list="{{ ed.insOpts }}" as="opt"><option value="{{ opt.label }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<sc-if value="{{ m.quotes.otherShow }}"><div class="m-field"><label for="iqInsO">Company name</label><input id="iqInsO" class="m-input" type="text" autocomplete="off" value="{{ ed.insOther }}" onChange="{{ ed.onInsOther }}" placeholder="Type the insurer"></div></sc-if>
+<sc-if value="{{ m.quotes.getLiveShow }}">
+<button type="button" class="m-btn -block m-quotes-live" onClick="{{ m.quotes.getLive }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 14h6l-1 7 8-11h-6z"></path></svg>Get live quote</button>
+<p class="m-quotes-or" aria-hidden="true"><span>or add an insurer's quote</span></p>
+</sc-if>
+</sc-if>
+
+<input id="iqpdf" class="m-sr" type="file" accept=".pdf,application/pdf,image/*" onChange="{{ ed.onPdfPick }}" tabindex="-1" aria-hidden="true">
+<sc-if value="{{ m.quotes.srcNew }}">
+<div class="m-quotes-src">
+<p class="m-small">Let AI read the quote, or type the figures below.</p>
+<div class="m-grid2">
+<label for="iqpdf" class="m-btn m-quotes-way"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>Photo or file</label>
+<button type="button" class="m-btn m-quotes-way" aria-expanded="{{ m.quotes.pasteStr }}" aria-controls="iqPasteBox" onClick="{{ m.quotes.togglePaste }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="5" width="12" height="16" rx="2"></rect><path d="M9 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"></path><path d="M9 11h6M9 15h4"></path></svg>Paste text</button>
+</div>
+<sc-if value="{{ m.quotes.pasteOpen }}">
+<div class="m-field" id="iqPasteBox"><label for="iqPaste">Quote text from an email or WhatsApp</label><textarea id="iqPaste" class="m-textarea" value="{{ ed.pasteText }}" onChange="{{ ed.onPasteText }}" placeholder="Press and hold here, then tap Paste"></textarea><button type="button" class="m-btn -soft -block" disabled="{{ ed.noPaste }}" onClick="{{ ed.extractText }}">Read the pasted text</button></div>
+</sc-if>
+</div>
+</sc-if>
+<sc-if value="{{ m.quotes.srcSmall }}">
+<label for="iqpdf" class="m-btn -block m-quotes-way"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>Fill from a photo or file</label>
+</sc-if>
+<sc-if value="{{ m.quotes.busy }}"><div class="m-banner -ai m-quotes-note" role="status"><span class="m-quotes-spin" aria-hidden="true"></span><span class="m-grow m-wrap">Reading {{ ed.pdfName }}…</span></div></sc-if>
+<sc-if value="{{ m.quotes.done }}"><div class="m-banner -ai m-quotes-note m-quotes-read" role="status"><div class="m-grow"><strong class="m-wrap">{{ ed.pdfName }} · read by AI</strong><span>{{ ed.foundLine }}</span></div><button type="button" class="m-link m-fixed" onClick="{{ ed.clearSrc }}">Use another</button></div></sc-if>
+<sc-if value="{{ m.quotes.bad }}"><div class="m-banner -bad m-quotes-note m-quotes-read" role="alert"><div class="m-grow"><strong class="m-wrap">{{ ed.pdfName }} cannot be read</strong><span>Use a PDF, a photo or a screenshot.</span></div><button type="button" class="m-link m-fixed" onClick="{{ ed.clearSrc }}">Try again</button></div></sc-if>
+<sc-if value="{{ m.quotes.aiInForm }}"><div class="m-banner -warn m-quotes-note" role="note"><label class="m-check m-quotes-tick"><input type="checkbox" checked="{{ ed.aiChecked }}" onChange="{{ ed.onAiChecked }}"><span><strong>AI can misread figures.</strong> I have checked each one against the insurer's quote.</span></label></div></sc-if>
+
+<div class="m-field"><label for="iqTot">Premium incl. GST</label><div class="m-quotes-money -big"><span aria-hidden="true">₹</span><input id="iqTot" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="done" value="{{ ed.total }}" onChange="{{ ed.onTotal }}" placeholder="e.g. 18,920"></div></div>
+<sc-if value="{{ m.quotes.cmpShow }}"><div class="m-banner m-quotes-note {{ m.quotes.cmpCls }}">{{ ed.cmp }}</div></sc-if>
+
+<div class="m-field"><label for="iqLink">Payment link</label><input id="iqLink" class="m-input" type="url" inputmode="url" autocomplete="off" autocapitalize="off" value="{{ ed.link }}" onChange="{{ ed.onLink }}" placeholder="Paste from the insurer's portal"><span class="m-hint">{{ ed.linkPreview }}</span></div>
+<div class="m-field"><label for="iqDur">Link valid for</label><select id="iqDur" class="m-select" onChange="{{ ed.onDur }}"><sc-for list="{{ ed.durOpts }}" as="opt"><option value="{{ opt.v }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+
+<div class="m-grid2">
+<div class="m-field"><label for="iqNcb">NCB</label><select id="iqNcb" class="m-select" onChange="{{ ed.onNcb }}"><sc-for list="{{ ed.ncbOpts }}" as="opt"><option value="{{ opt.label }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="iqIdv">IDV (₹)</label><input id="iqIdv" class="m-input m-num" type="text" inputmode="numeric" autocomplete="off" value="{{ ed.idvText }}" onChange="{{ ed.onIdvText }}" onBlur="{{ ed.onIdvBlur }}"></div>
+</div>
+<div class="m-field m-quotes-range"><label for="iqIdvR">IDV range · {{ ed.idvRange }}</label><input id="iqIdvR" type="range" min="{{ ed.idvMin }}" max="{{ ed.idvMax }}" step="1000" value="{{ ed.idvVal }}" onChange="{{ ed.onIdv }}"></div>
+<sc-if value="{{ m.quotes.ncbShow }}">
+<div class="m-banner m-quotes-note m-quotes-ncb {{ m.quotes.ncbCls }}"><span class="m-grow">{{ ed.ncbText }}</span></div>
+</sc-if>
+<div class="m-field"><label for="iqAdd">Add-ons included</label><input id="iqAdd" class="m-input" type="text" autocomplete="off" value="{{ ed.addons }}" onChange="{{ ed.onAddons }}" placeholder="e.g. Zero dep, RSA"></div>
+
+<h3 class="m-label m-quotes-sub">Premium split</h3>
+<div class="m-quotes-amts">
+<sc-for list="{{ ed.rows }}" as="row"><div class="m-quotes-amt"><label for="{{ row.id }}">{{ row.k }}</label><div class="m-quotes-money"><span aria-hidden="true">{{ row.sign }}₹</span><input id="{{ row.id }}" type="text" inputmode="numeric" autocomplete="off" value="{{ row.val }}" onChange="{{ row.on }}" placeholder="0"></div></div></sc-for>
+<div class="m-quotes-amt"><span>GST 18% (worked out)</span><strong class="m-num">{{ ed.gst }}</strong></div>
+</div>
+<p class="m-hint">{{ ed.splitNote }}</p>
+</section>
+</sc-if>
+
+<!-- Coupons -->
+<sc-if value="{{ m.quotes.cpShow }}">
+<section class="m-card -nopad m-quotes-cp" aria-label="Coupons">
+<button type="button" class="m-item" aria-expanded="{{ cpOpenStr }}" aria-controls="mqCp" onClick="{{ cpToggle }}"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"></path><circle cx="8" cy="8" r="1.4"></circle></svg><span class="m-item-main"><span class="m-item-title">Coupons</span><span class="m-item-sub">{{ cpSummary }}</span></span><svg class="m-chev m-quotes-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{ m.quotes.cpOpen }}">
+<div class="m-quotes-cp-body" id="mqCp" role="group" aria-label="Choose coupons">
+<label class="m-check"><input type="checkbox" checked="{{ cpNoneOn }}" onChange="{{ cpNonePick }}"><span>No coupon</span></label>
+<sc-for list="{{ m.quotes.cpOpts }}" as="cpn"><div class="m-quotes-cp-row"><label class="m-check"><input type="checkbox" checked="{{ cpn.on }}" onChange="{{ cpn.toggle }}"><span>{{ cpn.label }}</span></label><sc-if value="{{ cpn.expOn }}"><div class="m-quotes-cp-exp"><label for="{{ cpn.id }}">Valid till</label><input id="{{ cpn.id }}" class="m-input" type="date" min="{{ cpn.min }}" value="{{ cpn.exp }}" onChange="{{ cpn.onExp }}"></div></sc-if></div></sc-for>
+<button type="button" class="m-btn -soft -block" onClick="{{ cpToggle }}">Done</button>
+</div>
+</sc-if>
+</section>
+</sc-if>
+<sc-if value="{{ m.quotes.cpRo }}"><p class="m-small m-quotes-cpro"><strong class="m-strong">Coupons.</strong> {{ sel.couponNote }}</p></sc-if>
+
+<!-- Bottom bar: send the selected quote, or save what is being edited -->
+<div class="m-quotes-bar">
+<sc-if value="{{ m.quotes.sendShow }}">
+<sc-if value="{{ m.quotes.sendOk }}"><p class="m-quotes-bar-line">{{ send.line }}</p></sc-if>
+<sc-if value="{{ m.quotes.sendCant }}"><p class="m-quotes-bar-line -cant">{{ send.line }}</p></sc-if>
+<sc-if value="{{ m.quotes.warn }}"><p class="m-quotes-bar-warn"><svg class="m-fixed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg><span>{{ send.warn }}</span></p></sc-if>
+<button type="button" class="m-btn -wa -block {{ m.quotes.sendOff }}" aria-disabled="{{ send.cant }}" onClick="{{ m.quotes.sendTap }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path></svg><span class="m-quotes-send-t">{{ send.label }}</span></button>
+</sc-if>
+<sc-if value="{{ m.quotes.form }}">
+<sc-if value="{{ m.quotes.barNote }}"><p class="m-quotes-bar-line -cant">{{ send.line }}</p></sc-if>
+<div class="m-inline">
+<sc-if value="{{ m.quotes.cancelNewShow }}"><button type="button" class="m-btn" onClick="{{ m.quotes.cancelNew }}">Cancel</button></sc-if>
+<sc-if value="{{ m.quotes.discardShow }}"><button type="button" class="m-btn" onClick="{{ m.quotes.discard }}">Discard</button></sc-if>
+<sc-if value="{{ m.quotes.closeShow }}"><button type="button" class="m-btn" onClick="{{ m.quotes.closeEdit }}">Close</button></sc-if>
+<button type="button" class="m-btn -primary -grow {{ m.quotes.saveOff }}" aria-disabled="{{ ed.saveCant }}" onClick="{{ m.quotes.save }}">{{ m.quotes.saveLabel }}</button>
+</div>
+</sc-if>
+</div>
+
+</sc-if>
+
+<!-- Previous policy -->
+<sc-if value="{{ m.quotes.isPrev }}">
+<sc-if value="{{ m.quotes.ppKnown }}">
+<section class="m-card m-quotes-card" role="tabpanel" aria-label="Previous policy">
+<div class="m-inline -between -top">
+<div class="m-grow"><h2 class="m-h2 m-wrap">{{ pp.ins }}</h2><p class="m-small">{{ pp.typeLine }}</p></div>
+<sc-if value="{{ m.quotes.ppFile }}"><span class="m-tag -green m-fixed">Policy copy on file</span></sc-if>
+<sc-if value="{{ m.quotes.ppNoFile }}"><span class="m-tag -orange m-fixed">No policy copy on file</span></sc-if>
+</div>
+<div class="m-quotes-link"><div class="m-grow"><span class="m-tiny">Policy number</span><span class="m-quotes-pol m-num">{{ pp.polNo }}</span></div><button type="button" class="m-btn -sm m-quotes-copy m-fixed" onClick="{{ pp.copy }}" aria-label="{{ pp.copyLabel }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V6a2 2 0 0 1 2-2h8"></path></svg><span aria-live="polite">{{ m.quotes.ppCopyText }}</span></button></div>
+<sc-if value="{{ m.quotes.ppCmp }}"><div class="m-banner m-quotes-note {{ m.quotes.ppCmpCls }}">{{ pp.cmp }}</div></sc-if>
+</section>
+<section class="m-card m-quotes-card" aria-label="Last year's policy details">
+<h3 class="m-label">Last year's policy</h3>
+<dl class="m-quotes-facts">
+<sc-for list="{{ pp.tiles }}" as="tile"><div><dt>{{ tile.k }}</dt><dd><strong>{{ tile.v }}</strong><span>{{ tile.sub }}</span></dd></div></sc-for>
+</dl>
+</section>
+</sc-if>
+<sc-if value="{{ m.quotes.ppUnknown }}">
+<div class="m-empty" role="tabpanel" aria-label="Previous policy"><strong class="m-h3">No previous policy on file</strong><br>Ask for the current insurer, the end date, last year's premium and any claim. A photo of the policy copy fills these in.</div>
+</sc-if>
+</sc-if>

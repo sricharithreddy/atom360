@@ -1,1 +1,122 @@
-<!-- outcome: phone layout (to be built) -->
+<!-- Call outcome sheet content: scrolling body + fixed foot. Head is rendered by lead.html. -->
+<sc-if value="{{ m.out.viewOnly }}">
+<div class="m-sheet-body">
+<div class="m-banner -info"><div class="m-stack -tight"><strong class="m-out-bt">View only</strong><span>{{ co.blockWhy }}</span><span>You cannot record a call outcome for this lead.</span></div></div>
+</div>
+<div class="m-sheet-foot"><button type="button" class="m-btn -block" onClick="{{ m.out.close }}">Close</button></div>
+</sc-if>
+<sc-if value="{{ m.out.canEdit }}">
+<div class="m-sheet-body m-out">
+
+<sc-if value="{{ m.out.ready }}"><p class="m-out-state"><span class="m-out-dot" aria-hidden="true"></span>{{ co.state }}</p></sc-if>
+<sc-if value="{{ m.out.live }}">
+<div class="m-banner -good m-out-call" role="status">
+<div class="m-inline"><span class="m-live-dot m-out-livedot" aria-hidden="true"></span><strong class="m-grow m-out-bt">{{ co.liveText }}</strong><button type="button" class="m-btn -danger m-out-end" onClick="{{ co.endCall }}">End call</button></div>
+<span>Say first: “This call is recorded for quality and training.”</span>
+</div>
+</sc-if>
+<sc-if value="{{ m.out.ended }}">
+<div class="m-banner -warn m-out-call" role="status"><strong class="m-out-bt">{{ co.endedText }}</strong><span>Record the outcome now, or close this and do it later.</span></div>
+</sc-if>
+<sc-if value="{{ m.out.blocked }}">
+<div class="m-banner -bad m-out-call"><strong class="m-out-bt">{{ co.state }} · you cannot call this lead</strong><span>{{ co.blockWhy }}</span></div>
+</sc-if>
+<sc-if value="{{ m.out.other }}">
+<div class="m-banner -good m-out-call"><span>{{ co.otherText }}</span><button type="button" class="m-btn -sm m-out-back" onClick="{{ m.out.backToCall }}">Back to the call</button></div>
+</sc-if>
+<sc-if value="{{ m.out.pend }}"><div class="m-banner -warn">{{ co.pendText }}</div></sc-if>
+
+<div class="m-out-sec" role="group" aria-labelledby="moutS1">
+<h3 class="m-h3" id="moutS1">Did the customer pick up?</h3>
+<div class="m-grid2">
+<button type="button" class="m-out-pick" aria-pressed="{{ co.cPress }}" onClick="{{ pickConn }}"><span class="m-out-pick-t"><span class="m-out-pip -green" aria-hidden="true"></span>Connected</span><span class="m-out-pick-s">Customer picked up</span></button>
+<button type="button" class="m-out-pick" aria-pressed="{{ co.nPress }}" onClick="{{ pickNc }}"><span class="m-out-pick-t"><span class="m-out-pip -orange" aria-hidden="true"></span>Not connected</span><span class="m-out-pick-s">No one picked up</span></button>
+</div>
+<sc-if value="{{ m.out.noPick }}"><p class="m-hint">Pick what happened. The lead's next step is set for you.</p></sc-if>
+</div>
+
+<sc-if value="{{ m.out.conn }}">
+<div class="m-out-sec" role="group" aria-labelledby="moutS2">
+<h3 class="m-h3" id="moutS2">What happened on the call?</h3>
+<div class="m-grid2">
+<sc-for list="{{ m.out.opts }}" as="opt"><button type="button" class="m-out-pick -tall {{ opt.cls }}" aria-pressed="{{ opt.press }}" onClick="{{ opt.pick }}"><span class="m-out-pick-t">{{ opt.label }}</span><span class="m-out-pick-s">{{ opt.effect }}</span></button></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ m.out.hasReason }}">
+<div class="m-out-sec" role="group" aria-labelledby="moutS3">
+<h3 class="m-h3" id="moutS3">{{ co.ddLabel }}</h3>
+<div class="m-out-chips">
+<sc-for list="{{ m.out.reasons }}" as="rsn"><button type="button" class="m-chip m-out-chip" aria-pressed="{{ rsn.press }}" onClick="{{ rsn.pick }}">{{ rsn.label }}</button></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ m.out.elseOn }}">
+<div class="m-out-sub">
+<div class="m-field"><label for="moutLw">Renewed through</label><select id="moutLw" class="m-select" onChange="{{ co.onLw }}"><sc-for list="{{ co.lwOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="moutLi">Insurer</label><select id="moutLi" class="m-select" onChange="{{ co.onLins }}"><sc-for list="{{ co.linsOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="moutLa">Premium they paid (optional)</label><input id="moutLa" class="m-input" type="text" inputmode="numeric" autocomplete="off" value="{{ co.lamt }}" onChange="{{ co.onLamt }}" placeholder="e.g. 16900"></div>
+</div>
+</sc-if>
+<sc-if value="{{ m.out.soldOn }}">
+<div class="m-out-sub">
+<div class="m-field"><label for="moutNn">New owner’s name (optional)</label><input id="moutNn" class="m-input" type="text" autocomplete="off" value="{{ co.nname }}" onChange="{{ co.onNname }}"></div>
+<div class="m-field"><label for="moutNm">New owner’s mobile (optional)</label><input id="moutNm" class="m-input" type="text" inputmode="numeric" autocomplete="off" maxlength="10" value="{{ co.nmob }}" onChange="{{ co.onNmob }}" placeholder="10 digits"></div>
+</div>
+</sc-if>
+<sc-if value="{{ m.out.wrongOn }}">
+<div class="m-out-sub">
+<div class="m-field"><label for="moutCn">Correct number, if they gave one</label><input id="moutCn" class="m-input" type="text" inputmode="numeric" autocomplete="off" maxlength="10" value="{{ co.cnum }}" onChange="{{ co.onCnum }}" placeholder="10 digits"></div>
+</div>
+</sc-if>
+<sc-if value="{{ m.out.dncOn }}">
+<div class="m-out-sub" role="group" aria-labelledby="moutDn">
+<span class="m-field-label m-out-sublabel" id="moutDn">What should stop?</span>
+<div class="m-out-col">
+<sc-for list="{{ m.out.dncOpts }}" as="opt"><button type="button" class="m-out-pick -row" aria-pressed="{{ opt.press }}" onClick="{{ opt.pick }}"><span class="m-out-pick-t">{{ opt.label }}</span></button></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ m.out.linkOn }}">
+<div class="m-out-sec">
+<div class="m-inline -between"><label class="m-h3" for="moutPl">Payment link</label><span class="m-tiny m-clip">{{ co.linkSrc }}</span></div>
+<div class="m-inline"><input id="moutPl" class="m-input m-grow {{ m.out.linkCls }}" type="text" inputmode="url" autocomplete="off" autocapitalize="off" value="{{ co.linkVal }}" onChange="{{ co.onLink }}" placeholder="Add link"><sc-if value="{{ m.out.linkHas }}"><button type="button" class="m-btn m-fixed m-out-copy" aria-label="Copy payment link" onClick="{{ co.linkCopy }}">{{ co.linkCopyText }}</button></sc-if></div>
+<sc-if value="{{ m.out.linkEmpty }}"><p class="m-out-warn">No link yet. Paste the payment link from the insurer's portal. You can still save.</p></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ m.out.hasWhen }}">
+<div class="m-out-sec" role="group" aria-labelledby="moutS4">
+<h3 class="m-h3" id="moutS4">{{ co.whenLabel }}</h3>
+<div class="m-grid3" role="group" aria-label="Quick choices">
+<sc-for list="{{ m.out.quick }}" as="qk"><button type="button" class="m-out-pick -quick" aria-pressed="{{ qk.press }}" onClick="{{ qk.pick }}"><span class="m-out-pick-t">{{ qk.label }}</span><span class="m-out-pick-s">{{ qk.sub }}</span></button></sc-for>
+</div>
+<div class="m-out-dt">
+<div class="m-field"><label for="moutDt">Or pick a date</label><input id="moutDt" class="m-input" type="date" min="{{ co.dateMin }}" value="{{ co.dateVal }}" onChange="{{ co.onDate }}"></div>
+<div class="m-field"><label for="moutTm">Time</label><select id="moutTm" class="m-select" onChange="{{ co.onTime }}"><sc-for list="{{ co.timeOpts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
+</div>
+<p class="m-out-when"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span>{{ co.whenText }}</span></p>
+</div>
+</sc-if>
+
+<sc-if value="{{ m.out.hasNote }}">
+<div class="m-field"><label for="moutNt">Remark (optional)</label><textarea id="moutNt" class="m-textarea m-out-note" rows="2" value="{{ co.note }}" onChange="{{ co.onNote }}" placeholder="Anything the next caller should know"></textarea></div>
+</sc-if>
+
+<sc-if value="{{ m.out.hasEffect }}">
+<div class="m-out-effect"><span class="m-label">When you save</span><p>{{ co.effect }}</p>
+<sc-if value="{{ m.out.manual }}"><p>You did not call from here, so this is saved as a manual entry.</p></sc-if>
+<sc-if value="{{ m.out.attr }}"><p>{{ ow.attrText }}</p></sc-if>
+</div>
+</sc-if>
+
+</div>
+<div class="m-sheet-foot m-out-foot">
+<sc-if value="{{ m.out.canSave }}"><p class="m-out-sum" aria-live="polite"><span class="m-clip2">{{ m.out.sum }}</span><sc-if value="{{ m.out.endsCall }}"><span>Saving also ends the call.</span></sc-if><sc-if value="{{ m.out.irreversible }}"><span class="m-out-undo">This cannot be undone. You will be asked to confirm.</span></sc-if></p></sc-if>
+<sc-if value="{{ m.out.canSave }}" not><p class="m-out-sum">{{ m.out.saveWhy }}</p></sc-if>
+<button type="button" class="m-btn -block {{ m.out.saveCls }}" disabled="{{ m.out.cantSave }}" onClick="{{ m.out.save }}">Save and next lead</button>
+</div>
+</sc-if>

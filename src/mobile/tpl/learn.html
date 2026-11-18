@@ -1,1 +1,87 @@
-<!-- learn: phone layout (to be built) -->
+<!-- Learn: coaching, objection playbook, lessons, what's new. -->
+
+<div class="m-seg m-learn-tabs" role="tablist" aria-label="Learn views">
+<sc-for list="{{ m.learn.tabs }}" as="tb"><button type="button" role="tab" aria-selected="{{ tb.selected }}" onClick="{{ tb.pick }}"><span class="m-sr">{{ tb.full }}</span><span aria-hidden="true">{{ tb.label }}</span><sc-if value="{{ tb.hasBadge }}"><span class="m-count -alert">{{ tb.badge }}<span class="m-sr"> {{ tb.badgeNote }}</span></span></sc-if></button></sc-for>
+</div>
+
+<sc-if value="{{ m.learn.isCoach }}">
+<section class="m-learn-focus" aria-label="Focus this week">
+<p class="m-learn-focus-k"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg>AI coach</p>
+<h2 class="m-h2">{{ ln.focusTitle }}</h2>
+<p class="m-learn-focus-b">{{ ln.focusBody }}</p>
+<button type="button" class="m-btn -primary -block" onClick="{{ ln.openPlay }}">Open the playbook<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</section>
+
+<section class="m-card m-stack" aria-labelledby="mlnSk">
+<div class="m-stack -tight"><h2 class="m-h2" id="mlnSk">{{ ln.skillTitle }}</h2><p class="m-small">{{ ln.skillNote }}</p></div>
+<ul class="m-learn-skills">
+<sc-for list="{{ ln.skills }}" as="sk"><li class="m-learn-skill"><span class="m-learn-skill-k">{{ sk.k }}</span><span class="m-learn-skill-sub">{{ sk.sub }}</span><strong class="m-learn-skill-v m-num" style="color: {{ sk.fg }}">{{ sk.v }}</strong><span class="m-track m-learn-skill-bar" aria-hidden="true"><span style="width: {{ sk.w }}; background: {{ sk.fg }}"></span></span></li></sc-for>
+</ul>
+</section>
+
+<div class="m-sec"><h2 class="m-h2">{{ ln.revTitle }}</h2></div>
+<sc-for list="{{ ln.reviews }}" as="rv"><article class="m-card m-stack m-learn-rev">
+<div class="m-inline -top"><div class="m-grow m-stack -tight"><h3 class="m-h3 m-wrap">{{ rv.who }}</h3><p class="m-small">{{ rv.meta }}</p></div><p class="m-learn-score m-fixed" style="color: {{ rv.fg }}; border-color: {{ rv.fg }}"><span class="m-sr">AI score </span><strong class="m-num">{{ rv.score }}</strong><span class="m-learn-score-of">of 100</span></p></div>
+<div class="m-learn-fb -good"><p class="m-learn-fb-k"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Did well</p><p class="m-learn-fb-t">{{ rv.good }}</p></div>
+<div class="m-learn-fb -try"><p class="m-learn-fb-k"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>Try next time</p><p class="m-learn-fb-t">{{ rv.tryN }}</p></div>
+</article></sc-for>
+
+<sc-if value="{{ m.learn.isTeam }}">
+<div class="m-sec m-learn-teamhead"><div class="m-stack -tight"><h2 class="m-h2">Skills by caller</h2><p class="m-small">Each caller's lowest score is marked, so you know what to coach.</p></div></div>
+<sc-for list="{{ m.learn.team }}" as="tm"><article class="m-card m-stack">
+<div class="m-stack -tight"><h3 class="m-h3">{{ tm.name }}</h3><sc-if value="{{ tm.hasLow }}"><p class="m-small">Coach on: <strong class="m-learn-coachon">{{ tm.lowLabel }} ({{ tm.lowV }})</strong></p></sc-if></div>
+<dl class="m-learn-cells">
+<sc-for list="{{ tm.cells }}" as="cell"><div class="m-learn-cell {{ cell.cls }}"><dt>{{ cell.label }}<sc-if value="{{ cell.low }}"><span class="m-tag -magenta m-learn-lowtag">Lowest</span></sc-if></dt><dd class="m-num" style="color: {{ cell.fg }}">{{ cell.v }}</dd></div></sc-for>
+</dl>
+</article></sc-for>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{ m.learn.isPlay }}">
+<div class="m-learn-search"><label class="m-sr" for="mlnQ">Search what the customer said</label><svg class="m-learn-search-ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.6-3.6"></path></svg><input id="mlnQ" class="m-input" type="search" enterkeyhint="search" autocomplete="off" placeholder="Search what the customer said" value="{{ ln.plQ }}" onChange="{{ ln.onPlQ }}"><sc-if value="{{ m.learn.plHasQ }}"><button type="button" class="m-iconbtn m-learn-search-x" aria-label="Clear search" onClick="{{ m.learn.plClearQ }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if></div>
+<div class="m-scroller" role="group" aria-label="Objection type">
+<sc-for list="{{ m.learn.plCats }}" as="opt"><button type="button" class="m-chip m-learn-chip" aria-pressed="{{ opt.press }}" onClick="{{ opt.pick }}">{{ opt.label }}</button></sc-for>
+</div>
+<sc-if value="{{ m.learn.plFiltered }}">
+<div class="m-learn-filtered" role="status"><p class="m-grow">Showing <strong>{{ ln.playCount }}</strong><span class="m-learn-filtered-what"> · {{ m.learn.plWhat }}</span></p><button type="button" class="m-btn -sm m-fixed m-learn-showall" onClick="{{ m.learn.plAll }}">Show all</button></div>
+</sc-if>
+<sc-if value="{{ m.learn.plFiltered }}" not>
+<p class="m-small m-learn-count" role="status">Showing {{ ln.playCount }} · built from calls that ended in a renewal</p>
+</sc-if>
+<sc-if value="{{ m.learn.plEmpty }}">
+<div class="m-empty m-stack"><p><strong class="m-strong">Nothing matches.</strong> Try a shorter word, or see every objection.</p><button type="button" class="m-btn -block" onClick="{{ m.learn.plAll }}">Show all</button></div>
+</sc-if>
+<sc-for list="{{ ln.plays }}" as="pl"><article class="m-card m-stack m-learn-play">
+<div class="m-stack -tight"><p><span class="m-tag">{{ pl.cat }}</span></p><h2 class="m-learn-play-q">{{ pl.q }}</h2></div>
+<div class="m-learn-say"><p class="m-label">What to say</p><p class="m-learn-say-t">{{ pl.say }}</p></div>
+<div><p class="m-label">Why it works</p><p class="m-learn-why">{{ pl.why }}</p></div>
+<p class="m-learn-stat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>{{ pl.stat }}</p>
+</article></sc-for>
+</sc-if>
+
+<sc-if value="{{ m.learn.isLess }}">
+<section class="m-card m-stack m-learn-prog" aria-label="Lesson progress">
+<p class="m-learn-must {{ m.learn.mustCls }}"><sc-if value="{{ m.learn.mustOpen }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5M12 16.2v.3"></path></svg></sc-if><sc-if value="{{ m.learn.mustOpen }}" not><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.3l2.8 2.8L16 9.8"></path></svg></sc-if><span>{{ ln.lsMust }}</span></p>
+<div class="m-inline"><span class="m-track m-grow" aria-hidden="true"><span style="width: {{ ln.lsW }}"></span></span><span class="m-small m-fixed m-num">{{ ln.lsProg }}</span></div>
+</section>
+<div class="m-scroller" role="group" aria-label="Lesson type">
+<sc-for list="{{ m.learn.lsCats }}" as="opt"><button type="button" class="m-chip m-learn-chip" aria-pressed="{{ opt.press }}" onClick="{{ opt.pick }}">{{ opt.label }}</button></sc-for>
+</div>
+<sc-if value="{{ m.learn.lsFiltered }}">
+<div class="m-learn-filtered" role="status"><p class="m-grow">{{ m.learn.lsShownText }}</p><button type="button" class="m-btn -sm m-fixed m-learn-showall" onClick="{{ m.learn.lsAll }}">Show all</button></div>
+</sc-if>
+<ul class="m-card -nopad m-list">
+<sc-for list="{{ m.learn.lessons }}" as="les"><li class="m-learn-lesson"><div class="m-grow m-stack -tight"><sc-if value="{{ les.must }}"><p><span class="m-tag {{ les.mustCls }}">{{ les.mustText }}</span></p></sc-if><h2 class="m-learn-lesson-t">{{ les.t }}</h2><p class="m-small">{{ les.meta }}</p></div><button type="button" class="m-btn m-fixed m-learn-lesson-btn {{ les.btnCls }}" aria-pressed="{{ les.press }}" aria-label="{{ les.aria }}" onClick="{{ les.toggle }}"><sc-if value="{{ les.done }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>{{ les.btn }}</button></li></sc-for>
+</ul>
+<p class="m-tiny m-learn-foot">Lessons have no content yet in this sample. Tap Done again to undo.</p>
+</sc-if>
+
+<sc-if value="{{ m.learn.isNews }}">
+<div class="m-learn-newshead"><p class="m-grow m-learn-unread" role="status">{{ m.learn.unreadText }}</p><sc-if value="{{ m.learn.canReadAll }}"><button type="button" class="m-link m-fixed" onClick="{{ m.learn.readAll }}">Mark all as read</button></sc-if></div>
+<div class="m-card -nopad m-list">
+<sc-for list="{{ m.learn.news }}" as="item"><button type="button" class="m-learn-news {{ item.cls }}" onClick="{{ item.read }}"><span class="m-inline m-learn-news-top"><sc-if value="{{ item.unread }}"><span class="m-learn-new"><span class="m-learn-newdot" aria-hidden="true"></span>New</span></sc-if><span class="m-tag" style="background: {{ item.tagBg }}; color: {{ item.tagFg }}">{{ item.tag }}</span><span class="m-grow"></span><span class="m-tiny m-fixed">{{ item.when }}</span></span><span class="m-learn-news-t">{{ item.t }}</span><span class="m-learn-news-b">{{ item.b }}</span></button></sc-for>
+</div>
+<sc-if value="{{ m.learn.canReadAll }}"><p class="m-tiny m-learn-foot">Tap an update to mark it as read.</p></sc-if>
+</sc-if>
+
+<p class="m-tiny m-learn-foot">Sample content. The dealer and Autoprism add the real lessons and updates.</p>
