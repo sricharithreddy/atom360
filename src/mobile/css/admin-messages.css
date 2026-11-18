@@ -47,6 +47,9 @@
 .m-admin-messages-vars { display: flex; flex-wrap: wrap; gap: 8px; }
 .m-admin-messages-vars > .m-chip { min-height: 44px; font-weight: 500; }
 .m-app .m-admin-messages-rowording { padding: 12px; border-radius: var(--r); background: var(--tint); border: 1px solid var(--line-soft); font-size: 15px; line-height: 1.45; color: var(--ink); }
+/* footer: two buttons side by side must stay on one line at 360 px */
+.m-admin-messages-foot > .m-btn { padding-left: 8px; padding-right: 8px; white-space: nowrap; }
+.m-admin-messages-foot > .m-btn.-primary { flex-grow: 1.25; }
 
 /* sending rules */
 .m-admin-messages-fs { margin: 0; padding: 12px 0 0; border: 0; border-top: 1px solid var(--line-soft); min-width: 0; display: flex; flex-direction: column; gap: 8px; }

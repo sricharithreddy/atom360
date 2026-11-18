@@ -63,7 +63,12 @@ export default function (v: any, ctx: MobileCtx): any {
       wa: () => {
         c.wa();
         landed();
-        if (!self.state.msg) ctx.note('Messages are blocked for this lead.');
+        if (!self.state.msg) {
+          // Same words as the lead page uses for this block.
+          const why = (self.state.dnc || {})[self.state.sel];
+          ctx.note('Messages are off for this lead.' + (why === 'num' ? ' This number is marked wrong. Messages stop until the correct number is added.'
+            : why === 'all' ? ' The customer asked for no calls and no messages.' : ''));
+        }
       },
     };
   };

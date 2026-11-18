@@ -18,7 +18,14 @@ export default function (v: any, ctx: MobileCtx): any {
 
   // ---- callback due on another lead
   const cbShow = ctx.shown(cb.panelShow);
-  const cbSnooze = (e: any) => { cb.snooze(e); ctx.note('Snoozed for 10 minutes. You can bring it back from Today.'); };
+  // The board's snooze has no timer. Bring the alert back after 10 minutes, the same way (and with the same timer) as Today does.
+  const self: any = ctx.self;
+  const cbSnooze = (e: any) => {
+    cb.snooze(e);
+    if (self.__mTodaySnz) clearTimeout(self.__mTodaySnz);
+    self.__mTodaySnz = setTimeout(() => { self.__mTodaySnz = null; if (self.state.snz) ctx.fresh().cb.unsnooze(); }, 10 * 60 * 1000);
+    ctx.note('Snoozed for 10 minutes. You can bring it back sooner from Today.');
+  };
 
   // ---- one banner: view only, or calling blocked
   const banner = viewOnly
@@ -28,17 +35,30 @@ export default function (v: any, ctx: MobileCtx): any {
       : { show: false, cls: '', stop: false, title: '', text: '' };
 
   // ---- next steps (lapsed policy, payment and policy)
-  const strips = (v.strips || []).map((sp: any) => {
+  const strips = (v.strips || []).map((sp: any, si: number) => {
     const steps = (sp.steps || []).map((s2: any) => {
       const done = s2.n === '✓', cur = !done && s2.bg !== 'transparent';
       return { n: s2.n, label: s2.label, cls: done ? '-done' : cur ? '-cur' : '', state: done ? 'done' : cur ? 'current step' : 'to do', cur: cur ? 'step' : 'false' };
     });
-    const acts = (sp.acts || []).map((a2: any) => ({
+    const acts = (sp.acts || []).map((a2: any, ai: number) => ({
       label: a2.label,
       cls: a2.bg === '#FFFFFF' ? '' : '-primary',
       pick: (e: any) => {
+        // sending the policy copy closes the lead as Renewed: ask first
+        if (/policy copy/i.test(a2.label)) {
+          ctx.confirm({
+            title: 'Send the policy copy?',
+            body: 'It goes to ' + String(sel.name || 'the customer') + ' on WhatsApp and this lead is closed as Renewed.',
+            yes: 'Send and close lead',
+            run: () => {
+              const now = (((ctx.fresh().strips || [])[si] || {}).acts || [])[ai];
+              if (now && typeof now.pick === 'function' && now.label === a2.label) { now.pick(); ctx.note('Policy copy sent on WhatsApp. Lead closed as Renewed.'); }
+            },
+          });
+          return;
+        }
         a2.pick(e);
-        ctx.note(/^Resend/.test(a2.label) ? 'Link sent again on WhatsApp.' : /policy copy/i.test(a2.label) ? 'Policy copy sent on WhatsApp.' : 'Self-inspection link sent on WhatsApp.');
+        ctx.note(/^Resend/.test(a2.label) ? 'Link sent again on WhatsApp.' : 'Self-inspection link sent on WhatsApp.');
       },
     }));
     const lapsed = /LAPSED/.test(sp.title || '');
@@ -97,7 +117,7 @@ export default function (v: any, ctx: MobileCtx): any {
   const quotes = {
     has: qn > 0,
     title: qn > 0 ? qn + (qn === 1 ? ' quote' : ' quotes') : 'No quotes yet',
-    sub: qn > 0 ? (best ? 'Best price ' + best.amt + ' · ' + best.name : 'No price filled in yet') : (viewOnly ? 'Nothing has been added for this customer.' : 'Add one before you call.'),
+    sub: qn > 0 ? (best ? 'Best price ' + best.amt + ' · ' + best.name : 'No price filled in yet') : (viewOnly ? 'Nothing has been added for this customer.' : blocked ? 'Add one to send by message.' : 'Add one before you call.'),
     btn: qn > 0 ? 'See quotes' : (viewOnly ? 'Open quotes' : 'Add a quote'),
   };
 

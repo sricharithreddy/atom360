@@ -29,6 +29,7 @@
 .m-admin-tg-row.-total { margin: 0 -8px; padding: 6px 8px; border-top: 0; border-radius: var(--r-sm); background: var(--tint); font-weight: 700; }
 .m-admin-tg.-edit .m-admin-tg-row.-total > :nth-child(n + 2) { padding-right: 13px; }
 .m-admin-tg.-edit .m-admin-tg-row { padding: 4px 0; border-top: 0; }
+.m-admin-tg.-edit .m-admin-tg-row.-total { padding: 6px 8px; }
 .m-app .m-admin-numin { width: 84px; padding: 0 12px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; -moz-appearance: textfield; appearance: textfield; }
 .m-admin-numin::-webkit-outer-spin-button, .m-admin-numin::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 

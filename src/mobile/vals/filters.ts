@@ -25,6 +25,12 @@ export default function (v: any, ctx: MobileCtx): any {
     });
   };
 
+  // The reason for an ignored star tap goes in the foot line: a toast would cover the sheet's Close button.
+  const sayLimit = () => {
+    ctx.set({ mFiltersLimit: true });
+    if (typeof window !== 'undefined') window.setTimeout(() => ctx.set({ mFiltersLimit: false }), 5000);
+  };
+
   // A star pins an option as a one-tap key filter on Today. The board ignores the tap at the limit: say why.
   const withStar = (o: any, n: number, pre: string) => {
     const on = o.favOn === 'true';
@@ -32,11 +38,11 @@ export default function (v: any, ctx: MobileCtx): any {
     return {
       ...o,
       uid: pre + n,
-      zeroCls: o.count ? '' : '-zero',
+      zeroCls: o.count || o.on ? '' : '-zero',
       starCls: blocked ? '-dim' : '',
       starLabel: on ? 'Remove ' + o.label + ' from key filters' : 'Add ' + o.label + ' to key filters',
       star: (e: any) => {
-        if (blocked) { ctx.note(LIMIT); return; }
+        if (blocked) { sayLimit(); return; }
         o.fav(e);
       },
     };
@@ -44,7 +50,7 @@ export default function (v: any, ctx: MobileCtx): any {
 
   const presets = (v.expPresets || []).map((p: any, n: number) => withStar(p, n, 'mfp'));
   const opts = (v.catOpts || []).map((o: any, n: number) => withStar(o, n, 'mfo'));
-  const months = (v.months || []).map((mo: any, n: number) => ({ ...mo, uid: 'mfm' + n, zeroCls: mo.count ? '' : '-zero' }));
+  const months = (v.months || []).map((mo: any, n: number) => ({ ...mo, uid: 'mfm' + n, zeroCls: mo.count || mo.on ? '' : '-zero' }));
 
   const dragOn = F.preset === 'drag' && !monthsOn.length;
   const anyOn = !F.preset && !monthsOn.length;
@@ -99,6 +105,7 @@ export default function (v: any, ctx: MobileCtx): any {
     ? (view ? 'No leads match in the ' + view + ' view.' : 'No leads match these filters.')
     : (view ? 'Counting the ' + view + ' view only.' : '');
   const favN = String(v.favNote || '').split(' ')[0];
+  const limitMsg = !!s.mFiltersLimit && favN === '4';
 
   return {
     cats, presets, opts, months,
@@ -110,9 +117,9 @@ export default function (v: any, ctx: MobileCtx): any {
     rangeCls: dragOn ? '-on' : '',
     keyNote: favN + ' of 4 key filters on Today',
     keyCustom: ctx.shown(v.favResetShow),
-    keyReset: () => { v.favReset(); ctx.note('Key filters are back to the default.'); },
+    keyReset: () => v.favReset(),
     active: v.fCount, hasActive: !!v.hasChips,
     showText: shown === 1 ? 'Show 1 lead' : 'Show ' + shown + ' leads',
-    footNote, hasFootNote: !!footNote,
+    footNote: limitMsg ? LIMIT : footNote, hasFootNote: limitMsg || !!footNote, footCls: limitMsg ? '-warn' : '',
   };
 }

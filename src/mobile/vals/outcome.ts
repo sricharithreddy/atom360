@@ -1,5 +1,8 @@
 import type { MobileCtx } from '../logic';
 
+const TAP_GUARD_MS = 500;
+const SAVE_HOLD_MS = 400;
+
 /** Phone-only values for the Call outcome sheet, available in the template as m.out.*.
  *  Business rules stay in the board (v.co): this file only turns display strings into booleans,
  *  reshapes lists for touch buttons and wraps Save (confirm, then close the sheet). */
@@ -7,7 +10,14 @@ import type { MobileCtx } from '../logic';
 export default function (v: any, ctx: MobileCtx): any {
   const co = v.co || {};
   const ow = v.ow || {};
-  const s = ctx.self.state;
+  const self = ctx.self;
+  const s = self.state;
+  // Touch guards (phone only): remember when the sheet opened and whether a save is on its way.
+  const ui: any = self.__mOut || (self.__mOut = { open: false, at: 0, timer: null });
+  const openNow = s.mSheet === 'outcome';
+  if (openNow && !ui.open) ui.at = Date.now();
+  ui.open = openNow;
+  const busy = !!s.mOutBusy;
   const on = ctx.shown;
   const canEdit = on(ow.ctlShow);
 
@@ -39,7 +49,9 @@ export default function (v: any, ctx: MobileCtx): any {
   // Choices that cannot be undone in the app: ask first, naming what happens.
   const isLost = outId === 'lost';
   const ask = !isLost ? null
-    : on(co.dncShow) ? { title: 'Stop calls to this customer?', yes: 'Stop calls' }
+    : on(co.dncShow) ? (oc && oc.dncMode === 'all'
+      ? { title: 'Stop calls and messages to this customer?', yes: 'Stop both' }
+      : { title: 'Stop calls to this customer?', yes: 'Stop calls' })
       : on(co.wrongShow) ? { title: 'Mark this number as wrong?', yes: 'Mark wrong' }
         : { title: 'Close this lead?', yes: 'Close lead' };
   const name = v.sel && v.sel.name ? String(v.sel.name) : 'this lead';
@@ -52,17 +64,28 @@ export default function (v: any, ctx: MobileCtx): any {
     ctx.set({ mSheet: null, mTab: 'sum' });
   };
   const save = () => {
-    if (co.cantSave) return;
+    if (co.cantSave || busy) return;
+    // "No answer" in the dock sits where Save appears: the second tap of a double tap must not save.
+    if (Date.now() - ui.at < TAP_GUARD_MS) return;
     if (ask) {
-      ctx.confirm({ title: ask.title, body: name + ': ' + co.effect + ' This cannot be undone here.', yes: ask.yes, danger: true, run: doSave });
+      ctx.confirm({ title: ask.title, body: name + ': ' + co.effect + ' This cannot be undone.', yes: ask.yes, danger: true, run: doSave });
       return;
     }
-    doSave();
+    // Save sits where the next lead's Call button appears. Hold the sheet for a moment so that
+    // the second tap of a double tap lands on this (now disabled) button, not on Call.
+    ctx.set({ mOutBusy: true });
+    if (ui.timer) clearTimeout(ui.timer);
+    ui.timer = setTimeout(() => {
+      ui.timer = null;
+      const open = self.state.mSheet === 'outcome';
+      ctx.set({ mOutBusy: false });
+      if (open) doSave();
+    }, SAVE_HOLD_MS);
   };
 
   return {
     canEdit, viewOnly: !canEdit,
-    live, ended, blocked, ready: !live && !ended && !blocked,
+    live, ended, blocked, ready: !live && !ended && !blocked && !on(co.otherShow),
     other: on(co.otherShow), pend: on(co.pendShow),
     backToCall: () => { co.backToCall(); ctx.set({ mSheet: null, mTab: 'sum' }); },
     noPick: on(co.pickHint), conn: on(co.connShow),
@@ -77,7 +100,8 @@ export default function (v: any, ctx: MobileCtx): any {
     hasEffect: on(co.effectShow), hasNote: on(co.noteShow), manual: on(co.manualShow), attr: canEdit && on(ow.attrShow),
     irreversible: !!ask,
     canSave: !co.cantSave, sum, saveCls: co.cantSave ? '-off' : ask ? '-danger-fill' : '-primary',
-    cantSave: !!co.cantSave,
+    cantSave: !!co.cantSave || busy,
+    saveText: busy ? 'Saving…' : 'Save and next lead',
     saveWhy: step === 'conn' ? 'Pick what happened on the call to save.' : 'Pick Connected or Not connected to save.',
     endsCall: live && !co.cantSave,
     save,

@@ -1,5 +1,8 @@
 import type { MobileCtx } from '../logic';
 
+const TAP_GUARD_MS = 500;
+const SEND_HOLD_MS = 400;
+
 /** Phone-only values for the message composer, available in the template as m.msg.* */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function (v: any, ctx: MobileCtx): any {
@@ -8,6 +11,11 @@ export default function (v: any, ctx: MobileCtx): any {
   const mg = v.mg || {};
   const open = !!v.msgOpen;
   const msg = open ? s.msg : null;
+  // Touch guards (phone only): remember when the composer opened and whether a send is on its way.
+  const ui: any = self.__mMsgUi || (self.__mMsgUi = { open: false, at: 0, timer: null });
+  if (open && !ui.open) ui.at = Date.now();
+  ui.open = open;
+  const busy = open && !!s.mMsgBusy;
   const isWa = !msg || msg.ch === 'wa';
 
   // Has the caller changed the text? The board keeps `text: null` until the first keystroke, so while it is
@@ -67,8 +75,26 @@ export default function (v: any, ctx: MobileCtx): any {
     if (blocked) { ctx.note(blockedNote); return; }
     if (empty) { ctx.note('The message is empty. Write something or pick a template.'); return; }
     if (noSubj) { ctx.note('Add a subject before you send the email.'); return; }
-    if (s.mToast) ctx.set({ mToast: '' }); // an older note must not hide the board's "sent" confirmation
-    mg.send();
+    // The dock's WhatsApp and Email buttons sit where Send appears, and Send sits where the dock's
+    // Call button reappears. Ignore the second tap of a double tap on the way in, and hold the
+    // composer for a moment on the way out so that tap lands here and not on Call.
+    if (busy || Date.now() - ui.at < TAP_GUARD_MS) return;
+    ctx.set({ mMsgBusy: true });
+    if (ui.timer) clearTimeout(ui.timer);
+    ui.timer = setTimeout(() => {
+      ui.timer = null;
+      const st = self.state;
+      const same = !!st.msg && !!msg && st.msg.k === msg.k && st.msg.ch === msg.ch;
+      // an older note must not hide the board's "sent" confirmation
+      ctx.set(st.mToast ? { mMsgBusy: false, mToast: '' } : { mMsgBusy: false });
+      if (same) ctx.fresh().mg.send();
+    }, SEND_HOLD_MS);
+  };
+  // Opening the composer drops an older phone note, which would sit over its title.
+  const openCh = (go: () => void) => () => {
+    if (blocked) { ctx.note(blockedNote); return; }
+    if (s.mToast) ctx.set({ mToast: '' });
+    go();
   };
 
   const cantSend = blocked || empty || noSubj;
@@ -78,12 +104,13 @@ export default function (v: any, ctx: MobileCtx): any {
     hasWarn: ctx.shown(mg.warnShow), hasLangNote: ctx.shown(mg.langNoteShow),
     count: chars + (chars === 1 ? ' character' : ' characters'),
     sendCls: cantSend ? '-off' : (isWa ? '-wa' : '-primary'),
-    sendOff: cantSend ? 'true' : 'false',
+    sendOff: cantSend || busy ? 'true' : 'false',
+    sendText: busy ? 'Sending…' : mg.sendLabel,
     close, onTpl, reset, send,
     // For the entry points (owned by the shell and other sections): same as panelWa / panelMail,
     // but a tap on a lead with messages switched off says why instead of doing nothing.
     waOff: blocked, waOffCls: blocked ? '-off' : '',
-    openWa: () => { if (blocked) ctx.note(blockedNote); else v.panelWa(); },
-    openMail: () => { if (blocked) ctx.note(blockedNote); else v.panelMail(); },
+    openWa: openCh(() => v.panelWa()),
+    openMail: openCh(() => v.panelMail()),
   };
 }

@@ -34,3 +34,4 @@
 
 .m-filters-foot { flex-wrap: wrap; }
 .m-filters-note { flex: 1 0 100%; text-align: center; }
+.m-app .m-filters-note.-warn { color: var(--orange, #9A3412); font-weight: 700; }

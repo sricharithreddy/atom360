@@ -54,7 +54,7 @@
 
 </div>
 <div class="m-sheet-foot m-filters-foot">
-<sc-if value="{{ m.filters.hasFootNote }}"><p class="m-filters-note m-small" role="status">{{ m.filters.footNote }}</p></sc-if>
+<sc-if value="{{ m.filters.hasFootNote }}"><p class="m-filters-note m-small {{ m.filters.footCls }}" role="status">{{ m.filters.footNote }}</p></sc-if>
 <sc-if value="{{ m.filters.hasActive }}"><button type="button" class="m-btn -quiet m-fixed" onClick="{{ clearAll }}">Clear all</button></sc-if>
 <button type="button" class="m-btn -primary -grow" onClick="{{ toggleFilters }}">{{ m.filters.showText }}</button>
 </div>

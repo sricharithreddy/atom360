@@ -24,6 +24,15 @@ export default function (v: any, ctx: MobileCtx): any {
   const isAdmin = adm.lockPe === 'auto';
   const inMsg = ctx.shown(adm.show) && ctx.shown(adm.msgShow);
 
+  // The pane strip scrolls at 360 px: when Messages is opened again, bring the selected pane's button into view once.
+  if (inMsg && typeof document !== 'undefined' && typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(() => {
+    const box: any = document.querySelector('.m-admin-messages-seg'), on: any = box && box.querySelector('[aria-pressed="true"]');
+    if (!box || !on || box.__mShown === on.textContent) return;
+    box.__mShown = on.textContent;
+    const a = box.getBoundingClientRect(), b = on.getBoundingClientRect();
+    if (b.left < a.left + 4 || b.right > a.right - 4) box.scrollLeft += b.left - a.left - (a.width - b.width) / 2;
+  });
+
   // ---- template detail page ----
   const tplOpen = !!s.mAdmMsgTpl && inMsg && ctx.shown(adm.tShow);
   const fromJourney = tplOpen && s.mAdmMsgFrom === 'journey';
@@ -91,7 +100,7 @@ export default function (v: any, ctx: MobileCtx): any {
       title: 'Undo your changes?',
       body: 'The wording of “' + adm.tName + '” goes back to the last version.',
       yes: 'Undo', danger: true,
-      run: () => { const now = ctx.fresh().adm; if (ctx.shown(now.tUndoShow)) now.tUndo(); },
+      run: () => { const now = ctx.fresh().adm; if (ctx.shown(now.tUndoShow)) { now.tUndo(); ctx.note('Back to the last version.'); } },
     }),
     // sent log
     sentRows, sentNone: !ctx.shown(adm.sentEmpty) ? false : true, sentCountText: plural(sentRows.length, 'message', 'messages'),

@@ -9,7 +9,7 @@ export default function (v: any, ctx: MobileCtx): any {
   const pickEv = (val: string) => ({ target: { value: val } });
 
   // Tabs: short labels so all four fit a 360 px screen; the full name stays in the accessible name.
-  const SHORT: Record<string, string> = { 'My coaching': 'Coaching', 'Team coaching': 'Coaching', 'Objection playbook': 'Playbook' };
+  const SHORT: Record<string, string> = { 'My coaching': 'Coaching', 'Team coaching': 'Coaching', 'Objection playbook': 'Playbook', 'What\'s new': 'News' };
   const tabs = list(ln.tabs).map((t: any) => ({
     label: SHORT[t.label] || t.label,
     full: t.label,
@@ -67,7 +67,7 @@ export default function (v: any, ctx: MobileCtx): any {
       btn: done ? 'Done' : 'Mark done',
       btnCls: done ? '-done' : '',
       aria: (done ? 'Done. Mark as not done: ' : 'Mark as done: ') + ls.t,
-      toggle: () => { ls.toggle(); ctx.note(done ? 'Marked as not done' : 'Marked as done'); },
+      toggle: ls.toggle,
     };
   });
   const mustOpen = ln.lsMustFg === '#A3134F';
@@ -104,6 +104,6 @@ export default function (v: any, ctx: MobileCtx): any {
     news,
     canReadAll: ctx.shown(ln.readAllShow),
     unreadText: unreadN === 0 ? 'All caught up. Newest first.' : unreadN + ' unread',
-    readAll: () => { ln.readAll(); ctx.note('All marked as read'); },
+    readAll: ln.readAll,
   };
 }

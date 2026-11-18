@@ -49,7 +49,7 @@
 <p class="m-small m-learn-count" role="status">Showing {{ ln.playCount }} · built from calls that ended in a renewal</p>
 </sc-if>
 <sc-if value="{{ m.learn.plEmpty }}">
-<div class="m-empty m-stack"><p><strong class="m-strong">Nothing matches.</strong> Try a shorter word, or see every objection.</p><button type="button" class="m-btn -block" onClick="{{ m.learn.plAll }}">Show all</button></div>
+<div class="m-empty"><p><strong class="m-strong">Nothing matches.</strong> Try a shorter word, or tap Show all.</p></div>
 </sc-if>
 <sc-for list="{{ ln.plays }}" as="pl"><article class="m-card m-stack m-learn-play">
 <div class="m-stack -tight"><p><span class="m-tag">{{ pl.cat }}</span></p><h2 class="m-learn-play-q">{{ pl.q }}</h2></div>

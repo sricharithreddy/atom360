@@ -2,7 +2,7 @@
 
 /* day summary */
 .m-today-sum { display: flex; flex-direction: column; gap: 10px; }
-.m-today-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.m-today-stats { display: grid; grid-template-columns: repeat(4, auto); justify-content: space-between; gap: 8px 12px; }
 .m-today-stats > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .m-today-stats dt { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 .m-today-stats dd { font-size: 20px; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; }
@@ -58,8 +58,8 @@
 .m-today-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .m-tag.m-today-aifill { background: var(--purple); color: #FFFFFF; }
 .m-today-quote { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line-soft); font-size: 13px; color: var(--muted); }
-.m-today-quote-v { color: var(--text); text-align: right; }
-.m-today-quote-v > strong { margin-left: 2px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.m-today-quote-v { display: flex; align-items: baseline; justify-content: flex-end; gap: 4px; min-width: 0; color: var(--text); text-align: right; }
+.m-today-quote-v > strong { font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
 .m-today-acts { display: flex; align-items: center; gap: 8px; padding: 0 14px 14px; }
 .m-iconbtn.m-today-wa { width: 48px; height: 48px; color: #128C4A; border-color: #128C4A; }
 

@@ -145,10 +145,9 @@
 <!-- Bottom bar: send the selected quote, or save what is being edited -->
 <div class="m-quotes-bar">
 <sc-if value="{{ m.quotes.sendShow }}">
-<sc-if value="{{ m.quotes.sendOk }}"><p class="m-quotes-bar-line">{{ send.line }}</p></sc-if>
-<sc-if value="{{ m.quotes.sendCant }}"><p class="m-quotes-bar-line -cant">{{ send.line }}</p></sc-if>
+<sc-if value="{{ m.quotes.sendCant }}"><p class="m-quotes-bar-line -cant">{{ m.quotes.cantLine }}</p></sc-if>
 <sc-if value="{{ m.quotes.warn }}"><p class="m-quotes-bar-warn"><svg class="m-fixed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg><span>{{ send.warn }}</span></p></sc-if>
-<button type="button" class="m-btn -wa -block {{ m.quotes.sendOff }}" aria-disabled="{{ send.cant }}" onClick="{{ m.quotes.sendTap }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path></svg><span class="m-quotes-send-t">{{ send.label }}</span></button>
+<button type="button" class="m-btn -wa -block {{ m.quotes.sendOff }}" aria-disabled="{{ send.cant }}" aria-label="{{ send.label }}" onClick="{{ m.quotes.sendTap }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path></svg><span class="m-quotes-send-t"><strong>{{ m.quotes.sendLabel }}</strong><sc-if value="{{ m.quotes.sendOk }}"><span class="m-quotes-send-s">{{ send.line }}</span></sc-if></span></button>
 </sc-if>
 <sc-if value="{{ m.quotes.form }}">
 <sc-if value="{{ m.quotes.barNote }}"><p class="m-quotes-bar-line -cant">{{ send.line }}</p></sc-if>

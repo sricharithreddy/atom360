@@ -75,7 +75,9 @@ export default function (v: any, ctx: MobileCtx): any {
     if (ed.saveCant) { ctx.note(isNew ? 'Type the insurer’s name first.' : 'Nothing to save yet.'); return; }
     ed.save(); closeEdit(); reveal();
   };
-  const sendTap = () => { if (send.cant) ctx.note(send.line + '.'); else send.open(); };
+  // On a view-only lead the board's reason ("Save your changes...") asks for something this user cannot do.
+  const cantLine = !canEdit && dirty ? 'This quote has unsaved changes by someone who can edit it. It can be sent once they are saved' : String(send.line || '');
+  const sendTap = () => { if (send.cant) ctx.note(cantLine + '.'); else send.open(); };
 
   // Keep the chosen insurer chip in view inside its sideways scroller (after a pick, an add or a save).
   const reveal = () => {
@@ -126,8 +128,9 @@ export default function (v: any, ctx: MobileCtx): any {
     cpOpts: cpList.map((o) => ({ ...o, expOn: on(o.expShow) })),
     cpRo: !canEdit && !v.cpNoneOn,
     // sending
-    sendShow: !form, sendTap, sendOff: send.cant ? '-off' : '',
-    sendCant: !!send.cant, sendOk: !send.cant && !on(send.warnShow), warn: on(send.warnShow),
+    // a view-only lead without quotes has nothing to send and nothing to add: no bar
+    sendShow: !form && !(isNew && !canEdit), sendTap, sendLabel: 'Send this quote on WhatsApp', sendOff: send.cant ? '-off' : '',
+    sendCant: !!send.cant, cantLine, sendOk: !send.cant && !on(send.warnShow), warn: on(send.warnShow),
     barNote: editing && !!send.cant,
     // previous policy
     ppKnown: on(pp.knownShow), ppUnknown: on(pp.unknownShow),

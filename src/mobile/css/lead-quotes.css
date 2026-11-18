@@ -83,14 +83,17 @@ button.m-quotes-ncb:active { background: var(--tint); }
 .m-quotes-cpro { padding: 0 2px; }
 
 /* bottom bar: stays in view above the call dock */
-.m-quotes-bar { position: sticky; bottom: calc(-1 * var(--pad)); z-index: 2; margin: auto calc(-1 * var(--pad)) calc(-1 * var(--pad)); padding: 10px var(--pad) 12px; display: flex; flex-direction: column; gap: 8px; background: #FFFFFF; border-top: 1px solid var(--line); box-shadow: 0 -4px 14px rgba(11, 26, 71, 0.08); }
+.m-quotes-bar { position: sticky; bottom: calc(-1 * var(--pad)); z-index: 2; margin: auto calc(-1 * var(--pad)) calc(-1 * var(--pad)); padding: 8px var(--pad) 10px; display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border-top: 1px solid var(--line); box-shadow: 0 -4px 14px rgba(11, 26, 71, 0.08); }
 .m-quotes-bar-line { font-size: 13px; line-height: 1.35; font-weight: 600; color: var(--ink); }
 .m-quotes-bar-line.-cant { color: var(--text); }
 .m-quotes-bar-warn { display: flex; align-items: flex-start; gap: 6px; font-size: 13px; line-height: 1.35; font-weight: 600; color: var(--orange); }
 .m-quotes-bar-warn > svg { margin-top: 1px; }
+.m-quotes-bar:empty { display: none; }
 .m-quotes-bar .m-btn { min-height: 50px; }
-.m-quotes-bar .m-btn.-wa { padding: 0 10px; font-size: 14px; }
-.m-quotes-send-t { min-width: 0; overflow-wrap: anywhere; }
+.m-quotes-bar .m-btn.-wa { padding: 4px 8px; font-size: 15px; }
+.m-quotes-send-t { min-width: 0; display: flex; flex-direction: column; align-items: center; line-height: 1.25; }
+.m-quotes-send-t > strong { font-weight: 700; }
+.m-quotes-send-s { max-width: 100%; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* previous policy */
 .m-quotes-facts { display: flex; flex-direction: column; margin: -2px 0 -8px; }

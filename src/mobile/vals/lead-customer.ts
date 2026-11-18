@@ -22,7 +22,7 @@ export default function (v: any, ctx: MobileCtx): any {
   // ---- records
   const tabs = (v.recTabs || []).map((t: any) => {
     const has = ctx.shown(t.countShow), n = String(t.count);
-    const extra = !has ? '' : t.label === 'Documents' ? n.replace('/', ' of ') + ' accepted' : t.label === 'Coupons' ? n + ' to apply' : t.label === 'History' ? n + (n === '1' ? ' entry' : ' entries') : n + ' on record';
+    const extra = !has ? '' : t.label === 'Documents' ? n.replace('/', ' of ') + ' accepted' : t.label === 'Coupons' ? n + (canEdit ? ' to apply' : ' unused') : t.label === 'History' ? n + (n === '1' ? ' entry' : ' entries') : n + ' on record';
     return {
       label: t.label === 'Documents' ? 'Docs' : t.label, say: t.label + (extra ? ', ' + extra : ''),
       selected: t.selected, pick: t.pick, count: t.count, hasCount: has, countBg: t.countBg, countFg: t.countFg,

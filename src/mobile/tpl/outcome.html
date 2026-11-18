@@ -117,6 +117,6 @@
 <div class="m-sheet-foot m-out-foot">
 <sc-if value="{{ m.out.canSave }}"><p class="m-out-sum" aria-live="polite"><span class="m-clip2">{{ m.out.sum }}</span><sc-if value="{{ m.out.endsCall }}"><span>Saving also ends the call.</span></sc-if><sc-if value="{{ m.out.irreversible }}"><span class="m-out-undo">This cannot be undone. You will be asked to confirm.</span></sc-if></p></sc-if>
 <sc-if value="{{ m.out.canSave }}" not><p class="m-out-sum">{{ m.out.saveWhy }}</p></sc-if>
-<button type="button" class="m-btn -block {{ m.out.saveCls }}" disabled="{{ m.out.cantSave }}" onClick="{{ m.out.save }}">Save and next lead</button>
+<button type="button" class="m-btn -block {{ m.out.saveCls }}" disabled="{{ m.out.cantSave }}" onClick="{{ m.out.save }}">{{ m.out.saveText }}</button>
 </div>
 </sc-if>

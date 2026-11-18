@@ -11,6 +11,15 @@ const picked = (opts: any) => list(opts).find((o: any) => o.on) || {};
 const count = (n: any, single: string, many: string) => String(n) + ' ' + (String(n) === '1' ? single : many);
 const STATUS_TAG: Record<string, string> = { Active: '-green', 'On leave': '-orange', Left: '-magenta' };
 
+/** Scrolls a segmented strip sideways (never the page) so its selected button is visible; once per strip and selection. */
+const showPicked = (strip: string, picked: string) => {
+  const box: any = document.querySelector(strip), on: any = box && box.querySelector(picked);
+  if (!box || !on || box.__mShown === on.textContent) return;
+  box.__mShown = on.textContent;
+  const a = box.getBoundingClientRect(), b = on.getBoundingClientRect();
+  if (b.left < a.left + 4 || b.right > a.right - 4) box.scrollLeft += b.left - a.left - (a.width - b.width) / 2;
+};
+
 export default function (v: any, ctx: MobileCtx): any {
   const adm = v.adm || {};
   const s = ctx.self.state || {};
@@ -29,6 +38,9 @@ export default function (v: any, ctx: MobileCtx): any {
       if (typeof window !== 'undefined') window.scrollTo(0, 0);
     },
   }));
+
+  // The strip scrolls at 360 px. When Admin is opened again (or the tab changes) bring the selected tab into view once.
+  if (typeof document !== 'undefined' && typeof requestAnimationFrame !== 'undefined' && ctx.shown(adm.show)) requestAnimationFrame(() => showPicked('.m-admin-tabs', '[aria-selected="true"]'));
 
   // ---- people ----
   const people = list(adm.people).map((p: any, i: number) => {
@@ -101,24 +113,28 @@ export default function (v: any, ctx: MobileCtx): any {
     return { ...r, hasSwitch, on, stateText: hasSwitch ? (on ? 'On' : 'Off') : 'Always on', stateCls: !hasSwitch ? '' : on ? '-green' : '' };
   });
 
-  // Number fields. The board clamps and saves on every keystroke, so "45" cannot be typed into a field whose
-  // lowest value is 5 (the "4" snaps to 5). Keep what is being typed here and hand the board only numbers
-  // inside the field's own min/max; the board's handler still does the saving and the logging.
-  const drafts: Record<string, string> = s.mAdminNum || {};
+  // Number fields. The board clamps, saves and logs on every keystroke, so "45" cannot be typed into a field whose
+  // lowest value is 5, and a mistyped "16" in a 1-15 field would leave "1" saved. The phone keeps what is being
+  // typed here and hands the board one number when the field is left (or Enter is pressed), and only a whole
+  // number inside the field's own min/max. Saving and logging are still the board's handler.
+  const typing = typeof document !== 'undefined' && !!document.activeElement && /\bm-admin-numin\b/.test(String(document.activeElement.className));
+  const drafts: Record<string, string> = (typing && s.mAdminNum) || {};
+  // The tap that takes the finger off a field often lands where the message appears (the tab strip, a switch near
+  // the top). Show the message just after that tap, so the tap is not swallowed by it.
+  const noteSoon = (text: string) => { setTimeout(() => ctx.note(text), 80); };
   const numField = (key: string, val: any, handler: (e: any) => void) => ({
     val: key in drafts ? drafts[key] : String(val),
-    on: (e: any) => {
-      const el = e.target, txt = String(el.value), n = Number(txt);
-      ctx.set({ mAdminNum: { ...(ctx.self.state.mAdminNum || {}), [key]: txt } });
-      if (txt.trim() !== '' && Number.isInteger(n) && n >= Number(el.min) && n <= Number(el.max)) handler({ target: { value: txt } });
-    },
+    on: (e: any) => ctx.set({ mAdminNum: { [key]: String(e.target.value) } }),
+    key: (e: any) => { if (e.key === 'Enter' && e.target && e.target.blur) e.target.blur(); },
     blur: (e: any) => {
-      const now: Record<string, string> = { ...(ctx.self.state.mAdminNum || {}) };
+      const now: Record<string, string> = ctx.self.state.mAdminNum || {};
       if (!(key in now)) return;
       const txt = now[key], n = Number(txt), el = e.target;
-      delete now[key];
-      ctx.set({ mAdminNum: now });
-      if (!(txt.trim() !== '' && Number.isInteger(n) && n >= Number(el.min) && n <= Number(el.max))) ctx.note('Enter a whole number from ' + el.min + ' to ' + el.max + '. Kept ' + String(val) + '.');
+      ctx.set({ mAdminNum: {} });
+      if (!(txt.trim() !== '' && Number.isInteger(n) && n >= Number(el.min) && n <= Number(el.max))) { noteSoon('Enter a whole number from ' + el.min + ' to ' + el.max + '. Kept ' + String(val) + '.'); return; }
+      if (n === Number(val)) return;
+      handler({ target: { value: String(n) } });
+      noteSoon('Saved. ' + lastLog());
     },
   });
   const tgRows = list(adm.tgRows).map((r: any) => ({ ...r, polN: numField('pol' + r.name, r.pol, r.onPol), callsN: numField('calls' + r.name, r.calls, r.onCalls) }));

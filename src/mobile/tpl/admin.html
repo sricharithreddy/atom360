@@ -87,13 +87,13 @@
 
 <!-- Admin: editable. The board saves (and logs) on every change; there is no Save button. -->
 <sc-if value="{{ m.admin.isAdmin }}">
-<p class="m-small m-admin-note">Changes save as you type. Each one is listed in Activity.</p>
+<p class="m-small m-admin-note">A number saves when you leave its box. Switches save at once. Every change is listed in Activity.</p>
 
 <section class="m-card m-admin-card" aria-labelledby="madTgH">
 <div class="m-admin-sec -in"><h2 class="m-h2" id="madTgH">Targets</h2><p class="m-small">Set per telecaller. The team number adds up by itself. Stats and the Today strip use these.</p></div>
 <div class="m-admin-tg -edit">
 <div class="m-admin-tg-row -head" aria-hidden="true"><span>Telecaller</span><span>Policies a month</span><span>Calls a day</span></div>
-<sc-for list="{{ m.admin.tgRows }}" as="row"><div class="m-admin-tg-row"><span class="m-clip">{{ row.name }}</span><input class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="0" max="999" aria-label="Policies a month for {{ row.name }}" value="{{ row.polN.val }}" onChange="{{ row.polN.on }}" onBlur="{{ row.polN.blur }}" onFocus="{{ m.admin.selAll }}"><input class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="0" max="999" aria-label="Calls a day for {{ row.name }}" value="{{ row.callsN.val }}" onChange="{{ row.callsN.on }}" onBlur="{{ row.callsN.blur }}" onFocus="{{ m.admin.selAll }}"></div></sc-for>
+<sc-for list="{{ m.admin.tgRows }}" as="row"><div class="m-admin-tg-row"><span class="m-clip">{{ row.name }}</span><input class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="0" max="999" aria-label="Policies a month for {{ row.name }}" value="{{ row.polN.val }}" onChange="{{ row.polN.on }}" onBlur="{{ row.polN.blur }}" onKeyDown="{{ row.polN.key }}" enterkeyhint="done" onFocus="{{ m.admin.selAll }}"><input class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="0" max="999" aria-label="Calls a day for {{ row.name }}" value="{{ row.callsN.val }}" onChange="{{ row.callsN.on }}" onBlur="{{ row.callsN.blur }}" onKeyDown="{{ row.callsN.key }}" enterkeyhint="done" onFocus="{{ m.admin.selAll }}"></div></sc-for>
 <div class="m-admin-tg-row -total"><span>Team</span><span class="m-num">{{ adm.tgTotPol }}</span><span class="m-num">{{ adm.tgTotCalls }}</span></div>
 </div>
 </section>
@@ -106,12 +106,12 @@
 <sc-if value="{{ rule.hasSwitch }}" not><div class="m-admin-rule"><span class="m-admin-n" aria-hidden="true">{{ rule.n }}</span><span class="m-grow m-admin-rule-text"><strong>{{ rule.k }}</strong><span class="m-small">{{ rule.d }}</span></span><span class="m-tag m-fixed">Always on</span></div></sc-if>
 </li></sc-for>
 </ol>
-<div class="m-admin-num"><label class="m-grow" for="madCap">Daily cap of new leads for each caller</label><input id="madCap" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="500" value="{{ m.admin.capN.val }}" onChange="{{ m.admin.capN.on }}" onBlur="{{ m.admin.capN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">leads</span></div>
+<div class="m-admin-num"><label class="m-grow" for="madCap">Daily cap of new leads for each caller</label><input id="madCap" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="500" value="{{ m.admin.capN.val }}" onChange="{{ m.admin.capN.on }}" onBlur="{{ m.admin.capN.blur }}" onKeyDown="{{ m.admin.capN.key }}" enterkeyhint="done" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">leads</span></div>
 </section>
 
 <section class="m-card m-admin-card" aria-labelledby="madAiH">
 <h2 class="m-h2" id="madAiH">AI calling</h2>
-<div class="m-admin-num -first"><label class="m-grow" for="madAiDays">AI picks up a call that has been pending for more than</label><input id="madAiDays" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="15" value="{{ m.admin.aiDaysN.val }}" onChange="{{ m.admin.aiDaysN.on }}" onBlur="{{ m.admin.aiDaysN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">days</span></div>
+<div class="m-admin-num -first"><label class="m-grow" for="madAiDays">AI picks up a call that has been pending for more than</label><input id="madAiDays" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="15" value="{{ m.admin.aiDaysN.val }}" onChange="{{ m.admin.aiDaysN.on }}" onBlur="{{ m.admin.aiDaysN.blur }}" onKeyDown="{{ m.admin.aiDaysN.key }}" enterkeyhint="done" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">days</span></div>
 <p class="m-small">The caller stays the owner.</p>
 <fieldset class="m-admin-fs"><legend>AI makes the first call for</legend>
 <sc-for list="{{ adm.aiFirst }}" as="aif"><label class="m-check m-admin-check"><input type="checkbox" checked="{{ aif.checked }}" onChange="{{ aif.flip }}"><span>{{ aif.label }}</span></label></sc-for>
@@ -121,8 +121,8 @@
 
 <section class="m-card m-admin-card" aria-labelledby="madEscH">
 <h2 class="m-h2" id="madEscH">Tell the team lead when</h2>
-<div class="m-admin-num -first"><label class="m-grow" for="madEsc">A lead expires within this many days and nobody has spoken to the customer</label><input id="madEsc" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="30" value="{{ m.admin.escDaysN.val }}" onChange="{{ m.admin.escDaysN.on }}" onBlur="{{ m.admin.escDaysN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">days</span></div>
-<div class="m-admin-num"><label class="m-grow" for="madCb">A promised callback is late by</label><input id="madCb" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="5" max="240" value="{{ m.admin.cbMinN.val }}" onChange="{{ m.admin.cbMinN.on }}" onBlur="{{ m.admin.cbMinN.blur }}" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">minutes</span></div>
+<div class="m-admin-num -first"><label class="m-grow" for="madEsc">A lead expires within this many days and nobody has spoken to the customer</label><input id="madEsc" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="1" max="30" value="{{ m.admin.escDaysN.val }}" onChange="{{ m.admin.escDaysN.on }}" onBlur="{{ m.admin.escDaysN.blur }}" onKeyDown="{{ m.admin.escDaysN.key }}" enterkeyhint="done" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">days</span></div>
+<div class="m-admin-num"><label class="m-grow" for="madCb">A promised callback is late by</label><input id="madCb" class="m-input m-admin-ctl m-admin-numin" type="number" inputmode="numeric" min="5" max="240" value="{{ m.admin.cbMinN.val }}" onChange="{{ m.admin.cbMinN.on }}" onBlur="{{ m.admin.cbMinN.blur }}" onKeyDown="{{ m.admin.cbMinN.key }}" enterkeyhint="done" onFocus="{{ m.admin.selAll }}"><span class="m-admin-unit">minutes</span></div>
 </section>
 </sc-if>
 </sc-if>

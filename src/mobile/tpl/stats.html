@@ -63,7 +63,7 @@
 </section>
 
 <section class="m-card m-stats-card" aria-labelledby="mstLostH">
-<div><h2 class="m-h3" id="mstLostH">Why we lost</h2><p class="m-small">{{ st.lostNote }}</p></div>
+<div><h2 class="m-h3" id="mstLostH">Why we lost</h2><p class="m-small">{{ m.stats.lostNote }}</p></div>
 <sc-if value="{{ m.stats.lostEmpty }}"><p class="m-empty m-stats-empty">No lead was lost in this period.</p></sc-if>
 <sc-if value="{{ m.stats.lostEmpty }}" not>
 <ul class="m-stats-bars">

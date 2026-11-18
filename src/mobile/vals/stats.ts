@@ -5,6 +5,8 @@ import type { MobileCtx } from '../logic';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const DAYS_SHORT = 7;
+// The board writes "1 leads"; say "1 lead".
+const lead1 = (t: any) => String(t || '').replace(/^1 leads\b/, '1 lead');
 const one = (n: any, single: string, many: string) => String(n) + ' ' + (String(n) === '1' ? single : many);
 
 // The board signals "against target" by colour only; give it words too.
@@ -61,7 +63,7 @@ export default function (v: any, ctx: MobileCtx): any {
   const days = daysAll ? allDays : allDays.slice(0, DAYS_SHORT);
   const callers = list(st.pRows).map((r: any) => {
     const pairs = zip(st.pCols, r.cells);
-    return { name: r.name, sub: r.sub, head: pairs[0] || { k: '', v: '' }, rest: pairs.slice(1), cls: r.fw === 700 ? '-total' : '' };
+    return { name: r.name, sub: lead1(r.sub), head: pairs[0] || { k: '', v: '' }, rest: pairs.slice(1), cls: r.fw === 700 ? '-total' : '' };
   });
 
   // ---- leaderboard ----
@@ -87,10 +89,10 @@ export default function (v: any, ctx: MobileCtx): any {
     filters, fOpen, fOpenStr: fOpen ? 'true' : 'false', fCls: fOpen ? '-open' : '',
     fToggle: () => ctx.set({ mStatsF: !fOpen }),
     fCount: act.length, fAny: act.length > 0,
-    fSummary: act.map((f: any) => f.label + ': ' + f.cur).join(' · '),
+    fSummary: act.map((f: any) => f.cur).join(' · '),
     // overview
     tiles,
-    lostEmpty: ctx.shown(st.lostEmptyShow),
+    lostEmpty: ctx.shown(st.lostEmptyShow), lostNote: lead1(st.lostNote),
     // leads
     cohortEmpty, groups,
     // calling
