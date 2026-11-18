@@ -2,6 +2,7 @@
 // Engine that runs a design-canvas board (prototype/*.dc.html) as the live app.
 // It parses the board's template once, then renders it with React on every state change.
 // Template rules it understands: {{ dotted.holes }}, <sc-for list as>, <sc-if value>.
+// <sc-if> also takes `eq="text"` (show when the value equals the text) and `not` (invert the test).
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -9,9 +10,13 @@ var h = React.createElement;
 var VOID = { input: 1, br: 1, img: 1, hr: 1, meta: 1, link: 1, source: 1, col: 1, wbr: 1 };
 var NOWS = { table: 1, thead: 1, tbody: 1, tfoot: 1, tr: 1, select: 1, colgroup: 1, ul: 1, ol: 1, svg: 1, defs: 1 };
 var BOOL = { disabled: 1, checked: 1, selected: 1, hidden: 1, required: 1, multiple: 1 };
-var RENAME = { 'class': 'className', 'for': 'htmlFor', autocomplete: 'autoComplete', inputmode: 'inputMode', tabindex: 'tabIndex', colspan: 'colSpan', rowspan: 'rowSpan', maxlength: 'maxLength', readonly: 'readOnly' };
-var ta = document.createElement('textarea');
-function decode(s) { if (s.indexOf('&') < 0) return s; ta.innerHTML = s; return ta.value; }
+var RENAME = { 'class': 'className', 'for': 'htmlFor', autocomplete: 'autoComplete', inputmode: 'inputMode', tabindex: 'tabIndex', colspan: 'colSpan', rowspan: 'rowSpan', maxlength: 'maxLength', readonly: 'readOnly', enterkeyhint: 'enterKeyHint', autocapitalize: 'autoCapitalize', spellcheck: 'spellCheck' };
+var ta = null;
+function decode(s) {
+  if (s.indexOf('&') < 0) return s;
+  if (!ta) { if (typeof document === 'undefined') return s; ta = document.createElement('textarea'); }
+  ta.innerHTML = s; return ta.value;
+}
 function camel(s) { return s.replace(/-([a-z])/g, function (m, c) { return c.toUpperCase(); }); }
 
 // text or attribute value -> parts: strings and {h: 'dotted.path'}
@@ -22,7 +27,7 @@ function parts(s) {
   return out;
 }
 
-function parse(src) {
+export function parse(src) {
   var root = { tag: '#root', kids: [] }, stack = [root];
   var re = /<!--[\s\S]*?-->|<(\/?)([a-zA-Z][\w:-]*)((?:"[^"]*"|[^">])*)>/g, last = 0, m;
   function realParent() { for (var i = stack.length - 1; i >= 0; i--) { var t = stack[i].tag; if (t !== 'sc-for' && t !== 'sc-if') return t; } return ''; }
@@ -45,7 +50,7 @@ function parse(src) {
   return root;
 }
 
-function get(scope, path) {
+export function get(scope, path) {
   if (path === 'true') return true; if (path === 'false') return false;
   var ps = path.split('.');
   for (var s = scope.length - 1; s >= 0; s--) {
@@ -84,7 +89,12 @@ function render(node, scope, ctx, key) {
     if (!Array.isArray(list)) return null;
     return h(React.Fragment, { key: key }, list.map(function (it, n) { var sc = {}; sc[as] = it; return h(React.Fragment, { key: n }, renderKids(node.kids, scope.concat([sc]), ctx)); }));
   }
-  if (tag === 'sc-if') return asBool(val(attr(node, 'value'), scope)) ? h(React.Fragment, { key: key }, renderKids(node.kids, scope, ctx)) : null;
+  if (tag === 'sc-if') {
+    var cv = val(attr(node, 'value'), scope), eq = attr(node, 'eq');
+    var ok = eq !== undefined ? String(cv) === str(eq || [], scope) : asBool(cv);
+    if (attr(node, 'not') !== undefined) ok = !ok;
+    return ok ? h(React.Fragment, { key: key }, renderKids(node.kids, scope, ctx)) : null;
+  }
   var props = { key: key }, lt = tag.toLowerCase(), hasChange = false, value, checked, selected = false;
   for (var i = 0; i < node.attrs.length; i++) {
     var a = node.attrs[i], n = a.n;

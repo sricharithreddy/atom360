@@ -1,0 +1,16 @@
+/* Shell-only parts: live-call strip, search field, lead page frame. */
+.m-callstrip { position: sticky; top: calc(var(--bar-h) + var(--safe-t)); z-index: 19; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 6px var(--pad); border: 0; background: var(--green); color: #FFFFFF; font-size: 14px; font-weight: 600; text-align: left; }
+.m-callstrip-dot, .m-live-dot { width: 9px; height: 9px; border-radius: 50%; background: #86EFAC; flex: 0 0 auto; animation: m-pulse 1.4s ease-in-out infinite; }
+@keyframes m-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .m-callstrip-dot, .m-live-dot { animation: none; } }
+.m-search-input { flex: 1 1 0; min-width: 0; margin-right: 8px; height: 44px; min-height: 44px; }
+.m-lead-tabs { flex: 0 0 auto; background: #FFFFFF; padding: 0 8px; }
+.m-lead-foot .m-iconbtn.-line { width: 48px; height: 48px; }
+.m-lead-foot .m-btn { padding: 0 14px; }
+.m-lead-foot .m-lead-wa { color: #128C4A; border-color: #128C4A; }
+.m-lead-foot .m-dock-log { padding: 0 12px; font-size: 14px; }
+.m-lead-foot .m-dock-end { padding: 0 12px; }
+.m-lead-live { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 8px var(--pad); background: var(--green); color: #FFFFFF; font-size: 13px; font-weight: 600; }
+.m-lead-live.-ended { background: var(--orange-soft); color: #7A2A0E; }
+.m-dialog { position: fixed; inset: 0; z-index: 95; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.m-dialog-card { position: relative; width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: var(--r-lg); background: #FFFFFF; box-shadow: 0 20px 50px rgba(11, 26, 71, 0.35); animation: m-up 0.18s ease-out; }

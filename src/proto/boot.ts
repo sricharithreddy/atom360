@@ -3,6 +3,7 @@
 import board from '../../prototype/V35.dc.html?raw';
 import { DCLogic, mountPrototype } from './runtime';
 import './proto.css';
+import { MOBILE_QUERY, mobileTemplate, withMobile } from '../mobile';
 
 export function bootPrototype(el: HTMLElement): void {
   const body = board.slice(board.indexOf('<x-dc>') + 6, board.indexOf('<script type="text/x-dc"'));
@@ -10,5 +11,6 @@ export function bootPrototype(el: HTMLElement): void {
   const code = /<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/.exec(board)![1];
   // The board ships its logic as source text, so it is turned into a class here.
   const Component = new Function('DCLogic', `${code}\nreturn Component;`)(DCLogic);
-  mountPrototype(Component, template, el);
+  // Phones get their own layout on the same logic and state (see src/mobile).
+  mountPrototype(withMobile(Component), template, el, { query: MOBILE_QUERY, template: mobileTemplate });
 }

@@ -1,0 +1,56 @@
+<!-- Lead page: one lead, full screen. Header and tabs stay put, the tab body scrolls, actions sit at the thumb. -->
+<sc-if value="{{ m.isLead }}">
+<section class="m-layer m-lead" role="dialog" aria-modal="true" aria-label="Lead: {{ sel.name }}" data-m-layer="lead" tabindex="-1">
+<div class="m-layer-head">
+<button type="button" class="m-iconbtn" aria-label="Back to the list" onClick="{{ closeDetail }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<span class="m-avatar -soft" aria-hidden="true">{{ sel.initials }}</span>
+<div class="m-layer-title" style="margin-left: 8px"><strong>{{ sel.name }}</strong><span>{{ sel.vehicle }} · speaks {{ sel.lang }}</span></div>
+</div>
+<div class="m-lead-tabs m-tabs" role="tablist" aria-label="Lead sections">
+<sc-for list="{{ m.leadTabs }}" as="lt"><button type="button" role="tab" aria-selected="{{ lt.cur }}" onClick="{{ lt.pick }}">{{ lt.label }}</button></sc-for>
+</div>
+<div class="m-layer-body" data-m-scroll="lead">
+<sc-if value="{{ m.tabSum }}">
+<!--@lead-summary-->
+</sc-if>
+<sc-if value="{{ m.tabQuotes }}">
+<!--@lead-quotes-->
+</sc-if>
+<sc-if value="{{ m.tabCust }}">
+<!--@lead-customer-->
+</sc-if>
+</div>
+<sc-if value="{{ m.liveHere }}"><div class="m-lead-live" role="status"><span class="m-live-dot" aria-hidden="true"></span>On call with {{ sel.name }} · tell us how it went</div></sc-if>
+<sc-if value="{{ m.endedHere }}"><div class="m-lead-live -ended" role="status">Call ended · record the outcome</div></sc-if>
+<div class="m-layer-foot m-lead-foot">
+<button type="button" class="m-iconbtn -line m-lead-wa" aria-label="Send WhatsApp" onClick="{{ panelWa }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path></svg></button>
+<sc-if value="{{ m.idleHere }}"><button type="button" class="m-iconbtn -line" aria-label="Send email" onClick="{{ panelMail }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></button></sc-if>
+<sc-if value="{{ ow.ctlShow }}" eq="flex">
+<sc-if value="{{ m.idleHere }}">
+<button type="button" class="m-btn m-dock-log" onClick="{{ m.openOut }}">Log outcome</button>
+<button type="button" class="m-btn -primary -grow {{ m.callOffCls }}" onClick="{{ m.call }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"></path></svg><span class="m-clip">{{ callLabel }}</span></button>
+</sc-if>
+<sc-if value="{{ m.idleHere }}" not>
+<sc-if value="{{ m.liveHere }}"><button type="button" class="m-btn -danger m-dock-end" onClick="{{ co.endCall }}">End</button></sc-if>
+<sc-if value="{{ m.endedHere }}"><button type="button" class="m-iconbtn -line" aria-label="Call again" onClick="{{ m.call }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"></path></svg></button></sc-if>
+<button type="button" class="m-btn -grow" onClick="{{ m.outNc }}">No answer</button>
+<button type="button" class="m-btn -good -grow" onClick="{{ m.outConn }}">Connected</button>
+</sc-if>
+</sc-if>
+<sc-if value="{{ ow.roShow }}" eq="flex">
+<span class="m-grow m-small" style="padding-left: 4px"><strong class="m-strong">View only.</strong> {{ callLabel }}. You can still message the customer.</span>
+</sc-if>
+</div>
+</section>
+</sc-if>
+
+<!-- Call outcome -->
+<sc-if value="{{ m.outOpen }}">
+<div class="m-sheet -full -z2">
+<button type="button" class="m-backdrop" aria-label="Close call outcome" onClick="{{ m.closeSheet }}"></button>
+<section class="m-sheet-card" role="dialog" aria-modal="true" aria-labelledby="moutT" data-m-layer="outcome" tabindex="-1">
+<div class="m-sheet-head"><div class="m-grow"><h2 class="m-h2" id="moutT">Call outcome</h2><p class="m-small m-clip">{{ sel.name }}</p></div><button type="button" class="m-iconbtn" aria-label="Close call outcome" onClick="{{ m.closeSheet }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<!--@outcome-->
+</section>
+</div>
+</sc-if>
