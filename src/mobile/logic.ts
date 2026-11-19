@@ -45,6 +45,7 @@ const SECTIONS: Record<string, Section> = {
 
 const shown = (d: any) => d != null && d !== '' && d !== 'none' && d !== false;
 const TOAST_MS = 4500;
+const TAP_GUARD_MS = 450;
 
 function shellVals(v: any, ctx: MobileCtx) {
   const { self, set } = ctx;
@@ -65,11 +66,15 @@ function shellVals(v: any, ctx: MobileCtx) {
     // The board ignores a role switch while someone else's lead is selected (its edit lock).
     // Closing the lead first moves the selection back to the user's own queue.
     const val = e.target.value;
+    if (call && call.st === 'live') { set({ mSheet: null, mToast: 'You are on a call. End it or record the outcome before switching.' }); return; }
     v.closeDetail();
     ctx.fresh().me.pick({ target: { value: val } });
     set({ mSheet: null, mTab: 'sum' });
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
   };
+  // Dock buttons ignore taps for a moment after the buttons under the thumb have changed (see afterRender).
+  const calm = (fn: (e?: any) => void) => (e?: any) => { if (Date.now() < (self.__m.guard || 0)) return; fn(e); };
+  const otherLive = !!(call && call.st === 'live' && call.k !== s.sel);
   const nav = (go: (e?: any) => void) => (e?: any) => { go(e); if (typeof window !== 'undefined') window.scrollTo(0, 0); };
   return {
     view, title: titles[view],
@@ -98,9 +103,17 @@ function shellVals(v: any, ctx: MobileCtx) {
     // search works from every tab: go to Today first, because a lead only shows there
     results: (v.srch.results || []).map((r: any) => ({ ...r, open: () => { if (view !== 'today') self.setState({ view: 'today' }); r.open(); set({ mSheet: null, mTab: 'sum' }); } })),
     // the Call button says why when the board would silently ignore the tap
-    call: () => { if (v.callBg === '#8A93B3') ctx.note(v.callLabel + '. Calling is blocked for this lead.'); else v.startCall(); },
-    outNc: () => { v.pickNc(); set({ mSheet: 'outcome' }); },
-    outConn: () => { v.pickConn(); set({ mSheet: 'outcome' }); },
+    call: calm(() => {
+      if (v.callBg === '#8A93B3') { ctx.note(v.callLabel + '. Calling is blocked for this lead.'); return; }
+      if (otherLive) { ctx.confirm({ title: 'End your other call?', body: ((v.co && v.co.otherText) || 'You are still on a call.') + ' Calling ' + (v.sel ? v.sel.name : 'this customer') + ' ends it, and its outcome stays not logged.', yes: 'End it and call', run: () => ctx.fresh().startCall() }); return; }
+      v.startCall();
+    }),
+    outNc: calm(() => { v.pickNc(); set({ mSheet: 'outcome' }); }),
+    outConn: calm(() => { v.pickConn(); set({ mSheet: 'outcome' }); }),
+    endCall: calm(() => v.co.endCall()),
+    dockOut: calm(() => set({ mSheet: 'outcome' })),
+    dockWa: calm(() => (self.__mv && self.__mv.m.msg && self.__mv.m.msg.openWa ? self.__mv.m.msg.openWa() : v.panelWa())),
+    dockMail: calm(() => (self.__mv && self.__mv.m.msg && self.__mv.m.msg.openMail ? self.__mv.m.msg.openMail() : v.panelMail())),
     // confirm dialog
     confirmOpen: !!s.mConfirm, confirmTitle: s.mConfirm ? s.mConfirm.title : '', confirmBody: s.mConfirm ? s.mConfirm.body : '',
     confirmYesText: s.mConfirm ? s.mConfirm.yes : '', confirmCls: s.mConfirm && s.mConfirm.danger ? '-danger-fill' : '-primary',
@@ -137,7 +150,7 @@ export function withMobile(Base: any): any {
     constructor(props: any) {
       super(props);
       const self: any = this;
-      self.__m = { hist: 0, sel: null, tab: null, view: null, top: null, toast: '', timer: null, bound: false, on: false, run: null, place: null };
+      self.__m = { hist: 0, sel: null, tab: null, view: null, top: null, toast: '', timer: null, bound: false, on: false, run: null, place: null, depth: 0, callKey: '', guard: 0, back: [], leaving: false };
     }
 
     renderVals() {
@@ -182,19 +195,31 @@ export function withMobile(Base: any): any {
       const open: Layer[] = m.layers.filter((l: Layer) => l.open);
       const depth = open.length;
       root.classList.toggle('m-lock', depth > 0);
+      const now = Date.now();
+      const s = self.state;
+      const callKey = s.cs ? s.cs.k + ':' + s.cs.st : '';
 
-      // Back button: one history entry per open layer.
+      // Taps: when a sheet closes or the call state changes, the buttons under the thumb change.
+      // Ignore dock taps for a moment so a double tap cannot start a call or pick an outcome.
+      if (depth < st.depth || callKey !== st.callKey) st.guard = now + TAP_GUARD_MS;
+      const opened = depth > st.depth;
+      st.depth = depth; st.callKey = callKey;
+
+      // Back button: one history entry for the app itself, plus one per open layer.
+      const level = depth + 1;
       try {
-        if (depth > st.hist) { for (let n = st.hist + 1; n <= depth; n++) window.history.pushState({ m: n }, ''); st.hist = depth; }
-        else if (depth < st.hist) { const d = depth - st.hist; st.hist = depth; window.history.go(d); }
+        if (st.leaving) { /* the user is leaving the app */ }
+        else if (level > st.hist) { for (let n = st.hist + 1; n <= level; n++) window.history.pushState({ m: n }, ''); st.hist = level; }
+        else if (level < st.hist) { const d = level - st.hist; st.hist = level; window.history.go(d); }
       } catch { /* ignore */ }
 
-      const s = self.state;
       // A closed lead forgets its tab and its outcome sheet, so the next lead opens on Overview.
       if (!m.isLead && ((s.mTab && s.mTab !== 'sum') || s.mSheet === 'outcome')) { self.setState({ mTab: 'sum', mSheet: s.mSheet === 'outcome' ? null : s.mSheet }); return; }
-      // A message belongs to the screen it was shown on: drop an old one when the user moves on.
-      const place = m.view + '|' + (m.isLead ? s.sel : '');
-      if (st.place !== place) { const was = st.place; st.place = place; if (was != null && m.toast && m.toast === st.toast) { self.setState({ mToast: '', toast: '' }); return; } }
+      // A message belongs to the screen it was shown on: drop an old one when the user moves on or opens a sheet.
+      const place = m.view + '|' + (m.isLead ? 'lead' : '');
+      const moved = st.place != null && st.place !== place;
+      st.place = place;
+      if ((moved || opened) && m.toast && m.toast === st.toast) { self.setState({ mToast: '', toast: '' }); return; }
       // Scroll: a new lead or a new tab starts at the top.
       if (m.isLead && (st.sel !== s.sel || st.tab !== m.leadTab)) {
         const el = document.querySelector('[data-m-scroll="lead"]');
@@ -202,15 +227,28 @@ export function withMobile(Base: any): any {
       }
       st.sel = m.isLead ? s.sel : null; st.tab = m.leadTab;
 
-      // Focus: move into a layer when it opens, so screen readers and keyboards follow.
+      // Focus: keep it inside the top layer, and give it back when the layer closes.
       const topId = depth ? open[depth - 1].id : null;
+      document.querySelectorAll('.m-bar, .m-main, .m-tabbar, .m-callstrip').forEach((el) => { (el as any).inert = depth > 0; });
+      document.querySelectorAll('[data-m-layer]').forEach((el) => { (el as any).inert = el.getAttribute('data-m-layer') !== topId; });
       if (topId !== st.top) {
+        const act = document.activeElement as HTMLElement | null;
+        if (opened && act && act !== document.body) st.back.push(act);
         st.top = topId;
-        if (topId) {
-          const el = document.querySelector('[data-m-layer="' + topId + '"]') as HTMLElement | null;
-          const act = document.activeElement;
-          if (el && !(act && el.contains(act))) { const auto = el.querySelector('[data-m-autofocus]') as HTMLElement | null; (auto || el).focus({ preventScroll: true }); }
+        const el = topId ? (document.querySelector('[data-m-layer="' + topId + '"]') as HTMLElement | null) : null;
+        if (!opened) {
+          const prev = st.back.pop() as HTMLElement | undefined;
+          if (prev && document.contains(prev) && !(prev as any).closest('[inert]')) prev.focus({ preventScroll: true });
+          else if (el) el.focus({ preventScroll: true });
+          if (!depth) st.back = [];
+        } else if (el && !(act && el.contains(act))) {
+          const auto = el.querySelector('[data-m-autofocus]') as HTMLElement | null;
+          (auto || el).focus({ preventScroll: true });
         }
+      } else if (topId && document.activeElement === document.body) {
+        // the focused button was replaced (Call became End, and so on)
+        const el = document.querySelector('[data-m-layer="' + topId + '"]') as HTMLElement | null;
+        if (el) el.focus({ preventScroll: true });
       }
 
       // Toast: the board never clears its own, so clear it after a few seconds.
@@ -232,14 +270,25 @@ export function withMobile(Base: any): any {
 
     __mPop(e: PopStateEvent) {
       const self: any = this;
-      if (!self.__alt || !self.__mv) return;
       const st = self.__m;
       const want = e.state && typeof e.state.m === 'number' ? e.state.m : 0;
+      // On the desktop layout only remember where history is, so the phone layout can square up later.
+      if (!self.__alt || !self.__mv) { st.hist = want; return; }
       let depth = self.__mv.m.layers.filter((l: Layer) => l.open).length;
       st.hist = want;
+      if (want === 0 && depth === 0) {
+        // Back with nothing open. Never lose a live call; from another tab go home first; otherwise leave.
+        const s = self.state, m = self.__mv.m;
+        if (s.cs && s.cs.st === 'live') { self.setState({ mToast: 'You are on a call. End it or record the outcome first.' }); return; }
+        if (m.view !== 'today') { m.goToday(); return; }
+        st.leaving = true;
+        try { window.history.back(); } catch { /* ignore */ }
+        setTimeout(() => { st.leaving = false; self.setState({}); }, 800); // nowhere to go back to: stay
+        return;
+      }
       // Back: close layers from the top until the screen matches the history entry.
       let guard = 8;
-      while (depth > want && guard-- > 0) {
+      while (depth + 1 > want && depth > 0 && guard-- > 0) {
         if (!self.__mCloseTop()) break;
         self.renderVals(); // state changed synchronously; recompute before counting again
         const now = self.__mv ? self.__mv.m.layers.filter((l: Layer) => l.open).length : 0;
@@ -247,7 +296,7 @@ export function withMobile(Base: any): any {
         depth = now;
       }
       // Forward (or a layer that would not close): history and screen disagree, afterRender squares them.
-      if (depth !== want) self.setState({});
+      if (depth + 1 !== want) self.setState({});
     }
   };
 }

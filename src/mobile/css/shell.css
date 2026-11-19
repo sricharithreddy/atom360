@@ -7,7 +7,7 @@
 .m-lead-tabs { flex: 0 0 auto; background: #FFFFFF; padding: 0 8px; }
 .m-lead-foot .m-iconbtn.-line { width: 48px; height: 48px; }
 .m-lead-foot .m-btn { padding: 0 10px; font-size: 14px; white-space: nowrap; }
-.m-lead-foot .m-lead-wa:not(.-off) { color: #128C4A; border-color: #128C4A; }
+.m-lead-foot .m-lead-wa:not(.-off) { color: #0F7A40; border-color: #0F7A40; }
 .m-lead-foot .m-dock-log { padding: 0 12px; font-size: 14px; }
 .m-lead-foot .m-dock-end { padding: 0 12px; }
 .m-lead-live { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 8px var(--pad); background: var(--green); color: #FFFFFF; font-size: 13px; font-weight: 600; }

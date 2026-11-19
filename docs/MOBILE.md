@@ -38,7 +38,8 @@ The phone is a calling tool first and a dashboard second.
   - during or after a call: End, **No answer**, **Connected**. Either one opens the outcome sheet with that step already chosen.
 - **Sheets** slide up from the bottom for a single task: filters, call outcome, message composer.
 - **A live call follows you.** A green strip under the top bar on every tab leads back to the lead you are on a call with.
-- **Messages from the app** ("Saved for Kavya. Next: Rahul") appear at the bottom wherever you are and clear by themselves.
+- **Messages from the app** ("Saved for Kavya. Now on Fatima.") appear at the top wherever you are and clear by themselves.
+- **Back** closes one thing at a time. From Stats, Learn or Admin it returns to Today. It will not leave the app while a call is live.
 
 ## Decisions taken for the phone
 
@@ -47,8 +48,9 @@ The phone is a calling tool first and a dashboard second.
 3. **No dead buttons.** Controls that do nothing on desktop are not shown on the phone: Leads, Scan policy, New enquiry, the Play buttons, the Discount box, "View policy copy".
 4. **Silent taps now explain themselves.** Where the desktop ignores a tap (calling a blocked lead, a fifth key filter), the phone says why.
 5. **Things that cannot be undone ask first:** closing a lead, "do not call", "wrong number", moving leads in bulk, marking a person as left.
-6. **View-only means no edit controls.** On someone else's lead a telecaller sees a clear "View only" note and no edit buttons, instead of dimmed controls that do nothing. A team lead sees admin settings as plain text.
-7. **Readable outdoors.** Solid white cards, larger text than desktop (15 px, inputs 16 px), status always written as text as well as colour.
+6. **Double taps are harmless.** When the buttons under the thumb change (a call starts, a sheet closes), taps are ignored for a moment, so a double tap cannot pick an outcome or start a call on the next lead. Calling a second customer while a call is live asks first.
+7. **View-only means no edit controls.** On someone else's lead a telecaller sees a clear "View only" note and no edit buttons, instead of dimmed controls that do nothing. A team lead sees admin settings as plain text.
+8. **Readable outdoors.** Solid white cards, larger text than desktop (15 px, inputs 16 px), status always written as text as well as colour.
 
 ## Not in this version
 
@@ -65,7 +67,11 @@ The phone shares the desktop's logic on purpose, so these behave the same on bot
 - After "Save", the next lead is chosen by its position in the data, not by its place on screen, and it can be a lead that must not be called.
 - "Snooze 10 min" on a callback never ends by itself.
 - A telecaller looking at someone else's lead (found by search) can reveal that customer's full number by opening a message. Nothing records it.
-- Only one outcome draft and one call exist at a time. Opening another lead mid-way drops the draft.
+- Only one call exists at a time, and an outcome being filled in belongs to one lead at a time.
+- A lead closed as lost (renewed elsewhere, vehicle sold...) stays in the queue with a working Call button. Only "wrong number" and "do not call" change the card.
+- Details typed with an outcome are not checked (a two-digit mobile is accepted), and a template's wording can be saved empty.
+- Marking a person as left says their leads follow the allocation rules, but the leads stay with them until moved.
+- Some sentences disagree with the numbers (the claims note says NCB 35% while the quotes use 45%) or lack singular forms ("1 leads lost").
 - Filter counts ignore the selected tab and the other filters.
 - "Awaiting payment" on the Today strip is a fixed number.
 

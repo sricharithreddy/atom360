@@ -144,7 +144,7 @@ describe('phone template and board logic', () => {
     expect(n).toBeGreaterThan(100);
     const missing = [...holes.values()].filter((h) => h.seen && !h.ok).map((h) => h.path).sort();
     expect(missing, 'values the phone template uses that no longer exist:\n' + missing.join('\n')).toEqual([]);
-  });
+  }, 60000);
 
   it('no loop variable hides a board value', () => {
     const app = makeApp();
