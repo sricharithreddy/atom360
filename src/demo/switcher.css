@@ -1,0 +1,37 @@
+/* Desktop / Mobile switch and the phone frame. Only used on screens 900 px and wider. */
+.dv-toggle { display: inline-flex; gap: 2px; padding: 3px; border-radius: 12px; background: #0B1A47; box-shadow: 0 8px 24px rgba(11, 26, 71, 0.28); font-family: Inter, system-ui, sans-serif; }
+.dv-opt { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: #AEB6D6; font: 600 13px/1 Inter, system-ui, sans-serif; cursor: pointer; }
+.dv-opt:hover { color: #FFFFFF; }
+.dv-opt[aria-pressed="true"] { background: #FFFFFF; color: #0B1A47; }
+.dv-opt:focus-visible, .dv-tool:focus-visible { outline: 2px solid #7B8CFF; outline-offset: 2px; }
+
+/* Over the desktop app: stacked at the bottom of the dark left rail, where nothing else sits. */
+.dv-dock { position: fixed; left: 4px; bottom: 12px; z-index: 1000; flex-direction: column; width: 56px; padding: 4px; box-shadow: none; background: rgba(255, 255, 255, 0.08); }
+.dv-dock .dv-opt { flex-direction: column; justify-content: center; gap: 3px; height: auto; padding: 7px 0; font-size: 10px; }
+.dv-dock[hidden] { display: none; }
+
+/* The demo stage */
+.dv-stage { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px 24px 12px; overflow: hidden;
+  background: radial-gradient(1100px 600px at 8% -10%, #DCE1FF 0%, rgba(220, 225, 255, 0) 60%), radial-gradient(900px 520px at 100% 0%, #F9DDEB 0%, rgba(249, 221, 235, 0) 55%), radial-gradient(900px 600px at 55% 115%, #FFE6D6 0%, rgba(255, 230, 214, 0) 60%), #EEF0F8;
+  font-family: Inter, system-ui, sans-serif; color: #0B1A47; }
+.dv-stage[hidden] { display: none; }
+html.dv-mobile, html.dv-mobile body { overflow: hidden; }
+.dv-bar { display: flex; align-items: center; gap: 12px; }
+.dv-tools { display: flex; gap: 8px; }
+.dv-tool { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 14px; border: 1px solid #C5CBEA; border-radius: 12px; background: #FFFFFF; color: #0B1A47; font: 600 13px/1 Inter, system-ui, sans-serif; cursor: pointer; }
+.dv-tool:hover { border-color: #8A93B3; }
+.dv-fit { flex: 0 0 auto; position: relative; }
+.dv-phone { position: absolute; left: 0; top: 0; transform-origin: 0 0; width: 414px; height: 868px; padding: 12px; border-radius: 56px; background: #14161C; box-shadow: 0 0 0 2px #2A2D36, 0 30px 80px rgba(11, 26, 71, 0.35); box-sizing: border-box; }
+.dv-screen { position: relative; width: 390px; height: 844px; border-radius: 44px; overflow: hidden; background: #FFFFFF; display: flex; flex-direction: column; }
+.dv-status { flex: 0 0 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 26px 0 30px; background: #FFFFFF; color: #0B1A47; font: 600 13px/1 Inter, system-ui, sans-serif; position: relative; }
+.dv-cam { position: absolute; left: 50%; top: 9px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: #14161C; }
+.dv-icons { display: inline-flex; align-items: flex-end; gap: 2px; }
+.dv-icons i { display: block; width: 3px; background: #0B1A47; border-radius: 1px; }
+.dv-icons i:nth-child(1) { height: 6px; } .dv-icons i:nth-child(2) { height: 9px; }
+.dv-icons b { display: block; width: 20px; height: 10px; margin-left: 5px; border: 1.5px solid #0B1A47; border-radius: 3px; box-sizing: border-box; background: linear-gradient(90deg, #0B1A47 70%, transparent 70%); background-clip: content-box; padding: 1px; }
+.dv-iframe { flex: 1 1 auto; width: 100%; border: 0; display: block; background: #EEF0F8; }
+.dv-note { margin: 0; font-size: 13px; color: #5B6482; }
+
+/* Inside the frame: no scrollbars eating into the phone width. */
+html.dv-in-frame, html.dv-in-frame * { scrollbar-width: none; }
+html.dv-in-frame ::-webkit-scrollbar { display: none; }

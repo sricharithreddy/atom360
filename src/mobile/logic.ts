@@ -281,6 +281,8 @@ export function withMobile(Base: any): any {
         const s = self.state, m = self.__mv.m;
         if (s.cs && s.cs.st === 'live') { self.setState({ mToast: 'You are on a call. End it or record the outcome first.' }); return; }
         if (m.view !== 'today') { m.goToday(); return; }
+        // Inside the demo phone frame there is nothing to leave to: stay on Today.
+        if (window.self !== window.top) { self.setState({}); return; }
         st.leaving = true;
         try { window.history.back(); } catch { /* ignore */ }
         setTimeout(() => { st.leaving = false; self.setState({}); }, 800); // nowhere to go back to: stay

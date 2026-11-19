@@ -12,6 +12,8 @@ To ship a newer board: add the file under `prototype/` and change the one import
 
 On a screen narrower than 900 px the same board runs with a phone layout: bottom tabs, a full-screen lead page with the call actions at the thumb, and sheets for filters, call outcome and messages. It uses the board's own logic and sample data, so both layouts always behave the same. The layout lives in `src/mobile/`; the plan behind it is in `docs/MOBILE.md`.
 
+On a computer, a **Desktop / Mobile** switch sits at the bottom of the left rail. **Mobile** shows the phone layout inside a phone frame for demos, with **Back** (the phone's Back button) and **Restart demo**. The choice is kept in the link (`/?view=mobile`), so a demo can be opened straight in phone view. The frame code is in `src/demo/`.
+
 After shipping a newer board, run `npm test`: it lists any value the phone layout uses that the new board renamed or removed.
 
 ## The backend-ready screens

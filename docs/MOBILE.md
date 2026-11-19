@@ -52,6 +52,10 @@ The phone is a calling tool first and a dashboard second.
 7. **View-only means no edit controls.** On someone else's lead a telecaller sees a clear "View only" note and no edit buttons, instead of dimmed controls that do nothing. A team lead sees admin settings as plain text.
 8. **Readable outdoors.** Solid white cards, larger text than desktop (15 px, inputs 16 px), status always written as text as well as colour.
 
+## Showing it on a computer
+
+The live site has a **Desktop / Mobile** switch at the bottom of the left rail. **Mobile** opens the phone layout in a phone frame, with buttons for the phone's Back button and for restarting the demo with fresh sample data. Desktop and phone keep separate sample data, so switching back and forth keeps each where you left it. `/?view=mobile` opens straight in phone view. On a real phone the switch is not shown.
+
 ## Not in this version
 
 - A real dialler. "Call" starts the same in-app call session as on desktop; it does not ring the customer. The same goes for WhatsApp and email, which are recorded, not sent.
