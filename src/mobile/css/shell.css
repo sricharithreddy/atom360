@@ -15,7 +15,8 @@
 
 /* app bar: search with filters, alerts, menu */
 .m-bar { gap: 2px; padding-left: 12px; }
-.m-bar-logo { flex: 0 0 auto; margin-right: 6px; }
+.m-bar-logo { flex: 0 0 auto; width: 29px; height: 24px; margin-right: 6px; object-fit: contain; }
+.m-menu-brand { display: block; width: 146px; height: auto; }
 .m-bar-back { margin-left: -6px; }
 .m-searchbar { flex: 1 1 0; min-width: 0; display: flex; align-items: center; height: 44px; margin-right: 2px; border: 1px solid var(--line); border-radius: var(--pill); background: var(--tint); }
 .m-searchbar-q { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 8px; height: 100%; padding: 0 4px 0 14px; border: 0; background: transparent; color: var(--muted); font-size: 15px; text-align: left; }

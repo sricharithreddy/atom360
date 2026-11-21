@@ -7,7 +7,10 @@ import { MOBILE_QUERY, mobileTemplate, withMobile } from '../mobile';
 
 export function bootPrototype(el: HTMLElement): void {
   const body = board.slice(board.indexOf('<x-dc>') + 6, board.indexOf('<script type="text/x-dc"'));
-  const template = body.replace(/<helmet>[\s\S]*?<\/helmet>/, '');
+  const template = body
+    .replace(/<helmet>[\s\S]*?<\/helmet>/, '')
+    // Current Autoprism mark instead of the board's older drawn triangle (if a board still has it).
+    .replace(/<svg[^>]*aria-label="Autoprism"[^>]*>[\s\S]*?<\/svg>/, '<img src="/brand/autoprism-icon.png" width="34" height="28" alt="Autoprism" style="display: block; width: 34px; height: 28px; object-fit: contain">');
   const code = /<script type="text\/x-dc"[^>]*>([\s\S]*?)<\/script>/.exec(board)![1];
   // The board ships its logic as source text, so it is turned into a class here.
   const Component = new Function('DCLogic', `${code}\nreturn Component;`)(DCLogic);
