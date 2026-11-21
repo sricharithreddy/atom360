@@ -83,7 +83,7 @@ button.m-quotes-ncb:active { background: var(--tint); }
 .m-quotes-cpro { padding: 0 2px; }
 
 /* bottom bar: stays in view above the call dock */
-.m-quotes-bar { position: sticky; bottom: calc(-1 * var(--pad)); z-index: 2; margin: auto calc(-1 * var(--pad)) calc(-1 * var(--pad)); padding: 8px var(--pad) 10px; display: flex; flex-direction: column; gap: 6px; background: #FFFFFF; border-top: 1px solid var(--line); box-shadow: 0 -4px 14px rgba(11, 26, 71, 0.08); }
+.m-quotes-bar { position: sticky; bottom: 0; z-index: 2; margin: auto -6px 0; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; border-radius: 22px; background: rgba(255, 255, 255, 0.62); -webkit-backdrop-filter: blur(22px) saturate(180%); backdrop-filter: blur(22px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.75); box-shadow: 0 8px 26px rgba(11, 26, 71, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9); }
 .m-quotes-bar-line { font-size: 13px; line-height: 1.35; font-weight: 600; color: var(--ink); }
 .m-quotes-bar-line.-cant { color: var(--text); }
 .m-quotes-bar-warn { display: flex; align-items: flex-start; gap: 6px; font-size: 13px; line-height: 1.35; font-weight: 600; color: var(--orange); }
