@@ -1,11 +1,5 @@
-<!-- lead-summary: Overview tab of the lead page -->
+<!-- lead-summary: Overview tab. What the caller needs at a glance, nothing to read through. -->
 <div class="m-sum">
-<sc-if value="{{ m.sum.cbShow }}">
-<div class="m-sum-cb" role="alert">
-<div class="m-sum-cb-top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><div class="m-grow"><span class="m-sum-eyebrow">Callback due · another lead</span><strong class="m-sum-cb-text">{{ m.sum.cbText }}</strong><span class="m-sum-cb-sub">{{ m.sum.cbSub }}</span></div></div>
-<div class="m-sum-cb-acts"><button type="button" class="m-btn m-sum-cb-call" onClick="{{ m.sum.cbCall }}">Call now</button><button type="button" class="m-btn m-sum-cb-snooze" onClick="{{ m.sum.cbSnooze }}">Snooze 10 min</button></div>
-</div>
-</sc-if>
 <sc-if value="{{ m.sum.banner.show }}">
 <div class="m-banner {{ m.sum.banner.cls }}" role="note">
 <sc-if value="{{ m.sum.banner.stop }}"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg></sc-if>
@@ -13,16 +7,18 @@
 <div class="m-grow"><strong class="m-sum-banner-title">{{ m.sum.banner.title }}</strong><span class="m-sum-banner-text">{{ m.sum.banner.text }}</span></div>
 </div>
 </sc-if>
-<section class="m-sum-why" aria-labelledby="msumWhy" style="background: {{ sel.whyBg }}">
-<h2 class="m-sum-eyebrow" id="msumWhy" style="color: {{ sel.whyFg }}">Why now</h2>
-<p class="m-sum-why-text" style="color: {{ sel.whyFg }}">{{ sel.whyLong }}</p>
-<sc-if value="{{ m.sum.hasNext }}"><p class="m-sum-next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span><span class="m-sr">Next: </span>{{ m.sum.next }}</span></p></sc-if>
+
+<section class="m-card m-sum-head" aria-label="Why call now">
+<p class="m-sum-why" style="color: {{ m.sum.whyFg }}">{{ m.sum.why }}</p>
+<sc-if value="{{ m.sum.hasNext }}"><p class="m-sum-next"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ m.sum.next }}</p></sc-if>
+<sc-if value="{{ m.sum.hasChips }}"><div class="m-sum-chips"><sc-for list="{{ m.sum.chips }}" as="kc"><span class="m-tag -wrap {{ kc.cls }}">{{ kc.t }}</span></sc-for></div></sc-if>
+<sc-if value="{{ m.sum.hasMerge }}"><button type="button" class="m-btn -sm -soft m-sum-merge" onClick="{{ m.sum.merge.act }}">{{ m.sum.merge.label }}</button></sc-if>
 </section>
+
 <sc-for list="{{ m.sum.strips }}" as="strip">
 <section class="m-card m-sum-strip {{ strip.cls }}" aria-label="{{ strip.title }}">
-<h2 class="m-sum-eyebrow m-sum-strip-title">{{ strip.title }}</h2>
+<div class="m-inline -between"><h2 class="m-sum-eyebrow m-sum-strip-title">{{ strip.title }}</h2></div>
 <p class="m-sum-strip-head">{{ strip.head }}</p>
-<p class="m-small">{{ strip.sub }}</p>
 <ol class="m-sum-steps" aria-label="Steps">
 <sc-for list="{{ strip.steps }}" as="step"><li class="m-sum-step {{ step.cls }}" aria-current="{{ step.cur }}"><span class="m-sum-step-n" aria-hidden="true">{{ step.n }}</span><span class="m-sum-step-l">{{ step.label }}<span class="m-sr">, {{ step.state }}</span></span></li></sc-for>
 </ol>
@@ -32,62 +28,24 @@
 </sc-if>
 </section>
 </sc-for>
-<sc-if value="{{ m.sum.hasKnow }}">
-<section class="m-card -nopad" aria-labelledby="msumKnow">
-<h2 class="m-sum-cardhead" id="msumKnow">Things to know</h2>
-<ul class="m-list">
-<sc-for list="{{ m.sum.know }}" as="kn">
-<li class="m-sum-know {{ kn.cls }}">
-<span class="m-sum-ico" aria-hidden="true">
-<sc-if value="{{ kn.isOwner }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg></sc-if>
-<sc-if value="{{ kn.isOwner }}" not>
-<sc-if value="{{ kn.isAi }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path><path d="M19 16v4M17 18h4"></path></svg></sc-if>
-<sc-if value="{{ kn.isWarn }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l9.5 16.5h-19z"></path><path d="M12 10v4.5M12 17.5v.1"></path></svg></sc-if>
-<sc-if value="{{ kn.isStop }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M5.6 5.6l12.8 12.8"></path></svg></sc-if>
-<sc-if value="{{ kn.isNote }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.1"></path></svg></sc-if>
-</sc-if>
-</span>
-<div class="m-grow m-sum-know-main">
-<strong class="m-sum-know-label">{{ kn.label }}</strong>
-<sc-if value="{{ kn.hasSub }}"><span class="m-small">{{ kn.sub }}</span></sc-if>
-<sc-if value="{{ kn.hasSel }}"><div class="m-field m-sum-reassign"><label for="msumOwner">Move this lead to</label><select id="msumOwner" class="m-select" onChange="{{ kn.onSel }}"><sc-for list="{{ kn.opts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div></sc-if>
-<sc-if value="{{ kn.hasAct }}"><button type="button" class="m-btn -sm m-sum-know-act" onClick="{{ kn.act }}">{{ kn.actLabel }}</button></sc-if>
-</div>
-</li>
-</sc-for>
-</ul>
-</section>
-</sc-if>
-<sc-if value="{{ m.sum.hasSummary }}">
-<section class="m-sum-ai" aria-labelledby="msumAi">
-<h2 class="m-sum-eyebrow" id="msumAi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"></path><path d="M19 16v4M17 18h4"></path></svg>AI summary</h2>
-<p class="m-sum-ai-text">{{ m.sum.summary }}</p>
-</section>
-</sc-if>
-<dl class="m-grid2 m-sum-facts" aria-label="Lead facts">
-<sc-for list="{{ m.sum.facts }}" as="tile"><div class="m-stat"><dt class="m-stat-k">{{ tile.k }}</dt><dd class="m-sum-fact-v" style="color: {{ tile.fg }}">{{ tile.v }}</dd><dd class="m-stat-sub">{{ tile.sub }}</dd></div></sc-for>
+
+<dl class="m-sum-facts" aria-label="Key facts">
+<sc-for list="{{ m.sum.facts }}" as="kf"><div class="m-sum-fact"><dt>{{ kf.k }}</dt><dd style="color: {{ kf.fg }}">{{ kf.v }}</dd></div></sc-for>
 </dl>
-<sc-if value="{{ m.sum.hasTalk }}">
-<section class="m-card m-sum-talk" aria-labelledby="msumTalk">
-<h2 class="m-sum-cardtitle" id="msumTalk">What to say</h2>
-<sc-if value="{{ m.sum.hasSay }}"><ul class="m-sum-points"><sc-for list="{{ m.sum.say }}" as="pt"><li>{{ pt.t }}</li></sc-for></ul></sc-if>
-<sc-if value="{{ m.sum.hasAsk }}"><div class="m-sum-talkrow"><span class="m-sum-talk-k">Ask</span><span class="m-sum-talk-v">{{ m.sum.ask }}</span></div></sc-if>
-<sc-if value="{{ m.sum.hasObj }}"><div class="m-sum-talkrow"><span class="m-sum-talk-k">If they say {{ m.sum.objQ }}</span><span class="m-sum-talk-v">{{ m.sum.objA }}</span></div></sc-if>
-</section>
-</sc-if>
-<section class="m-card m-sum-quotes" aria-labelledby="msumQ">
+
+<button type="button" class="m-card m-sum-row" onClick="{{ m.toQuotes }}">
 <span class="m-sum-ico -tag" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"></path><circle cx="8" cy="8" r="1.4"></circle></svg></span>
-<div class="m-grow m-sum-know-main"><h2 class="m-sum-know-label" id="msumQ">{{ m.sum.quotes.title }}</h2><span class="m-small">{{ m.sum.quotes.sub }}</span></div>
-<button type="button" class="m-btn -sm -soft m-fixed" onClick="{{ m.toQuotes }}">{{ m.sum.quotes.btn }}</button>
-</section>
-<section class="m-card -nopad" aria-labelledby="msumHist">
-<h2 class="m-sum-cardhead" id="msumHist">Recent history</h2>
-<sc-if value="{{ m.sum.hasHist }}">
-<ul class="m-list">
-<sc-for list="{{ m.sum.hist }}" as="hrow"><li class="m-sum-hist"><div class="m-inline -between"><span class="m-tiny">{{ hrow.when }}</span><span class="m-tag {{ hrow.cls }}">{{ hrow.by }}</span></div><span class="m-sum-hist-t">{{ hrow.t }}</span><span class="m-tiny">{{ hrow.meta }}</span></li></sc-for>
-</ul>
+<span class="m-grow m-sum-row-main"><span class="m-sum-row-k">{{ m.sum.quotes.title }}</span><span class="m-sum-row-v">{{ m.sum.quotes.sub }}</span></span>
+<svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</button>
+
+<button type="button" class="m-card m-sum-row" onClick="{{ m.toHist }}">
+<span class="m-sum-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path><path d="M12 7v5l3 2"></path></svg></span>
+<span class="m-grow m-sum-row-main"><span class="m-sum-row-k">Last contact</span><sc-if value="{{ m.sum.hasLast }}"><span class="m-sum-row-v">{{ m.sum.lastT }}</span><span class="m-tiny">{{ m.sum.lastWhen }}</span></sc-if><sc-if value="{{ m.sum.hasLast }}" not><span class="m-sum-row-v">No calls yet</span></sc-if></span>
+<svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+</button>
+
+<sc-if value="{{ m.sum.hasReassign }}">
+<div class="m-card m-field m-sum-reassign"><label for="msumOwner">Owner</label><select id="msumOwner" class="m-select" onChange="{{ m.sum.reassign.onSel }}"><sc-for list="{{ m.sum.reassign.opts }}" as="opt"><option value="{{ opt.val }}" selected="{{ opt.on }}">{{ opt.label }}</option></sc-for></select></div>
 </sc-if>
-<sc-if value="{{ m.sum.hasHist }}" not><p class="m-sum-hist-none">No calls yet. The first attempt will appear here.</p></sc-if>
-<sc-if value="{{ m.sum.hasHist }}"><div class="m-sum-histfoot"><button type="button" class="m-btn -quiet -block" onClick="{{ m.sum.seeHist }}">{{ m.sum.histAllLabel }}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button></div></sc-if>
-</section>
 </div>

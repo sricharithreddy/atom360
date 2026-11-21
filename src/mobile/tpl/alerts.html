@@ -1,0 +1,43 @@
+<!-- Alerts: callback reminders and what needs the caller now. -->
+<sc-if value="{{ m.alertsOpen }}">
+<div class="m-sheet -z3">
+<button type="button" class="m-backdrop" aria-label="Close alerts" onClick="{{ m.closeSheet }}"></button>
+<section class="m-sheet-card" role="dialog" aria-modal="true" aria-labelledby="malT" data-m-layer="alerts" tabindex="-1">
+<div class="m-sheet-head"><h2 class="m-h2" id="malT">Alerts</h2><button type="button" class="m-iconbtn" aria-label="Close alerts" onClick="{{ m.closeSheet }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div class="m-sheet-body m-al">
+
+<sc-if value="{{ m.alerts.due.show }}">
+<section class="m-al-due" aria-labelledby="malDue">
+<p class="m-al-k" id="malDue"><span class="m-al-dot" aria-hidden="true"></span>Callback due</p>
+<p class="m-al-name">{{ m.alerts.due.title }}</p>
+<p class="m-al-sub">{{ m.alerts.due.sub }}</p>
+<div class="m-inline"><button type="button" class="m-btn m-al-call -grow" onClick="{{ m.alerts.due.call }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"></path></svg>Call now</button><button type="button" class="m-btn m-al-snz" onClick="{{ m.alerts.due.snooze }}">Snooze 10 min</button></div>
+</section>
+</sc-if>
+<sc-if value="{{ m.alerts.due.snoozed }}">
+<div class="m-al-snoozed"><span class="m-grow">{{ m.alerts.due.snoozeText }}</span><button type="button" class="m-btn -sm -quiet m-fixed" onClick="{{ m.alerts.due.unsnooze }}">Show again</button></div>
+</sc-if>
+
+<sc-if value="{{ m.alerts.hasPending }}">
+<section aria-labelledby="malP"><h3 class="m-al-h" id="malP">Outcome not logged</h3>
+<div class="m-card -flat -nopad"><div class="m-list"><sc-for list="{{ m.alerts.pending }}" as="al"><button type="button" class="m-item" onClick="{{ al.open }}"><span class="m-al-ic {{ al.cls }}" aria-hidden="true"></span><span class="m-item-main"><span class="m-item-title m-clip">{{ al.name }}</span><span class="m-item-sub">{{ al.text }}</span></span><svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button></sc-for></div></div>
+</section>
+</sc-if>
+
+<sc-if value="{{ m.alerts.hasAi }}">
+<section aria-labelledby="malA"><h3 class="m-al-h" id="malA">Ready to renew</h3>
+<div class="m-card -flat -nopad"><div class="m-list"><sc-for list="{{ m.alerts.ai }}" as="al"><button type="button" class="m-item" onClick="{{ al.open }}"><span class="m-al-ic {{ al.cls }}" aria-hidden="true"></span><span class="m-item-main"><span class="m-item-title m-clip">{{ al.name }}</span><span class="m-item-sub">{{ al.text }}</span></span><svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button></sc-for></div></div>
+</section>
+</sc-if>
+
+<sc-if value="{{ m.alerts.hasLater }}">
+<section aria-labelledby="malL"><h3 class="m-al-h" id="malL">Callbacks later</h3>
+<div class="m-card -flat -nopad"><div class="m-list"><sc-for list="{{ m.alerts.later }}" as="al"><button type="button" class="m-item" onClick="{{ al.open }}"><span class="m-al-ic {{ al.cls }}" aria-hidden="true"></span><span class="m-item-main"><span class="m-item-title m-clip">{{ al.name }}</span><span class="m-item-sub">{{ al.text }}</span></span><svg class="m-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button></sc-for></div></div>
+</section>
+</sc-if>
+
+<sc-if value="{{ m.alerts.none }}"><p class="m-empty">Nothing needs you right now. Promised callbacks and calls without an outcome show up here.</p></sc-if>
+</div>
+</section>
+</div>
+</sc-if>

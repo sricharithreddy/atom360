@@ -26,19 +26,22 @@ The phone is a calling tool first and a dashboard second.
 
 ## How the phone app is organised
 
-- **Bottom tabs:** Today, Stats, Learn, and Admin (team lead and admin only). The same four places as the desktop rail.
-- **Top bar:** screen name, search, and the signed-in person's initial. The initial opens a small menu with the sample-only controls ("view as", "AI call: customer says yes").
-- **Search** opens as a full screen with the keyboard up. It works from every tab (on desktop a result only opens from Today).
-- **A lead opens as a full-screen page** over the queue, so the queue keeps its place when you come back. The page has three tabs:
-  - **Overview**: why to call now, what to know before calling, next steps (payment, lapsed policy), AI summary, the four facts, recent history.
+- **Top bar on Today:** a search bar with the **filters** button inside it on the right, the **alerts** bell, and the signed-in person's initial.
+- **No bottom tabs.** The queue gets the whole screen. Stats, Learn and Admin (team lead and admin only) open from the menu behind the initial; on those screens the top bar has a back arrow to Today.
+- **Alerts** (the bell, with a count) hold the promised callback that is due (Call now, Snooze), calls made without an outcome, customers who told the AI they want to renew, and callbacks later today. They used to sit on the Today screen.
+- **Today** starts with a slim strip of four numbers: calls against target, connected, renewed, and the month against target. Then the lists (Due now, Hot, Follow-ups, All), the one-tap key filters, and the lead cards.
+- **Search** opens as a full screen with the keyboard up. It works from every screen.
+- **A lead opens as a full-screen page** over the queue, so the queue keeps its place. Four tabs:
+  - **Overview**: why to call now and the next call time, a few short tags (Hot, With AI, showroom quote...), the payment or lapsed-policy steps when there are any, six key facts (policy end, last year's insurer, NCB, IDV, attempts, last spoke), and two rows that lead to the best quote and the last contact. No scripts or long explanations.
   - **Quotes**: insurer quotes, edit or add a quote, previous policy, send the chosen quote on WhatsApp.
-  - **Customer**: contact (hidden until you call or message), language, address, and the records: documents, claims, history, coupons.
+  - **History**: two views. **Calls & messages** (calls, AI calls, WhatsApp and email), and **Service** (visits to our workshop: periodic service, repairs, claim repairs, with amount and kilometres).
+  - **Customer**: contact (hidden until you call or message), language, address, and documents, claims and coupons.
 - **The action dock** at the bottom of the lead page always holds the next step of the calling loop:
-  - before a call: WhatsApp, Email, Log outcome, **Call**
+  - before a call: WhatsApp, Email, Outcome, **Call**
   - during or after a call: End, **No answer**, **Connected**. Either one opens the outcome sheet with that step already chosen.
-- **Sheets** slide up from the bottom for a single task: filters, call outcome, message composer.
-- **A live call follows you.** A green strip under the top bar on every tab leads back to the lead you are on a call with.
-- **Messages from the app** ("Saved for Kavya. Now on Fatima.") appear at the top wherever you are and clear by themselves.
+- **Sheets** slide up from the bottom for a single task: filters, alerts, call outcome, message composer.
+- **A live call follows you.** A green strip under the top bar leads back to the lead you are on a call with.
+- **Messages from the app** ("Saved for Kavya. Now on Fatima.") appear at the top and clear by themselves.
 - **Back** closes one thing at a time. From Stats, Learn or Admin it returns to Today. It will not leave the app while a call is live.
 
 ## Decisions taken for the phone
@@ -63,6 +66,7 @@ The live site has a **Desktop / Mobile** switch at the bottom of the left rail. 
 - Scan policy and New enquiry (they have no behaviour on desktop yet).
 - A landscape or tablet-specific layout. Tablets held upright get the phone layout in a centred column; wider screens get the desktop app.
 - Saved data. As on desktop, everything is sample data and resets on reload.
+- Real service history. The Service view shows sample workshop visits kept in `src/mobile/vals/lead-history.ts` until the dealer's workshop system is connected. The desktop does not show service history yet.
 
 ## Things inherited from the desktop logic (worth fixing there, for both)
 

@@ -68,18 +68,7 @@
 <sc-for list="{{ m.cust.tabs }}" as="rt"><button type="button" role="tab" aria-selected="{{ rt.selected }}" aria-label="{{ rt.say }}" onClick="{{ rt.pick }}">{{ rt.label }}<sc-if value="{{ rt.hasCount }}"><span class="m-count" aria-hidden="true" style="background: {{ rt.countBg }}; color: {{ rt.countFg }}">{{ rt.count }}</span></sc-if></button></sc-for>
 </div>
 
-<sc-if value="{{ recIsHist }}">
-<div class="m-cust-panel" role="tabpanel" aria-label="History">
-<sc-if value="{{ m.cust.histEmpty }}"><p class="m-empty m-cust-empty">No calls yet. The first attempt will appear here.</p></sc-if>
-<sc-if value="{{ m.cust.histEmpty }}" not>
-<ol class="m-list m-cust-list">
-<sc-for list="{{ m.cust.hist }}" as="hr"><li class="m-cust-hist"><div class="m-cust-hist-top"><span class="m-tiny">{{ hr.when }}</span><span class="m-tag" style="background: {{ hr.bg }}; color: {{ hr.fg }}"><span class="m-sr">by </span>{{ hr.by }}</span></div><p class="m-cust-hist-t m-wrap">{{ hr.t }}</p><span class="m-tiny">{{ hr.meta }}</span></li></sc-for>
-</ol>
-</sc-if>
-</div>
-</sc-if>
-
-<sc-if value="{{ recIsDocs }}">
+<sc-if value="{{ m.cust.isDocs }}">
 <div class="m-cust-panel" role="tabpanel" aria-label="Documents">
 <div class="m-cust-top"><span class="m-small m-grow">{{ docSummary }}</span><sc-if value="{{ m.cust.addBtn }}"><button type="button" class="m-btn -sm -soft" aria-label="Add document" aria-expanded="false" onClick="{{ toggleAddDoc }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add</button></sc-if></div>
 <sc-if value="{{ m.cust.addOpen }}">

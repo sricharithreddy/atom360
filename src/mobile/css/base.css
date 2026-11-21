@@ -82,7 +82,7 @@ html.m-lock, html.m-lock body { overflow: hidden; }
 .m-bar {
   position: sticky; top: 0; z-index: 20;
   display: flex; align-items: center; gap: 4px;
-  min-height: calc(var(--bar-h) + var(--safe-t)); padding: var(--safe-t) 8px 0 var(--pad);
+  min-height: calc(var(--bar-h) + var(--safe-t)); padding: var(--safe-t) 4px 0 var(--pad);
   background: #FFFFFF;
   border-bottom: 1px solid var(--line-soft);
 }
@@ -91,7 +91,7 @@ html.m-lock, html.m-lock body { overflow: hidden; }
 .m-avatar.-lg { width: 44px; height: 44px; font-size: 16px; }
 .m-avatar.-soft { background: var(--primary-soft); color: var(--primary-dark); }
 
-.m-main { flex: 1 1 auto; min-width: 0; padding: var(--pad) var(--pad) calc(var(--tab-h) + var(--safe-b) + 24px); display: flex; flex-direction: column; gap: var(--gap); }
+.m-main { flex: 1 1 auto; min-width: 0; padding: 12px var(--pad) calc(var(--safe-b) + 24px); display: flex; flex-direction: column; gap: var(--gap); }
 
 .m-tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;

@@ -114,6 +114,7 @@ function* states(): Generator<{ name: string; vals: any }> {
       const app = makeApp();
       app.state = { ...app.state, me, view };
       yield { name: `${me}/${view}`, vals: app.renderVals() };
+      if (view === 'today') for (const mSheet of ['alerts', 'menu', 'search']) { app.state = { ...app.state, mSheet, q: 'ka' }; yield { name: `${me}/today/${mSheet}`, vals: app.renderVals() }; }
       if (view === 'stats') for (const stTab of ['leads', 'calls', 'board']) { app.state = { ...app.state, stTab, stPer: 'custom' }; yield { name: `${me}/stats/${stTab}`, vals: app.renderVals() }; }
       if (view === 'learn') for (const lnTab of ['play', 'less', 'news']) { app.state = { ...app.state, lnTab }; yield { name: `${me}/learn/${lnTab}`, vals: app.renderVals() }; }
       if (view === 'admin') for (const adTab of ['rules', 'msg', 'log']) for (const msTab of ['journey', 'tpl', 'sent', 'rules']) { app.state = { ...app.state, adTab, msTab }; yield { name: `${me}/admin/${adTab}/${msTab}`, vals: app.renderVals() }; }
@@ -121,7 +122,7 @@ function* states(): Generator<{ name: string; vals: any }> {
     for (let sel = 0; sel < 12; sel++) {
       const app = makeApp();
       app.state = { ...app.state, me, view: 'today', sel, open: true };
-      for (const mTab of ['sum', 'quotes', 'cust']) { app.state = { ...app.state, mTab }; yield { name: `${me}/lead${sel}/${mTab}`, vals: app.renderVals() }; }
+      for (const mTab of ['sum', 'quotes', 'hist', 'cust']) { app.state = { ...app.state, mTab }; yield { name: `${me}/lead${sel}/${mTab}`, vals: app.renderVals() }; }
       // a call, then the outcome sheet and the composer
       app.renderVals().startCall();
       app.state = { ...app.state, mSheet: 'outcome' };
@@ -129,7 +130,7 @@ function* states(): Generator<{ name: string; vals: any }> {
       yield { name: `${me}/lead${sel}/call`, vals: app.renderVals() };
       app.renderVals().panelWa();
       yield { name: `${me}/lead${sel}/message`, vals: app.renderVals() };
-      app.state = { ...app.state, msg: null, mSheet: null, fOpen: true, qview: { k: sel, v: 'prev' }, rec: 'docs', mTab: 'quotes' };
+      app.state = { ...app.state, msg: null, mSheet: null, fOpen: true, qview: { k: sel, v: 'prev' }, rec: 'docs', mTab: 'hist', mHistSeg: 'svc' };
       yield { name: `${me}/lead${sel}/prev`, vals: app.renderVals() };
     }
   }

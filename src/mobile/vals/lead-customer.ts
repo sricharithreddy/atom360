@@ -20,12 +20,14 @@ export default function (v: any, ctx: MobileCtx): any {
   const lang = (ct.langOpts || []).filter((o: any) => o.on).map((o: any) => o.label)[0] || '';
 
   // ---- records
-  const tabs = (v.recTabs || []).map((t: any) => {
+  // History has its own tab on the lead page; Records keeps documents, claims and coupons.
+  const histSel = !!v.recIsHist;
+  const tabs = (v.recTabs || []).filter((t: any) => t.label !== 'History').map((t: any) => {
     const has = ctx.shown(t.countShow), n = String(t.count);
     const extra = !has ? '' : t.label === 'Documents' ? n.replace('/', ' of ') + ' accepted' : t.label === 'Coupons' ? n + (canEdit ? ' to apply' : ' unused') : t.label === 'History' ? n + (n === '1' ? ' entry' : ' entries') : n + ' on record';
     return {
       label: t.label === 'Documents' ? 'Docs' : t.label, say: t.label + (extra ? ', ' + extra : ''),
-      selected: t.selected, pick: t.pick, count: t.count, hasCount: has, countBg: t.countBg, countFg: t.countFg,
+      selected: histSel && t.label === 'Documents' ? 'true' : t.selected, pick: t.pick, count: t.count, hasCount: has, countBg: t.countBg, countFg: t.countFg,
     };
   });
   const addOpen = canEdit && ctx.shown(v.addDocShow);
@@ -49,7 +51,7 @@ export default function (v: any, ctx: MobileCtx): any {
   const mem = self.__mCust || (self.__mCust = { on: false, rec: 'hist', jump: 0, sel: null });
   if (onTab) {
     const jump = s.mCustJump || 0;
-    const arrived = !mem.on && mem.sel === i && rec !== mem.rec && (rec === 'claims' || rec === 'hist');
+    const arrived = !mem.on && mem.sel === i && rec !== mem.rec && rec === 'claims';
     if ((arrived || jump !== mem.jump) && typeof document !== 'undefined') {
       setTimeout(() => { const el = document.getElementById('rec12'); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' }); }, 140);
     }
@@ -58,6 +60,7 @@ export default function (v: any, ctx: MobileCtx): any {
   mem.on = onTab;
 
   return {
+    isDocs: !!v.recIsDocs || histSel,
     canEdit,
     // contact
     exposed, hidden: !exposed && !blocked, blocked,

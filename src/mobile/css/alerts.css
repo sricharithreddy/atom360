@@ -1,0 +1,15 @@
+/* Alerts sheet */
+.m-al { gap: 18px; }
+.m-al-due { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: var(--r-lg); background: var(--magenta-soft); border: 1px solid #F2BFD4; }
+.m-al-k { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--magenta); }
+.m-al-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--magenta); }
+.m-al-name { font-size: 17px; font-weight: 700; }
+.m-al-sub { font-size: 14px; color: #7A1340; margin-bottom: 6px; }
+.m-al-call { background: var(--magenta); border-color: var(--magenta); color: #FFFFFF; }
+.m-al-snz { border-color: #E6A9C2; color: var(--magenta); background: #FFFFFF; }
+.m-al-snoozed { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 14px; border-radius: var(--r); background: var(--tint); font-size: 14px; color: var(--text); }
+.m-al-h { margin: 0 0 8px 2px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.m-al-ic { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; background: var(--faint); }
+.m-al-ic.-orange { background: #EA7A2B; }
+.m-al-ic.-purple { background: var(--purple); }
+.m-al-ic.-blue { background: var(--primary); }

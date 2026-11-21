@@ -1,0 +1,16 @@
+/* History tab */
+.m-hist-seg > button { font-size: 13px; }
+.m-hist-sum { padding: 0 2px; }
+.m-hist-tl { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line-soft); border-radius: var(--r-lg); padding: 4px 14px; }
+.m-hist-row { display: flex; gap: 12px; padding: 12px 0; }
+.m-hist-row + .m-hist-row { border-top: 1px solid var(--line-soft); }
+.m-hist-ic { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-soft); color: var(--primary-dark); }
+.m-hist-ic.-ai { background: var(--purple-soft); color: var(--purple); }
+.m-hist-ic.-msg { background: var(--green-soft); color: var(--green); }
+.m-hist-ic.-svc { background: #EEF0F6; color: var(--text); }
+.m-hist-ic.-claim { background: var(--orange-soft); color: var(--orange); }
+.m-hist-body { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.m-hist-t { font-size: 15px; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.m-hist-amt { font-size: 15px; }
+.m-hist-note { font-size: 13px; color: var(--text); }
+.m-hist-src { padding: 0 2px; }

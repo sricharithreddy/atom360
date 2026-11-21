@@ -109,6 +109,8 @@ export default function (v: any, ctx: MobileCtx): any {
 
   return {
     scope: isTeam ? 'Team today' : 'Your day so far',
+    callsW: (() => { const c = parseInt(String(v.hs && v.hs.calls).replace(/[^0-9]/g, ''), 10) || 0, t = parseInt(String(v.hs && v.hs.callsT).replace(/[^0-9]/g, ''), 10) || 0; return t ? Math.min(100, Math.round((c / t) * 100)) + '%' : '0%'; })(),
+    hasPills: (v.quick || []).length > 0 || (v.chips || []).length > 0,
     // callback banner
     cbShow: on(cb.homeShow), cbSnoozed: on(cb.snoozedShow),
     cbSnoozeText: String(cb.snoozeText || '').replace(/\s*It comes back on its own\.?/, ''),

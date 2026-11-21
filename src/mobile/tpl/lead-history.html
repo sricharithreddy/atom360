@@ -1,0 +1,42 @@
+<!-- History tab: calls and messages, and service visits at our workshop. -->
+<div class="m-seg m-hist-seg" role="tablist" aria-label="History">
+<sc-for list="{{ m.hist.segs }}" as="hs2"><button type="button" role="tab" aria-selected="{{ hs2.on }}" onClick="{{ hs2.pick }}">{{ hs2.label }} <span class="m-count">{{ hs2.n }}</span></button></sc-for>
+</div>
+
+<sc-if value="{{ m.hist.segComm }}">
+<sc-if value="{{ m.hist.hasComm }}">
+<ol class="m-hist-tl">
+<sc-for list="{{ m.hist.comm }}" as="hc">
+<li class="m-hist-row">
+<span class="m-hist-ic {{ hc.cls }}" aria-hidden="true">
+<sc-if value="{{ hc.kind }}" eq="call"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"></path></svg></sc-if>
+<sc-if value="{{ hc.kind }}" eq="msg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path></svg></sc-if>
+<sc-if value="{{ hc.kind }}" eq="ai"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>
+</span>
+<div class="m-hist-body"><p class="m-hist-t">{{ hc.t }}</p><p class="m-tiny">{{ hc.when }} · {{ hc.by }}<sc-if value="{{ hc.meta }}"> · {{ hc.meta }}</sc-if></p></div>
+</li>
+</sc-for>
+</ol>
+</sc-if>
+<sc-if value="{{ m.hist.hasComm }}" not><p class="m-empty">No calls or messages yet.</p></sc-if>
+</sc-if>
+
+<sc-if value="{{ m.hist.segSvc }}">
+<sc-if value="{{ m.hist.hasVisits }}">
+<p class="m-small m-hist-sum">{{ m.hist.svcSummary }}</p>
+<ol class="m-hist-tl">
+<sc-for list="{{ m.hist.visits }}" as="sv">
+<li class="m-hist-row">
+<span class="m-hist-ic -svc {{ sv.cls }}" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"></path></svg></span>
+<div class="m-hist-body">
+<div class="m-inline -between -top"><p class="m-hist-t">{{ sv.kind }}</p><strong class="m-fixed m-num m-hist-amt">{{ sv.amt }}</strong></div>
+<p class="m-tiny">{{ sv.when }} · {{ sv.km }} · {{ sv.by }}</p>
+<sc-if value="{{ sv.hasNote }}"><p class="m-hist-note">{{ sv.note }}</p></sc-if>
+</div>
+</li>
+</sc-for>
+</ol>
+<p class="m-tiny m-hist-src">From the Kukatpally workshop records (sample data).</p>
+</sc-if>
+<sc-if value="{{ m.hist.hasVisits }}" not><p class="m-empty">No visits to our workshop. This customer services the car elsewhere.</p></sc-if>
+</sc-if>
