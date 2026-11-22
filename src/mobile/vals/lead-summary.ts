@@ -212,6 +212,9 @@ export default function (v: any, ctx: MobileCtx): any {
     hasLast: !!last, lastT: last ? last.t : '', lastWhen: last ? last.when + ' · ' + last.by : '',
     attempts: (stat('Attempts').v || '0') + ' attempts',
     vehicle, policy,
+    // one-line summary, coloured by interest as in the sales CRM: green good, orange needs attention, grey neutral
+    summary: pn.summary || '', hasSummary: !!pn.summary,
+    pulseCls: interest && interest.v === 'Hot' ? '-good' : interest && interest.v === 'Warm' ? '-warn' : '',
     vehOpen, vehOpenStr: vehOpen ? 'true' : 'false', vehMore: vehOpen ? 'Hide' : (vehicle.ev ? 'Chassis, motor' : 'Chassis, engine'),
     toggleVeh: () => ctx.set({ mVehOpen: !vehOpen }),
   };
