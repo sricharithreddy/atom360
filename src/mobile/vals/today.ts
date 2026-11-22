@@ -1,7 +1,7 @@
 import type { MobileCtx } from '../logic';
 import { copyText } from '../copy';
 import { cleanWhy, hasTime } from '../text';
-import { stageView, stageLabel } from '../stages';
+import { stageView, stageLabel, stagesByName } from '../stages';
 
 const SNOOZE_MS = 10 * 60 * 1000;
 const LIVE_BG = '#166534';
@@ -31,6 +31,27 @@ function moodOf(ctx: MobileCtx, name: any): string {
   return MOODS[plainName(name)] || '';
 }
 const SEP2 = /\s*·\s*/;
+// Priority stars (1-5): set by the app, not by the caller. A simple weighted score of what makes a
+// renewal urgent and worth winning. Replace with the real prioritisation service when it exists.
+function priorityOf(c: any, mood: string, blocked: boolean, lateCb: boolean, stage: string): number {
+  if (blocked || stage === 'paid' || stage === 'issued') return 1;
+  const dm = /(\d+)/.exec(String(c.daysLeft || ''));
+  const days = dm ? parseInt(dm[1], 10) * (/expired/i.test(String(c.daysLeft || '')) ? -1 : 1) : 60;
+  let score = days < 0 ? 28 : days <= 3 ? 30 : days <= 7 ? 25 : days <= 15 ? 18 : days <= 30 ? 10 : 4;
+  score += mood === 'Hot' ? 25 : mood === 'Warm' ? 15 : 5;
+  const cb = /^Promised/.test(String(c.cbText || '')) && String(c.cbShow) !== 'none';
+  score += lateCb ? 15 : cb ? 8 : 0;
+  const ncb = parseInt((/NCB (\d+)%/.exec(String(c.meta || '')) || [])[1] || '0', 10);
+  score += ncb >= 45 ? 10 : ncb >= 25 ? 6 : ncb > 0 ? 3 : 0;
+  const best = (c.quotes || []).filter((q: any) => q.n > 0)[0];
+  const amt = best ? Number(best.n) || 0 : 0;
+  score += amt >= 30000 ? 10 : amt >= 18000 ? 6 : amt > 0 ? 3 : 0;
+  const src = String(c.srcLine || '');
+  score += /^Own renewal/.test(src) ? 10 : /^Renewal from/.test(src) ? 8 : /^Winback/.test(src) ? 5 : /^Own lost/.test(src) ? 3 : 2;
+  score += stage === 'link' ? 12 : stage === 'quote' ? 5 : 0; // closest to money first
+  return score >= 70 ? 5 : score >= 58 ? 4 : score >= 46 ? 3 : score >= 30 ? 2 : 1;
+}
+
 const MOOD_CLS: Record<string, string> = { Hot: '-hot', Warm: '-warm', Cold: '-cold' };
 
 /** Phone values for the Today queue (m.today.*). Thin: regroups board values for the phone card and wraps a few handlers. */
@@ -96,6 +117,8 @@ export default function (v: any, ctx: MobileCtx): any {
       return { k: x.k, v: x.v, copied: copiedKey === id, label: 'Copy ' + String(x.k).toLowerCase() + ' ' + x.v, copy: () => copyText(ctx, x.v, x.k + ' copied', id) };
     });
 
+    const prio = priorityOf(c, mood, blocked, !!late, stagesByName(ctx)[plainName(c.name)] || 'new');
+
     return {
       moodCls, moodSay,
       rtypeText, rtypeCls, leadType, hasLeadType: !!leadType, cover, coverKnown,
@@ -104,8 +127,8 @@ export default function (v: any, ctx: MobileCtx): any {
       pulseCls: mood === 'Hot' ? '-good' : mood === 'Warm' ? '-warn' : '',
       vehOpen, vehOpenStr: vehOpen ? 'true' : 'false', vrows,
       toggleVeh: () => { const all = { ...(ctx.self.state.mCardVeh || {}) }; all[key] = !vehOpen; ctx.set({ mCardVeh: all }); },
-      stars: (c.stars || []).map((x: any) => ({ label: 'Rate ' + x.label, press: x.press, fill: x.fill === 'none' ? 'transparent' : x.fill, stroke: x.stroke, pick: x.pick })),
-      starLabel: c.starLabel || 'Lead rating',
+      stars: [1, 2, 3, 4, 5].map((n) => ({ cls: n <= prio ? '-on' : '' })),
+      prio, prioLabel: 'Priority ' + prio + ' of 5',
       name: String(c.name || '').replace(/ \(\+1 car\)$/, ' +1'), model: c.model, reg: c.reg,
       why: c.why, whyFg: c.whyFg,
       daysLeft: c.daysLeft, daysFg: c.daysFg, polDate: c.polDate,

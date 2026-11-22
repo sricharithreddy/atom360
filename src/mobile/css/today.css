@@ -135,10 +135,7 @@
 .m-today-cover > svg { margin-top: 1px; }
 .m-today-cover-t { min-width: 0; overflow-wrap: anywhere; }
 
-/* lead rating: 5 stars at the top right (the desktop's rating, shared) */
-.m-today-card { position: relative; }
-.m-today-stars { position: absolute; top: 6px; right: 6px; z-index: 2; display: flex; }
-.m-today-star { width: 25px; height: 40px; padding: 0; border: 0; background: transparent; display: inline-flex; align-items: center; justify-content: center; }
-.m-today-star:active { transform: scale(0.9); }
-.m-today-main .m-today-top { padding-right: 124px; }
-.m-today-meta { padding-right: 0; }
+/* priority: 1-5 small stars set by the app, packed tight next to the name */
+.m-today-prio { flex: 0 0 auto; display: inline-flex; gap: 1px; margin-left: auto; padding-left: 8px; align-self: center; }
+.m-today-pstar { fill: #DDE1EE; }
+.m-today-pstar.-on { fill: #F5A623; }
