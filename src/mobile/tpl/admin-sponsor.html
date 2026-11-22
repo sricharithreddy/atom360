@@ -1,0 +1,8 @@
+<section class="m-card m-admin-card m-stack" aria-labelledby="madSpH">
+<div class="m-inline -between"><h2 class="m-h2" id="madSpH">Sponsored insurer</h2><sc-if value="{{ m.adx.sponsorOn }}"><span class="m-tag m-spon-tag">Sponsored</span></sc-if></div>
+<p class="m-small">{{ m.adx.sponsorLine }}</p>
+<sc-if value="{{ m.adx.isAdmin }}">
+<div class="m-field"><label for="madSp">Insurer whose leads go first</label><select id="madSp" class="m-select" onChange="{{ m.adx.onSponsor }}"><sc-for list="{{ m.adx.sponsorOpts }}" as="so"><option value="{{ so.val }}" selected="{{ so.on }}">{{ so.label }}</option></sc-for></select></div>
+</sc-if>
+<sc-if value="{{ m.adx.isAdmin }}" not><p class="m-strong">Now: <sc-if value="{{ m.adx.sponsorOn }}">{{ m.adx.sponsor }}</sc-if><sc-if value="{{ m.adx.sponsorOn }}" not>None</sc-if></p></sc-if>
+</section>

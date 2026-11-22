@@ -105,3 +105,11 @@ button.m-quotes-ncb:active { background: var(--tint); }
 .m-quotes-facts dd > span { font-size: 12px; color: var(--muted); }
 
 /* The shell's toast would sit on top of this tab's bottom bar: lift it above the bar while the Quotes tab is showing. */
+
+/* how each quote reached the customer */
+.m-qshare-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 12px 16px 6px; }
+.m-qshare-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 16px; }
+.m-qshare-ic { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--primary-soft); color: var(--primary-dark); }
+.m-qshare-ic.-wa { background: var(--green-soft); color: var(--green); }
+.m-qshare-t { font-size: 14px; font-weight: 600; color: var(--ink); }
+.m-qshare-none { padding: 0 16px 14px; }

@@ -1,4 +1,5 @@
 import type { MobileCtx } from '../logic';
+import type { Share } from '../shares';
 
 /** Phone values for the Quotes tab of the lead page (template: m.quotes.*).
  *  Thin: real booleans from the board's display strings, one read-only summary of the selected quote,
@@ -88,7 +89,13 @@ export default function (v: any, ctx: MobileCtx): any {
     }, 30);
   };
   const cpList: any[] = v.cpOpts || [];
+  // ---- shared with the customer: quote cards and texts from the share log, plus quotes told on a call
+  const shares: Share[] = ((ctx.self.state.mQshares || {})[ctx.self.state.sel]) || [];
+  const told = (v.histRows || []).filter((h: any) => !/sent/i.test(String(h.t || '')) && /quote|agreed/i.test(String(h.t || '')) && h.by !== 'AI');
+  const shared = shares.map((x) => ({ ch: x.ch, icon: x.ch === 'Email' ? 'mail' : 'wa', title: x.kind + (x.insurer ? ' · ' + x.insurer + (x.amt ? ' ' + x.amt : '') : ''), sub: x.ch + ' · ' + x.when + ' · ' + x.by }))
+    .concat(told.map((h: any) => ({ ch: 'Call', icon: 'call', title: String(h.t), sub: 'On a call · ' + h.when + ' · ' + h.by })));
   return {
+    shared, hasShared: shared.length > 0, sharedCount: shared.length === 1 ? '1 time' : shared.length + ' times',
     canEdit, viewOnly: !canEdit,
     isQuotes: on(v.qv && v.qv.quotesShow), isPrev: on(v.qv && v.qv.prevShow),
     tabs: tabs.map((t) => ({ ...t, amtCls: t.amt === 'Unsaved' ? '-unsaved' : '', pick: () => { t.pick(); reveal(); } })),

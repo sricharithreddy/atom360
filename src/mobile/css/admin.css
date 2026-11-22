@@ -76,3 +76,4 @@
 .m-admin-ent:last-child::before { display: none; }
 .m-admin-ent-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .m-admin-ent-t { font-size: 14px; color: var(--ink); }
+.m-spon-tag, .m-tag.m-spon-tag { background: #FFF4D6; color: #8A5A00; font-weight: 800; }

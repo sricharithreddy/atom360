@@ -41,10 +41,12 @@
 </div>
 <button type="button" class="m-btn -primary -block" disabled="{{ m.admin.mvOff }}" onClick="{{ m.admin.doMove }}">{{ adm.mvBtn }}</button>
 </section>
+<!--@admin-move-->
 </sc-if>
 
 <!-- ============ Targets and rules ============ -->
 <sc-if value="{{ adm.rulesShow }}" eq="flex">
+<!--@admin-sponsor-->
 
 <!-- Team lead: values as plain text. The board locks these with CSS only, so no input is rendered at all. -->
 <sc-if value="{{ m.admin.isLead }}">

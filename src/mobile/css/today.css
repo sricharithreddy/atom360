@@ -144,3 +144,4 @@
 .m-seg.-scroll.m-today-tabs > button { flex: 1 0 auto; padding: 0 5px; font-size: 13px; gap: 4px; }
 .m-seg.-scroll.m-today-tabs .m-count { min-width: 16px; height: 17px; padding: 0 4px; font-size: 11px; }
 .m-today-tabs .m-count { min-width: 18px; height: 18px; padding: 0 5px; font-size: 11px; }
+.m-tag.m-spon-tag { background: #FFF4D6; color: #8A5A00; font-weight: 800; }

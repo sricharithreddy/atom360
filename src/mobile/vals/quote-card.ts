@@ -1,4 +1,5 @@
 import type { MobileCtx } from '../logic';
+import { logShare } from '../shares';
 
 /** Branded quote card (m.qcard.*): an image of the quote, made on the phone, shared on WhatsApp. */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -212,7 +213,7 @@ export default function (v: any, ctx: MobileCtx): any {
   }
 
   // log it the same way as a text quote: History gets "WhatsApp sent · Quote details" and the lead moves to Quote sent
-  const logSent = () => { const f = ctx.fresh(); if (f.send && !f.send.cant) { f.send.open(); const g = ctx.fresh(); if (g.mg && g.mg.send) g.mg.send(); } };
+  const logSent = () => { const f = ctx.fresh(); if (f.send && !f.send.cant) { logShare(ctx, f, 'Quote card', 'WhatsApp'); f.send.open(); const g = ctx.fresh(); if (g.mg && g.mg.send) g.mg.send(); } };
   const fileName = 'Quote ' + data.customer.replace(/[^A-Za-z ]/g, '').trim() + '.png';
   const share = async () => {
     const url = st && st.url; if (!url) return;

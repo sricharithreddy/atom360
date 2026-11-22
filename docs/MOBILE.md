@@ -66,6 +66,23 @@ The phone is a calling tool first and a dashboard second.
 7. **View-only means no edit controls.** On someone else's lead a telecaller sees a clear "View only" note and no edit buttons, instead of dimmed controls that do nothing. A team lead sees admin settings as plain text.
 8. **Readable outdoors.** Solid white cards, larger text than desktop (15 px, inputs 16 px), status always written as text as well as colour.
 
+## Added from dealer feedback (Rishi, 22 Nov 2026)
+
+| Feedback | What the phone version does now |
+| --- | --- |
+| Show "sold by us / external" on the customer profile | Customer tab **Profile**: *Sold by us · year · showroom* or *Bought elsewhere*; also a chip at the top of the lead's Overview |
+| Update address, email, profession, DOB, phone | Profile **Edit**: new mobile, email, date of birth, profession (address was already editable). A changed mobile or email is written to History |
+| A sponsoring insurer's leads on top | Admin → Targets and rules → **Sponsored insurer** (admin sets it). Those leads go first in every list, get a *Sponsored* tag and at least 4 priority stars |
+| Renewal year filter up to the 7th year | Sample data now has exact years (1st to 7th); the Filters list them in order |
+| Average time per call | Stats → Leads → Calls and contacts: **Avg time per call** next to avg attempts and contacts (also in Calling → Talk time) |
+| Breakdown by policy year | Stats → Leads → Breakdown → **Renewal year** |
+| Coupons and extra discount by caller | Stats → Overview (team lead and admin): coupons issued, average and highest discount, quotes over the 5% limit |
+| Move leads by insurer and renewal year | Admin → Team → **Move by insurer or renewal year** (from, to, insurer, year, including 5th to 7th) with a confirm |
+| Month-wise data check to stop lead mismatches | Menu → **Data check** (team lead and admin): per month, last year vs uploaded vs given to a caller, by category; *Ask operations to check* |
+| How a quote was shared | Quotes tab → **Shared with the customer**: quote card or text, WhatsApp or email, insurer and price, time and caller; quotes told on a call too |
+
+Sample figures: the coupons, data check and profile details are examples until the backend provides them. The manager tools (sponsored insurer, moves, breakdowns, coupons, data check) are desk work too, so they also belong in the desktop design.
+
 ## Showing it on a computer
 
 The live site has a **Desktop / Mobile** switch at the bottom of the left rail. **Mobile** opens the phone layout in a phone frame, with buttons for the phone's Back button and for restarting the demo with fresh sample data. Desktop and phone keep separate sample data, so switching back and forth keeps each where you left it. `/?view=mobile` opens straight in phone view. On a real phone the switch is not shown.

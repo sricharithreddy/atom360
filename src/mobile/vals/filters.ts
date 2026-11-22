@@ -50,7 +50,12 @@ export default function (v: any, ctx: MobileCtx): any {
   };
 
   const presets = (v.expPresets || []).map((p: any, n: number) => withStar(p, n, 'mfp'));
-  const opts = (v.catOpts || []).map((o: any, n: number) => withStar(o, n, 'mfo'));
+  // Renewal years read best in order (1st ... 7th), not by count
+  const ordinal = (o: any) => { const m = /^(\d+)/.exec(String(o.label || '')); return m ? +m[1] : 99; };
+  const curCat = (v.fCats || []).findIndex((c: any) => c.current === 'true');
+  const catList = (v.catOpts || []).slice();
+  if (IDS[curCat] === 'ren') catList.sort((a: any, b: any) => ordinal(a) - ordinal(b));
+  const opts = catList.map((o: any, n: number) => withStar(o, n, 'mfo'));
   const months = (v.months || []).map((mo: any, n: number) => ({ ...mo, uid: 'mfm' + n, zeroCls: mo.count || mo.on ? '' : '-zero' }));
 
   const dragOn = F.preset === 'drag' && !monthsOn.length;

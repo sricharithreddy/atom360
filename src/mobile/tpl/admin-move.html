@@ -1,0 +1,11 @@
+<section class="m-card m-stack" aria-labelledby="madMv2H">
+<div class="m-admin-sec -in"><h2 class="m-h2" id="madMv2H">Move by insurer or renewal year</h2><p class="m-small">For example, give a sponsoring insurer’s leads, or the 5th to 7th year renewals, to your best callers.</p></div>
+<div class="m-grid2">
+<div class="m-field"><label for="mmvF">From</label><select id="mmvF" class="m-select" onChange="{{ m.adx.mv.on.from }}"><sc-for list="{{ m.adx.mv.fromOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="mmvT">To</label><select id="mmvT" class="m-select" onChange="{{ m.adx.mv.on.to }}"><sc-for list="{{ m.adx.mv.toOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div>
+</div>
+<div class="m-field"><label for="mmvI">Insurer last year</label><select id="mmvI" class="m-select" onChange="{{ m.adx.mv.on.ins }}"><sc-for list="{{ m.adx.mv.insOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div>
+<div class="m-field"><label for="mmvY">Renewal year</label><select id="mmvY" class="m-select" onChange="{{ m.adx.mv.on.yr }}"><sc-for list="{{ m.adx.mv.yrOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div>
+<div class="m-card -tint m-stack -tight"><p class="m-strong">{{ m.adx.mv.count }}</p><sc-if value="{{ m.adx.mv.hasNames }}"><p class="m-small">{{ m.adx.mv.names }}</p></sc-if></div>
+<button type="button" class="m-btn -primary -block {{ m.adx.mv.off }}" onClick="{{ m.adx.mv.doMove }}">{{ m.adx.mv.btn }}</button>
+</section>

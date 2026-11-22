@@ -1,0 +1,22 @@
+<!-- Data check: leads uploaded vs last year, month by month (team lead and admin) -->
+<sc-if value="{{ m.mgr.dc.open }}">
+<section class="m-layer -z2" role="dialog" aria-modal="true" aria-labelledby="mdcT" data-m-layer="datacheck" tabindex="-1">
+<div class="m-layer-head">
+<button type="button" class="m-iconbtn" aria-label="Close data check" onClick="{{ m.mgr.dc.close }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<div class="m-layer-title"><strong id="mdcT">Data check</strong><span>Leads in the CRM against last year</span></div>
+</div>
+<div class="m-layer-body">
+<div class="m-seg" role="tablist" aria-label="Month"><sc-for list="{{ m.mgr.dc.months }}" as="dm"><button type="button" role="tab" aria-selected="{{ dm.on }}" onClick="{{ dm.pick }}">{{ dm.label }}</button></sc-for></div>
+<div class="m-banner {{ m.mgr.dc.summaryCls }}" role="status"><p><strong>{{ m.mgr.dc.month }}:</strong> {{ m.mgr.dc.summary }}</p></div>
+<sc-for list="{{ m.mgr.dc.rows }}" as="dr2">
+<section class="m-card m-stack -tight">
+<div class="m-inline -between -top"><div><h3 class="m-h3">{{ dr2.cat }}</h3><p class="m-tiny">{{ dr2.why }}</p></div><span class="m-tag -wrap {{ dr2.cls }}">{{ dr2.status }}</span></div>
+<dl class="m-mgr-kv"><div><dt>Last year</dt><dd>{{ dr2.exp }}</dd></div><div><dt>Uploaded</dt><dd>{{ dr2.up }}</dd></div><div><dt>With a caller</dt><dd>{{ dr2.allot }}</dd></div></dl>
+</section>
+</sc-for>
+<sc-if value="{{ m.mgr.dc.canAsk }}"><button type="button" class="m-btn -primary -block" onClick="{{ m.mgr.dc.ask }}">Ask operations to check {{ m.mgr.dc.month }}</button></sc-if>
+<sc-if value="{{ m.mgr.dc.sent }}"><p class="m-small">Sent to operations. Their reply will show in Alerts.</p></sc-if>
+<p class="m-tiny">Sample figures. With the backend this compares last year's policies and car sales with what was uploaded.</p>
+</div>
+</section>
+</sc-if>

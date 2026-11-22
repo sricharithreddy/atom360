@@ -1,0 +1,5 @@
+/* Manager tools: coupons by caller, data check */
+.m-mgr-row { padding: 12px 0; }
+.m-mgr-kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+.m-mgr-kv dt { font-size: 12px; font-weight: 600; color: var(--muted); }
+.m-mgr-kv dd { font-size: 15px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }

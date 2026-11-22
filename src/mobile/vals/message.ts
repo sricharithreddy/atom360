@@ -1,4 +1,5 @@
 import type { MobileCtx } from '../logic';
+import { logShare } from '../shares';
 
 const TAP_GUARD_MS = 500;
 const SEND_HOLD_MS = 400;
@@ -87,7 +88,11 @@ export default function (v: any, ctx: MobileCtx): any {
       const same = !!st.msg && !!msg && st.msg.k === msg.k && st.msg.ch === msg.ch;
       // an older note must not hide the board's "sent" confirmation
       ctx.set(st.mToast ? { mMsgBusy: false, mToast: '' } : { mMsgBusy: false });
-      if (same) ctx.fresh().mg.send();
+      if (same) {
+        // a quote sent as text goes into the quote share log, with its channel, insurer and price
+        if (st.msg.tpl === 'quote') logShare(ctx, ctx.fresh(), 'Text', st.msg.ch === 'mail' ? 'Email' : 'WhatsApp');
+        ctx.fresh().mg.send();
+      }
     }, SEND_HOLD_MS);
   };
   // Opening the composer drops an older phone note, which would sit over its title.

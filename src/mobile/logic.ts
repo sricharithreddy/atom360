@@ -17,6 +17,8 @@ import adminMessages from './vals/admin-messages';
 import alerts from './vals/alerts';
 import addPolicy from './vals/add-policy';
 import quoteCard from './vals/quote-card';
+import adminExtra from './vals/admin-extra';
+import manager from './vals/manager';
 import leadHistory from './vals/lead-history';
 
 /** Phones and small tablets get the phone layout; the desktop board needs about 900 px. */
@@ -44,7 +46,7 @@ export interface Layer { id: string; open: boolean; close: () => void }
 type Section = (v: any, ctx: MobileCtx) => any;
 const SECTIONS: Record<string, Section> = {
   today, filters, sum: leadSummary, quotes: leadQuotes, cust: leadCustomer, out: outcome,
-  msg: message, stats, learn, admin, admMsg: adminMessages, alerts, hist: leadHistory, add: addPolicy, qcard: quoteCard,
+  msg: message, stats, learn, admin, admMsg: adminMessages, alerts, hist: leadHistory, add: addPolicy, qcard: quoteCard, adx: adminExtra, mgr: manager,
 };
 
 const shown = (d: any) => d != null && d !== '' && d !== 'none' && d !== false;
@@ -108,7 +110,8 @@ function shellVals(v: any, ctx: MobileCtx) {
       { id: 'today', label: 'Today', sub: 'Your lead queue', go: () => { set({ mSheet: null }); nav(v.nav.today)(); }, cur: view === 'today' ? 'page' : 'false', dot: '' },
       { id: 'stats', label: 'Stats', sub: 'Targets, calls and the leaderboard', go: () => { set({ mSheet: null }); nav(v.nav.stats)(); }, cur: view === 'stats' ? 'page' : 'false', dot: '' },
       { id: 'learn', label: 'Learn', sub: 'Coaching, playbook and lessons', go: () => { set({ mSheet: null }); nav(v.nav.learn)(); }, cur: view === 'learn' ? 'page' : 'false', dot: shown(v.nav.learnDot) ? 'New' : '' },
-    ].concat(shown(v.adm && v.adm.navShow) ? [{ id: 'admin', label: 'Admin', sub: 'Team, targets, rules and messages', go: () => { set({ mSheet: null }); nav(v.nav.admin)(); }, cur: view === 'admin' ? 'page' : 'false', dot: '' }] : []),
+    ].concat(shown(v.adm && v.adm.navShow) ? [{ id: 'admin', label: 'Admin', sub: 'Team, targets, rules and messages', go: () => { set({ mSheet: null }); nav(v.nav.admin)(); }, cur: view === 'admin' ? 'page' : 'false', dot: '' },
+      { id: 'data', label: 'Data check', sub: 'Leads uploaded against last year, month by month', go: () => set({ mSheet: 'datacheck' }), cur: 'false', dot: '' }] : []),
     openMenu: () => set({ mSheet: 'menu' }), openSearch: () => set({ mSheet: 'search' }),
     openOut: () => set({ mSheet: 'outcome' }), closeSheet, closeOut: closeSheet,
     closeSearch: () => { if (s.q) v.srch.clear(); set({ mSheet: null }); },

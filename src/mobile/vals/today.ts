@@ -74,6 +74,9 @@ export default function (v: any, ctx: MobileCtx): any {
 
     // Tags: only what the summary box, the streak and the circle do not already say.
     const tags: any[] = [];
+    // a sponsoring insurer's renewal leads go first (Admin → Targets and rules)
+    const sponsored = !!s.mSponsor && String(c.prevCo || '').split(/\s*·\s*/)[0] === s.mSponsor;
+    if (sponsored) tags.push({ text: 'Sponsored', cls: 'm-spon-tag', ai: false });
     // Renewal type (from the previous policy) and lead type, as on the desktop card
     const ptype = (/·\s*(OD only|TP only|OD\+TP)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '';
     const rtypeText = ptype === 'OD+TP' ? 'OD + TP' : ptype || 'Type not known';
@@ -118,9 +121,11 @@ export default function (v: any, ctx: MobileCtx): any {
       return { k: x.k, v: x.v, copied: copiedKey === id, label: 'Copy ' + String(x.k).toLowerCase() + ' ' + x.v, copy: () => copyText(ctx, x.v, x.k + ' copied', id) };
     });
 
-    const prio = priorityOf(c, mood, blocked, !!late, stagesByName(ctx)[plainName(c.name)] || 'new');
+    const prio0 = priorityOf(c, mood, blocked, !!late, stagesByName(ctx)[plainName(c.name)] || 'new');
+    const prio = sponsored && !blocked ? Math.min(5, Math.max(4, prio0 + 1)) : prio0;
 
     return {
+      sponsored,
       moodCls, moodSay,
       rtypeText, rtypeCls, leadType, hasLeadType: !!leadType, cover, coverKnown,
       summary: reason, hasSummary: !!reason,
@@ -164,7 +169,7 @@ export default function (v: any, ctx: MobileCtx): any {
   const sv = stageView(v, ctx);
   const groups = sv.groups.map((g: any) => ({
     title: g.title, fg: g.fg, count: g.count, caption: cap(g.caption),
-    cards: (g.cards || []).map(card),
+    cards: (g.cards || []).map(card).sort((x: any, y: any) => (x.sponsored === y.sponsored ? 0 : x.sponsored ? -1 : 1)),
   }));
 
   // Policies added on the phone: their own group on top, following the quick views and the Stage filter

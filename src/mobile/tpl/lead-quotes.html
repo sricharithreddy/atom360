@@ -143,6 +143,21 @@
 <sc-if value="{{ m.quotes.cpRo }}"><p class="m-small m-quotes-cpro"><strong class="m-strong">Coupons.</strong> {{ sel.couponNote }}</p></sc-if>
 
 <!-- Bottom bar: send the selected quote, or save what is being edited -->
+<section class="m-card -nopad m-qshare" aria-labelledby="mqsT">
+<div class="m-qshare-h"><h3 class="m-h3" id="mqsT">Shared with the customer</h3><sc-if value="{{ m.quotes.hasShared }}"><span class="m-small">{{ m.quotes.sharedCount }}</span></sc-if></div>
+<sc-if value="{{ m.quotes.hasShared }}">
+<ol class="m-list">
+<sc-for list="{{ m.quotes.shared }}" as="sh">
+<li class="m-qshare-row"><span class="m-qshare-ic -{{ sh.icon }}" aria-hidden="true">
+<sc-if value="{{ sh.icon }}" eq="wa"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"></path></svg></sc-if>
+<sc-if value="{{ sh.icon }}" eq="mail"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></sc-if>
+<sc-if value="{{ sh.icon }}" eq="call"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.6 3.6a1 1 0 0 1-.25 1z"></path></svg></sc-if>
+</span><div class="m-grow"><p class="m-qshare-t">{{ sh.title }}</p><p class="m-tiny">{{ sh.sub }}</p></div></li>
+</sc-for>
+</ol>
+</sc-if>
+<sc-if value="{{ m.quotes.hasShared }}" not><p class="m-qshare-none m-small">Not shared yet. Send a quote card or text below.</p></sc-if>
+</section>
 <div class="m-quotes-bar">
 <sc-if value="{{ m.quotes.sendShow }}">
 <sc-if value="{{ m.quotes.sendCant }}"><p class="m-quotes-bar-line -cant">{{ m.quotes.cantLine }}</p></sc-if>

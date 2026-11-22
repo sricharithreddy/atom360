@@ -1,0 +1,14 @@
+<sc-if value="{{ m.mgr.isTeam }}">
+<section class="m-card m-stack" aria-labelledby="mcpH">
+<div><h2 class="m-h2" id="mcpH">Coupons and discounts by caller</h2><p class="m-small">This month. Discount allowed on a quote: up to {{ m.mgr.limit }}.</p></div>
+<ul class="m-list m-mgr-list">
+<sc-for list="{{ m.mgr.coupons }}" as="cpr">
+<li class="m-mgr-row">
+<div class="m-inline -between"><strong class="m-h3">{{ cpr.who }}</strong><sc-if value="{{ cpr.overBad }}"><span class="m-tag -red">{{ cpr.over }}</span></sc-if><sc-if value="{{ cpr.overBad }}" not><span class="m-tag -green">{{ cpr.over }}</span></sc-if></div>
+<dl class="m-mgr-kv"><div><dt>Coupons issued</dt><dd>{{ cpr.n }} · {{ cpr.value }}</dd></div><div><dt>Avg discount</dt><dd>{{ cpr.avg }}</dd></div><div><dt>Highest</dt><dd>{{ cpr.max }}</dd></div></dl>
+</li>
+</sc-for>
+</ul>
+<p class="m-tiny">Sample figures.</p>
+</section>
+</sc-if>
