@@ -32,13 +32,13 @@ const shared = cut(leadQuotes, '<section class="m-card -nopad m-qshare"', 'secti
 const profile = cut(leadCustomer, '<section class="m-card -nopad m-cust-card" aria-labelledby="mcuP">', 'section');
 const CHEV = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M6 17l1.5-5.5A2 2 0 0 1 9.4 10h5.2a2 2 0 0 1 1.9 1.5L18 17"></path></svg>';
 
-interface Rule { name: string; anchor: string | RegExp; at: 'before' | 'after' | 'replace' | 'afterLine' | 'beforeLine'; html: string | ((m: string) => string) }
+interface Rule { name: string; anchor: string | RegExp; at: 'before' | 'after' | 'replace' | 'afterLine' | 'beforeLine' | 'afterLoopBox'; html: string | ((m: string) => string) }
 
 const RULES: Rule[] = [
   { name: 'header: Scan policy', anchor: /<button type="button" (style="[^"]*">Scan policy<\/button>)/, at: 'replace', html: (m) => m.replace('<button type="button" ', '<button type="button" onClick="{{ m.add.start }}" ') },
   { name: 'header: New enquiry', anchor: /<button type="button" (style="[^"]*">\+ New enquiry<\/button>)/, at: 'replace', html: (m) => m.replace('<button type="button" ', '<button type="button" onClick="{{ m.add.manual }}" ') },
   { name: 'rail: Data check', anchor: '{{ nav.admin }}', at: 'afterLine', html: '<sc-if value="{{ m.mgr.isTeam }}"><button type="button" class="dk-rail" onClick="{{ m.mgr.dc.start }}">' + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"></path><path d="M4 10h16M10 10v10"></path><path d="M14 14l2 2 3-4"></path></svg>Data</button></sc-if>' },
-  { name: 'queue: stage filter', anchor: '<sc-for list="{{ tabs }}"', at: 'afterLine', html: '' }, // placeholder, filled below
+  { name: 'queue: stage filter', anchor: '<sc-for list="{{ tabs }}"', at: 'afterLoopBox', html: '' }, // after the tab row, filled below
   { name: 'queue: added by you', anchor: '<sc-for list="{{ groups }}"', at: 'before', html: '<sc-if value="{{ m.dk.hasAdded }}">' + wrap('dk-added', '<div class="dk-added-h"><strong>Added by you</strong><span>{{ m.dk.addedCount }}</span></div><div class="dk-added-grid"><sc-for list="{{ m.dk.added }}" as="card">' + card + '</sc-for></div>') + '</sc-if>\n' },
   { name: 'card: sponsored tag', anchor: '{{ c.srcLine }}</span>', at: 'after', html: '<sc-if value="{{ c.dSponsor }}"><span class="dk-spon">Sponsored</span></sc-if>' },
   { name: 'quotes: share history', anchor: 'SENDING</span>', at: 'beforeLine', html: wrap('dk-inline dk-shared', shared) + '\n' },
@@ -82,6 +82,12 @@ export function injectDesk(board: string): InjectResult {
     if (r.at === 'replace') out = out.slice(0, m.index) + html + out.slice(m.index + m.text.length);
     else if (r.at === 'before') out = out.slice(0, m.index) + html + out.slice(m.index);
     else if (r.at === 'after') { const e = m.index + m.text.length; out = out.slice(0, e) + html + out.slice(e); }
+    else if (r.at === 'afterLoopBox') {
+      // after the element that holds the loop: the loop's </sc-for>, then that box's </div>
+      const endLoop = out.indexOf('</sc-for>', m.index), endBox = endLoop < 0 ? -1 : out.indexOf('</div>', endLoop);
+      if (endBox < 0) { missing.push(r.name); continue; }
+      const e = endBox + '</div>'.length; out = out.slice(0, e) + html + out.slice(e);
+    }
     else if (r.at === 'beforeLine') { const s = out.lastIndexOf('\n', m.index) + 1; out = out.slice(0, s) + html + out.slice(s); }
     else { let e = out.indexOf('\n', m.index); e = e < 0 ? out.length : e + 1; out = out.slice(0, e) + html + out.slice(e); }
   }
