@@ -16,6 +16,7 @@ import admin from './vals/admin';
 import adminMessages from './vals/admin-messages';
 import alerts from './vals/alerts';
 import addPolicy from './vals/add-policy';
+import quoteCard from './vals/quote-card';
 import leadHistory from './vals/lead-history';
 
 /** Phones and small tablets get the phone layout; the desktop board needs about 900 px. */
@@ -43,7 +44,7 @@ export interface Layer { id: string; open: boolean; close: () => void }
 type Section = (v: any, ctx: MobileCtx) => any;
 const SECTIONS: Record<string, Section> = {
   today, filters, sum: leadSummary, quotes: leadQuotes, cust: leadCustomer, out: outcome,
-  msg: message, stats, learn, admin, admMsg: adminMessages, alerts, hist: leadHistory, add: addPolicy,
+  msg: message, stats, learn, admin, admMsg: adminMessages, alerts, hist: leadHistory, add: addPolicy, qcard: quoteCard,
 };
 
 const shown = (d: any) => d != null && d !== '' && d !== 'none' && d !== false;

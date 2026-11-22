@@ -1,0 +1,6 @@
+/* Branded quote card */
+.m-qc { align-items: center; }
+.m-qc-img { display: block; width: 100%; max-width: 420px; height: auto; border-radius: 16px; box-shadow: 0 10px 30px rgba(11, 26, 71, 0.18); }
+.m-qc-wait { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%; aspect-ratio: 4 / 5; max-width: 420px; border-radius: 16px; background: var(--tint); color: var(--muted); font-size: 14px; font-weight: 600; }
+.m-quotes-sendrow { display: flex; gap: 8px; }
+.m-quotes-sendrow .m-btn.-text { flex: 0 0 auto; padding: 0 14px; }

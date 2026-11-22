@@ -1,0 +1,17 @@
+<!-- Branded quote card: preview, then share -->
+<sc-if value="{{ m.qcard.open }}">
+<div class="m-sheet -full -z3">
+<button type="button" class="m-backdrop" aria-label="Close" onClick="{{ m.qcard.close }}"></button>
+<section class="m-sheet-card" role="dialog" aria-modal="true" aria-labelledby="mqcT" data-m-layer="qcard" tabindex="-1">
+<div class="m-sheet-head"><h2 class="m-h2" id="mqcT">Quote card</h2><button type="button" class="m-iconbtn" aria-label="Close" onClick="{{ m.qcard.close }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+<div class="m-sheet-body m-qc">
+<sc-if value="{{ m.qcard.ready }}"><img class="m-qc-img" src="{{ m.qcard.url }}" alt="Quote card for the customer, with insurer options, savings and dealer benefits"></sc-if>
+<sc-if value="{{ m.qcard.ready }}" not><div class="m-qc-wait" role="status"><span class="m-ap-spin" aria-hidden="true"></span>Making the card…</div></sc-if>
+<p class="m-small">The customer sees this image on WhatsApp. Dealer name and benefits are sample branding.</p>
+</div>
+<div class="m-sheet-foot">
+<button type="button" class="m-btn -wa -grow {{ m.qcard.shareOff }}" onClick="{{ m.qcard.share }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="M16 6l-4-4-4 4M12 2v13"></path></svg>Share on WhatsApp</button>
+</div>
+</section>
+</div>
+</sc-if>
