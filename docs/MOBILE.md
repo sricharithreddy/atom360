@@ -30,7 +30,7 @@ The phone is a calling tool first and a dashboard second.
 - **No bottom tabs.** The queue gets the whole screen. Stats, Learn and Admin (team lead and admin only) open from the menu behind the initial; on those screens the top bar has a back arrow to Today.
 - **Alerts** (the bell, with a count) hold the promised callback that is due (Call now, Snooze), calls made without an outcome, customers who told the AI they want to renew, and callbacks later today. They used to sit on the Today screen.
 - **Lead cards** on Today have a thin coloured streak on the left for interest: red Hot, orange Warm, blue Cold, grey when calling is blocked or interest is not known. Days to expiry sit in a circle at the top right (magenta with a minus once expired).
-- **Each Today card** also has, as in the sales CRM, a small **summary box** (pulse icon: green Hot, orange Warm, grey otherwise) and a slim **vehicle line** (model and registration) that opens to the registration, chassis and engine (or motor) numbers, each with Copy. It starts closed.
+- **Each Today card says each thing once.** A small **summary box** (pulse icon: green Hot, orange Warm, grey otherwise) holds the reason, the next-call time when the reason does not already name one, and "10 min late" for a late promised callback. The days circle owns days to expiry, the tags own OD only / TP only, With AI, KYC and Outcome not logged, and the streak owns interest. Also on the card: and a slim **vehicle line** (model and registration) that opens to the registration, chassis and engine (or motor) numbers, each with Copy. It starts closed.
 - **Lead cards** on Today show **OD only** or **TP only** next to the policy end date when the renewal is not the usual OD + TP.
 - **Today** starts with a slim strip of four numbers: calls against target, connected, renewed, and the month against target. Then the lists (Due now, Hot, Follow-ups, All), the one-tap key filters, and the lead cards.
 - **Search** opens as a full screen with the keyboard up. It works from every screen.
@@ -38,7 +38,7 @@ The phone is a calling tool first and a dashboard second.
   - **Overview**: why to call now and the next call time, a few short tags (Hot, With AI, OD only renewal...), the payment or lapsed-policy steps when there are any, then:
     - **Vehicle**: registration, chassis and engine (or motor) numbers, each with **Copy**.
     - **Policy**: the renewal type first (**OD only**, **TP only** or **OD + TP**, with what it means for the quote), insurer, policy number with Copy, when OD and TP end, NCB, IDV, whether a claim was made last year, and the financier.
-    - rows that lead to the best quote and the last contact (with the number of attempts). No scripts or long explanations.
+    - rows that lead to the best quote and the last contact (with the number of attempts). No scripts or long explanations, and no fact said twice: the reason drops what the Policy box or a tag already says, and the next-call time shows only when the reason has no time in it.
   - **Quotes**: insurer quotes, edit or add a quote, previous policy, send the chosen quote on WhatsApp.
   - **History**: two views. **Calls & messages** (calls, AI calls, WhatsApp and email), and **Service** (visits to our workshop: periodic service, repairs, claim repairs, with amount and kilometres).
   - **Customer**: contact (hidden until you call or message), language, address, and documents, claims and coupons.

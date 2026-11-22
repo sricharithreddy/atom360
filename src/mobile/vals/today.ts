@@ -1,10 +1,10 @@
 import type { MobileCtx } from '../logic';
 import { copyText } from '../copy';
+import { cleanWhy, hasTime } from '../text';
 
 const SNOOZE_MS = 10 * 60 * 1000;
 const LIVE_BG = '#166534';
 const BLOCKED_BG = '#DDE1EE';
-const LATE_FG = '#A3134F';
 const MAX_TAGS = 3;
 
 const cap = (t: string) => (t ? t.charAt(0).toUpperCase() + t.slice(1) : '');
@@ -29,6 +29,7 @@ function moodOf(ctx: MobileCtx, name: any): string {
   }
   return MOODS[plainName(name)] || '';
 }
+const SEP2 = /\s*·\s*/;
 const MOOD_CLS: Record<string, string> = { Hot: '-hot', Warm: '-warm', Cold: '-cold' };
 
 /** Phone values for the Today queue (m.today.*). Thin: regroups board values for the phone card and wraps a few handlers. */
@@ -48,13 +49,12 @@ export default function (v: any, ctx: MobileCtx): any {
     const live = c.callBg === LIVE_BG;
     const blocked = c.callBg === BLOCKED_BG;
 
-    // Status tags, most urgent first. The card shows the first three; the lead page has the rest.
+    // Tags: only what the summary box, the streak and the circle do not already say.
     const tags: any[] = [];
     const rtype = (/·\s*(OD only|TP only)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '';
     if (rtype) tags.push({ text: rtype, cls: 'm-today-rtag', ai: false });
     if (on(c.pendShow)) tags.push({ text: 'Outcome not logged', cls: '-orange', ai: false });
-    if (on(c.cbShow)) tags.push({ text: c.cbText, cls: c.cbFg === LATE_FG ? '-magenta' : '-blue', ai: false });
-    if (on(c.aiShow)) tags.push({ text: c.aiText, cls: c.aiText === 'AI qualified' ? 'm-today-aifill' : '-purple', ai: true });
+    if (on(c.aiShow) && c.aiText !== 'AI qualified') tags.push({ text: /^With AI/.test(c.aiText) ? 'With AI' : c.aiText, cls: '-purple', ai: true });
     if (on(c.kycShow)) tags.push({ text: 'KYC pending', cls: '-orange', ai: false });
 
     // The quote the board ranks first among those that have a price.
@@ -76,6 +76,10 @@ export default function (v: any, ctx: MobileCtx): any {
     const moodCls = MOOD_CLS[mood] || '-none';
     const moodSay = blocked ? 'Calling blocked' : mood ? mood + ' lead' : 'Interest not known';
 
+    // One summary line: the reason, without what the circle or the tags show
+    const reason = cleanWhy(c.why);
+    const late = on(c.cbShow) && /late/.test(String(c.cbText || '')) ? (String(c.cbText).split(SEP2).filter((x: string) => /late/.test(x))[0] || '') : '';
+
     // Vehicle: one slim line (model · reg) that opens to the chassis and engine/motor numbers, each copyable
     const key = plainName(c.name);
     const vehOpen = !!((s.mCardVeh || {})[key]);
@@ -89,7 +93,8 @@ export default function (v: any, ctx: MobileCtx): any {
 
     return {
       moodCls, moodSay,
-      summary: c.summary || '', hasSummary: !!c.summary,
+      summary: reason, hasSummary: !!reason,
+      boxTime: reason && hasTime(reason) ? '' : time, late,
       pulseCls: mood === 'Hot' ? '-good' : mood === 'Warm' ? '-warn' : '',
       vehOpen, vehOpenStr: vehOpen ? 'true' : 'false', vrows,
       toggleVeh: () => { const all = { ...(ctx.self.state.mCardVeh || {}) }; all[key] = !vehOpen; ctx.set({ mCardVeh: all }); },
@@ -98,7 +103,7 @@ export default function (v: any, ctx: MobileCtx): any {
       why: c.why, whyFg: c.whyFg,
       daysLeft: c.daysLeft, daysFg: c.daysFg, polDate: c.polDate,
       time, hasTime: !!time,
-      tags: tags.slice(0, MAX_TAGS), hasTags: tags.length > 0, hasMeta: tags.length > 0 || !!time,
+      tags: tags.slice(0, MAX_TAGS), hasTags: tags.length > 0, hasMeta: tags.length > 0,
       hasQuote: !!best, quoteIns: best ? best.ins : '', quoteAmt: best ? best.amt : '',
       live, blocked, ready: !live && !blocked,
       callText: c.callLabel,

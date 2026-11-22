@@ -26,16 +26,14 @@
 <section class="m-today-grp" aria-label="{{ grp.title }}">
 <div class="m-today-grp-head">
 <div class="m-inline -between"><h2 class="m-h2" style="color: {{ grp.fg }}">{{ grp.title }}</h2><span class="m-small m-fixed">{{ grp.count }}</span></div>
-<p class="m-tiny">{{ grp.caption }}</p>
 </div>
 <ul class="m-stack">
 <sc-for list="{{ grp.cards }}" as="card">
 <li class="m-card -nopad m-today-card m-mood {{ card.moodCls }}">
 <button type="button" class="m-today-main" onClick="{{ card.open }}">
 <span class="m-today-top"><span class="m-today-name m-clip">{{ card.name }}<span class="m-sr">, {{ card.moodSay }}</span></span><sc-if value="{{ card.hasDays }}"><span class="m-today-dleft {{ card.daysCls }}" role="img" aria-label="{{ card.daysAria }}">{{ card.days }}</span></sc-if></span>
-<span class="m-today-why m-clip2" style="color: {{ card.whyFg }}">{{ card.why }}</span>
-<sc-if value="{{ card.hasMeta }}"><span class="m-today-tags"><sc-if value="{{ card.hasTime }}"><span class="m-tag m-today-timetag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ card.time }}</span></sc-if><sc-for list="{{ card.tags }}" as="tag"><span class="m-tag {{ tag.cls }}"><sc-if value="{{ tag.ai }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>{{ tag.text }}</span></sc-for></span></sc-if>
-<sc-if value="{{ card.hasSummary }}"><span class="m-today-sum {{ card.pulseCls }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2.5-6 4 12 2.5-6H21"></path></svg><span class="m-clip2">{{ card.summary }}</span></span></sc-if>
+<sc-if value="{{ card.hasMeta }}"><span class="m-today-tags"><sc-for list="{{ card.tags }}" as="tag"><span class="m-tag {{ tag.cls }}"><sc-if value="{{ tag.ai }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>{{ tag.text }}</span></sc-for></span></sc-if>
+<sc-if value="{{ card.hasSummary }}"><span class="m-today-sum {{ card.pulseCls }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2.5-6 4 12 2.5-6H21"></path></svg><span class="m-clip2"><sc-if value="{{ card.boxTime }}"><strong class="m-today-sum-time">{{ card.boxTime }}</strong> · </sc-if>{{ card.summary }}<sc-if value="{{ card.late }}"> · <strong class="m-today-sum-late">{{ card.late }}</strong></sc-if></span></span></sc-if>
 <sc-if value="{{ card.hasQuote }}"><span class="m-today-quote"><span class="m-fixed">Best quote</span><span class="m-today-quote-v"><span class="m-clip">{{ card.quoteIns }}</span><strong class="m-fixed">{{ card.quoteAmt }}</strong></span></span></sc-if>
 <sc-if value="{{ card.hasQuote }}" not><span class="m-today-quote"><span>No quotes yet</span></span></sc-if>
 </button>

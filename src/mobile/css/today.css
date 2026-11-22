@@ -86,7 +86,7 @@
 
 /* days to expiry: a number in a circle, top right */
 .m-today-top { align-items: flex-start; }
-.m-today-dleft { flex: 0 0 auto; width: 40px; height: 40px; margin: -4px -4px -14px auto; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: var(--ink); background: #F1F3F9; box-shadow: inset 0 0 0 1.5px #D3D8E6; }
+.m-today-dleft { flex: 0 0 auto; width: 40px; height: 40px; margin: -4px -4px -4px auto; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: var(--ink); background: #F1F3F9; box-shadow: inset 0 0 0 1.5px #D3D8E6; }
 .m-today-dleft.-near { color: #8A2E0C; background: #FFF4EC; box-shadow: inset 0 0 0 1.5px #F3C9A8; }
 .m-today-dleft.-soon { color: #FFFFFF; background: #E8590C; box-shadow: none; }
 .m-today-dleft.-expired { color: #FFFFFF; background: var(--magenta); box-shadow: none; }
@@ -125,3 +125,5 @@
 @media (prefers-reduced-motion: reduce) { .m-today-veh-chev { transition: none; } }
 .m-today-main .m-today-sum { display: flex; flex-direction: row; }
 .m-today-sum > .m-clip2 { flex: 1 1 0; min-width: 0; display: -webkit-box; }
+.m-today-sum-time { font-weight: 700; color: var(--primary-dark); }
+.m-today-sum-late { font-weight: 700; color: var(--magenta); }

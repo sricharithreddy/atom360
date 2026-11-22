@@ -1,5 +1,6 @@
 import type { MobileCtx } from '../logic';
 import { copyText } from '../copy';
+import { cleanWhy, hasTime } from '../text';
 
 /** Phone-only values for the lead Overview tab, available in the template as m.sum.* */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -79,7 +80,8 @@ export default function (v: any, ctx: MobileCtx): any {
   // ---- things to know: short chips only (the long explanations stay on desktop)
   const chips: any[] = [];
   const interest = (pn.stats || []).filter((row: any) => row.k === 'Interest')[0];
-  if (interest && interest.v && interest.v !== '—') chips.push({ t: interest.v + (/^(Hot|Warm|Cold)$/.test(interest.v) ? ' lead' : ''), cls: interest.v === 'Hot' ? '-green' : interest.v === 'Warm' ? '-orange' : '' });
+  const aiQualified = flagsIn.some((fl: any) => /^AI qualified/i.test(String(fl.label || '')));
+  if (interest && interest.v && interest.v !== '—' && !aiQualified) chips.push({ t: interest.v + (/^(Hot|Warm|Cold)$/.test(interest.v) ? ' lead' : ''), cls: interest.v === 'Hot' ? '-green' : interest.v === 'Warm' ? '-orange' : '' });
   let reassign: any = null, merge: any = null;
   flagsIn.forEach((fl: any, idx: number) => {
     const tone = TONES[fl.fg] || 'plain';
@@ -141,9 +143,9 @@ export default function (v: any, ctx: MobileCtx): any {
   const tpEnd = String(tp.v || '').split(' – ')[1] || '';
   const odEnd = String(od.v || '').split(' – ')[1] || '';
   const rtype = !known ? { label: 'Policy type not known', note: 'Ask for last year’s policy copy.', cls: '-unknown' }
-    : /OD only/i.test(typeRaw) ? { label: 'OD only renewal', note: 'Third party is already covered till ' + (tpEnd || 'a later year') + '. Quote own damage only.', cls: '-od' }
-    : /TP only/i.test(typeRaw) ? { label: 'TP only renewal', note: 'Third party cover only. No own damage, no NCB.', cls: '-tp' }
-    : { label: 'OD + TP renewal', note: 'Own damage and third party renew together.', cls: '-both' };
+    : /OD only/i.test(typeRaw) ? { label: 'OD only renewal', note: 'Quote own damage only.', cls: '-od' }
+    : /TP only/i.test(typeRaw) ? { label: 'TP only renewal', note: 'No own damage, no NCB.', cls: '-tp' }
+    : { label: 'OD + TP renewal', note: '', cls: '-both' };
   const claim = (v.claimOpts || []).filter((o: any) => o.press === 'true')[0];
   const kv = (k: string, val: any, fg?: string) => ({ k, v: val || '—', fg: fg || '' });
   const policy = {
@@ -162,7 +164,6 @@ export default function (v: any, ctx: MobileCtx): any {
     ].filter((r) => r.v && r.v !== '—'),
   };
 
-  if (/OD only|TP only/i.test(typeRaw) && known) chips.unshift({ t: /OD only/i.test(typeRaw) ? 'OD only renewal' : 'TP only renewal', cls: 'm-sum-chip-type' });
   const stat = (k: string) => (pn.stats || []).filter((row: any) => row.k === k)[0] || {};
 
   // ---- quotes teaser
@@ -177,13 +178,18 @@ export default function (v: any, ctx: MobileCtx): any {
     btn: qn > 0 ? 'See quotes' : (viewOnly ? 'Open quotes' : 'Add a quote'),
   };
 
+  // ---- reason and next call, each fact once
+  const whyClean = cleanWhy(sel.why || sel.whyLong || '');
+  const nextFirst = String(pn.nextText || '').split(/\s*·\s*/)[0];
+  const nextShort = nextFirst && !(hasTime(whyClean) && hasTime(nextFirst)) ? nextFirst : '';
+
   // ---- last contact
   const last = (v.histRows || [])[0] || null;
 
   return {
     banner,
-    why: sel.why || sel.whyLong || '', whyFg: sel.whyFg || '',
-    next: pn.nextText, hasNext: !!pn.nextText,
+    why: whyClean, whyFg: sel.whyFg || '',
+    next: nextShort, hasNext: !!nextShort,
     strips, hasStrips: strips.length > 0,
     chips, hasChips: chips.length > 0,
     reassign, hasReassign: !!reassign,
