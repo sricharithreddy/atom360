@@ -27,11 +27,12 @@ export default function (v: any, ctx: MobileCtx): any {
 
     // Status tags, most urgent first. The card shows the first three; the lead page has the rest.
     const tags: any[] = [];
+    const rtype = (/·\s*(OD only|TP only)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '';
+    if (rtype) tags.push({ text: rtype, cls: 'm-today-rtag', ai: false });
     if (on(c.pendShow)) tags.push({ text: 'Outcome not logged', cls: '-orange', ai: false });
     if (on(c.cbShow)) tags.push({ text: c.cbText, cls: c.cbFg === LATE_FG ? '-magenta' : '-blue', ai: false });
     if (on(c.aiShow)) tags.push({ text: c.aiText, cls: c.aiText === 'AI qualified' ? 'm-today-aifill' : '-purple', ai: true });
     if (on(c.ownShow)) tags.push({ text: c.ownText, cls: '', ai: false });
-    if (on(c.dupShow)) tags.push({ text: 'Possible duplicate', cls: '-orange', ai: false });
     if (on(c.kycShow)) tags.push({ text: 'KYC pending', cls: '-orange', ai: false });
 
     // The quote the board ranks first among those that have a price.
@@ -41,14 +42,21 @@ export default function (v: any, ctx: MobileCtx): any {
     const rawTime = on(c.timeShow) ? String(c.timeChip || '') : '';
     const time = rawTime === 'Call now' ? '' : rawTime.replace(/^Next call\s+/, '');
 
+    // Days to expiry as a number in a circle: negative once the policy has expired
+    const dm = /(\d+)/.exec(String(c.daysLeft || ''));
+    const dn = dm ? parseInt(dm[1], 10) : null;
+    const expired = /expired/i.test(String(c.daysLeft || ''));
+    const days = dn == null ? '' : expired ? '−' + dn : String(dn);
+    const daysCls = expired ? '-expired' : dn != null && dn <= 7 ? '-soon' : dn != null && dn <= 15 ? '-near' : '';
+    const daysAria = expired ? 'Policy expired ' + dn + (dn === 1 ? ' day' : ' days') + ' ago, on ' + c.polDate : dn != null ? dn + (dn === 1 ? ' day' : ' days') + ' to expiry, ends ' + c.polDate : 'Expiry date not known';
+
     return {
+      days, daysCls, daysAria, hasDays: !!days,
       name: c.name, model: c.model, reg: c.reg,
-      // OD only / TP only change what to quote, so they show on the card; OD + TP is the usual case
-      rtype: (/·\s*(OD only|TP only)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '',
       why: c.why, whyFg: c.whyFg,
       daysLeft: c.daysLeft, daysFg: c.daysFg, polDate: c.polDate,
       time, hasTime: !!time,
-      tags: tags.slice(0, MAX_TAGS), hasTags: tags.length > 0,
+      tags: tags.slice(0, MAX_TAGS), hasTags: tags.length > 0, hasMeta: tags.length > 0 || !!time,
       hasQuote: !!best, quoteIns: best ? best.ins : '', quoteAmt: best ? best.amt : '',
       live, blocked, ready: !live && !blocked,
       callText: c.callLabel,

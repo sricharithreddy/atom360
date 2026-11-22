@@ -12,7 +12,6 @@
 <p class="m-sum-why" style="color: {{ m.sum.whyFg }}">{{ m.sum.why }}</p>
 <sc-if value="{{ m.sum.hasNext }}"><p class="m-sum-next"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ m.sum.next }}</p></sc-if>
 <sc-if value="{{ m.sum.hasChips }}"><div class="m-sum-chips"><sc-for list="{{ m.sum.chips }}" as="kc"><span class="m-tag -wrap {{ kc.cls }}">{{ kc.t }}</span></sc-for></div></sc-if>
-<sc-if value="{{ m.sum.hasMerge }}"><button type="button" class="m-btn -sm -soft m-sum-merge" onClick="{{ m.sum.merge.act }}">{{ m.sum.merge.label }}</button></sc-if>
 </section>
 
 <sc-for list="{{ m.sum.strips }}" as="strip">

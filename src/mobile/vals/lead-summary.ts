@@ -124,6 +124,7 @@ export default function (v: any, ctx: MobileCtx): any {
     }
     if (blocked && fl.sub && fl.sub === co.blockWhy) return; // the banner says it
     if (/renewed (with us|this customer)|issued the policy|Not renewed/i.test(String(fl.label || ''))) return; // the policy card covers this
+    if (/duplicate/i.test(String(fl.label || ''))) return; // not shown on the phone
     const label = String(fl.label || '').replace(/\.$/, '');
     if (!label) return;
     chips.push({ t: label, cls: tone === 'ai' ? '-purple' : tone === 'warn' ? '-orange' : tone === 'stop' ? '-red' : '' });
