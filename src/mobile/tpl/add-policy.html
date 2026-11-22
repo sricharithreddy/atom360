@@ -1,0 +1,76 @@
+<!-- Add a policy: scan a policy copy or type it in -->
+<sc-if value="{{ m.add.open }}">
+<div class="m-sheet -full -z2">
+<button type="button" class="m-backdrop" aria-label="Close" onClick="{{ m.add.close }}"></button>
+<section class="m-sheet-card" role="dialog" aria-modal="true" aria-labelledby="mapT" data-m-layer="add-policy" tabindex="-1">
+<div class="m-sheet-head"><h2 class="m-h2 m-clip" id="mapT">{{ m.add.title }}</h2><button type="button" class="m-iconbtn" aria-label="Close" onClick="{{ m.add.close }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></div>
+
+<sc-if value="{{ m.add.choose }}">
+<div class="m-sheet-body m-ap">
+<label class="m-ap-choice -scan" for="mapScan">
+<span class="m-ap-ic" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V6a2 2 0 0 1 2-2h2M17 4h2a2 2 0 0 1 2 2v2M21 16v2a2 2 0 0 1-2 2h-2M7 20H5a2 2 0 0 1-2-2v-2"></path><path d="M7 9h10M7 12h10M7 15h6"></path></svg></span>
+<span class="m-ap-txt"><strong>Scan policy copy</strong><span>Photo, PDF or a picture from the gallery. We read the details for you to check.</span></span>
+</label>
+<input id="mapScan" class="m-sr" type="file" accept="image/*,application/pdf" onChange="{{ m.add.onScan }}">
+<button type="button" class="m-ap-choice" onClick="{{ m.add.manual }}">
+<span class="m-ap-ic" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg></span>
+<span class="m-ap-txt"><strong>Type it in</strong><span>For a walk-in or a phone enquiry.</span></span>
+</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ m.add.reading }}">
+<div class="m-sheet-body m-ap m-ap-reading" role="status">
+<sc-if value="{{ m.add.hasThumb }}"><img class="m-ap-thumb" src="{{ m.add.thumb }}" alt=""></sc-if>
+<span class="m-ap-spin" aria-hidden="true"></span>
+<p class="m-h3">Reading the policy…</p>
+<p class="m-small m-clip">{{ m.add.file }}</p>
+</div>
+</sc-if>
+
+<sc-if value="{{ m.add.form }}">
+<div class="m-sheet-body m-ap">
+<sc-if value="{{ m.add.scanned }}"><div class="m-banner -ai" role="note"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg><div class="m-grow"><strong>Read by AI from {{ m.add.file }}.</strong> Check each detail against the copy before you save. In this sample version the figures are examples.</div></div></sc-if>
+<sc-if value="{{ m.add.hasDup }}"><div class="m-banner -warn" role="note">{{ m.add.dup }}</div></sc-if>
+
+<h3 class="m-ap-h">Customer</h3>
+<div class="m-field"><label for="mapName">Name</label><input id="mapName" class="m-input" autocomplete="off" value="{{ m.add.f.name }}" onChange="{{ m.add.on.name }}"><sc-if value="{{ m.add.err.name }}"><p class="m-error">{{ m.add.err.name }}</p></sc-if></div>
+<div class="m-field"><label for="mapMob">Mobile</label><input id="mapMob" class="m-input" type="tel" inputmode="numeric" autocomplete="off" value="{{ m.add.f.mobile }}" onChange="{{ m.add.on.mobile }}" placeholder="10 digits"><sc-if value="{{ m.add.err.mobile }}"><p class="m-error">{{ m.add.err.mobile }}</p></sc-if></div>
+<div class="m-field"><label for="mapLt">Lead type</label><select id="mapLt" class="m-select" onChange="{{ m.add.on.leadType }}"><sc-for list="{{ m.add.typeOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div>
+
+<h3 class="m-ap-h">Vehicle</h3>
+<div class="m-grid2">
+<div class="m-field"><label for="mapReg">Reg no</label><input id="mapReg" class="m-input m-ap-mono" autocapitalize="characters" autocomplete="off" value="{{ m.add.f.reg }}" onChange="{{ m.add.on.reg }}" onBlur="{{ m.add.on.regBlur }}" placeholder="e.g. TS09 AB 1234"></div>
+<div class="m-field"><label for="mapModel">Model</label><input id="mapModel" class="m-input" autocomplete="off" value="{{ m.add.f.model }}" onChange="{{ m.add.on.model }}" placeholder="e.g. Creta SX"></div>
+</div>
+<sc-if value="{{ m.add.err.reg }}"><p class="m-error">{{ m.add.err.reg }}</p></sc-if>
+<div class="m-field"><label for="mapCh">Chassis no <span class="m-ap-count">{{ m.add.chassisN }}</span></label><input id="mapCh" class="m-input m-ap-mono" autocapitalize="characters" autocomplete="off" value="{{ m.add.f.chassis }}" onChange="{{ m.add.on.chassis }}"><sc-if value="{{ m.add.err.chassis }}"><p class="m-error">{{ m.add.err.chassis }}</p></sc-if></div>
+<div class="m-field"><label for="mapEng">Engine or motor no</label><input id="mapEng" class="m-input m-ap-mono" autocapitalize="characters" autocomplete="off" value="{{ m.add.f.engine }}" onChange="{{ m.add.on.engine }}"></div>
+
+<h3 class="m-ap-h">Policy</h3>
+<div class="m-field"><span class="m-field-label" id="mapPtL">Renewal type</span><div class="m-seg" role="group" aria-labelledby="mapPtL"><sc-for list="{{ m.add.ptypes }}" as="pt"><button type="button" aria-pressed="{{ pt.on }}" onClick="{{ pt.pick }}">{{ pt.label }}</button></sc-for></div></div>
+<div class="m-field"><label for="mapIns">Insurer</label><select id="mapIns" class="m-select" onChange="{{ m.add.on.insurer }}"><sc-for list="{{ m.add.insOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div>
+<sc-if value="{{ m.add.otherIns }}"><div class="m-field"><label for="mapInsO">Insurer’s name</label><input id="mapInsO" class="m-input" value="{{ m.add.f.insurerOther }}" onChange="{{ m.add.on.insurerOther }}"><sc-if value="{{ m.add.err.insurerOther }}"><p class="m-error">{{ m.add.err.insurerOther }}</p></sc-if></div></sc-if>
+<div class="m-field"><label for="mapPol">Policy no</label><input id="mapPol" class="m-input m-ap-mono" autocomplete="off" value="{{ m.add.f.polNo }}" onChange="{{ m.add.on.polNo }}"></div>
+<div class="m-grid2">
+<div class="m-field"><label for="mapOd"><sc-if value="{{ m.add.odOnly }}">OD ends</sc-if><sc-if value="{{ m.add.odOnly }}" not>Policy ends</sc-if></label><input id="mapOd" class="m-input" type="date" value="{{ m.add.f.odEnd }}" onChange="{{ m.add.on.odEnd }}"></div>
+<sc-if value="{{ m.add.odOnly }}"><div class="m-field"><label for="mapTp">TP ends</label><input id="mapTp" class="m-input" type="date" value="{{ m.add.f.tpEnd }}" onChange="{{ m.add.on.tpEnd }}"></div></sc-if>
+<sc-if value="{{ m.add.odOnly }}" not><div class="m-field"><label for="mapNcb">NCB</label><select id="mapNcb" class="m-select" onChange="{{ m.add.on.ncb }}"><sc-for list="{{ m.add.ncbOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div></sc-if>
+</div>
+<sc-if value="{{ m.add.err.odEnd }}"><p class="m-error">{{ m.add.err.odEnd }}</p></sc-if>
+<sc-if value="{{ m.add.err.tpEnd }}"><p class="m-error">{{ m.add.err.tpEnd }}</p></sc-if>
+<div class="m-grid2">
+<sc-if value="{{ m.add.odOnly }}"><div class="m-field"><label for="mapNcb2">NCB</label><select id="mapNcb2" class="m-select" onChange="{{ m.add.on.ncb }}"><sc-for list="{{ m.add.ncbOpts }}" as="o"><option value="{{ o.val }}" selected="{{ o.on }}">{{ o.label }}</option></sc-for></select></div></sc-if>
+<div class="m-field"><label for="mapIdv">IDV (₹)</label><input id="mapIdv" class="m-input" inputmode="numeric" autocomplete="off" value="{{ m.add.f.idv }}" onChange="{{ m.add.on.idv }}" placeholder="e.g. 850000"></div>
+</div>
+<sc-if value="{{ m.add.isEdit }}"><button type="button" class="m-btn -danger -block m-ap-remove" onClick="{{ m.add.remove }}">Remove this policy</button></sc-if>
+</div>
+<div class="m-sheet-foot">
+<sc-if value="{{ m.add.isEdit }}" not><button type="button" class="m-btn" onClick="{{ m.add.back }}">Back</button></sc-if>
+<button type="button" class="m-btn -primary -grow" onClick="{{ m.add.save }}">{{ m.add.saveLabel }}</button>
+</div>
+</sc-if>
+
+</section>
+</div>
+</sc-if>

@@ -14,6 +14,7 @@ import './css/learn.css';
 import './css/admin.css';
 import './css/admin-messages.css';
 import './css/alerts.css';
+import './css/add-policy.css';
 import './css/lead-history.css';
 import shell from './tpl/shell.html?raw';
 import lead from './tpl/lead.html?raw';
@@ -29,6 +30,7 @@ import learn from './tpl/learn.html?raw';
 import admin from './tpl/admin.html?raw';
 import adminMessages from './tpl/admin-messages.html?raw';
 import alerts from './tpl/alerts.html?raw';
+import addPolicy from './tpl/add-policy.html?raw';
 import leadHistory from './tpl/lead-history.html?raw';
 import { assemble } from './assemble';
 
@@ -36,5 +38,5 @@ export { MOBILE_QUERY, withMobile } from './logic';
 
 export const mobileTemplate = assemble(shell, {
   lead, today, filters, 'lead-summary': leadSummary, 'lead-quotes': leadQuotes, 'lead-customer': leadCustomer,
-  outcome, message, stats, learn, admin, 'admin-messages': adminMessages, alerts, 'lead-history': leadHistory,
+  outcome, message, stats, learn, admin, 'admin-messages': adminMessages, alerts, 'lead-history': leadHistory, 'add-policy': addPolicy,
 });

@@ -2,6 +2,7 @@ import type { MobileCtx } from '../logic';
 import { copyText } from '../copy';
 import { cleanWhy, hasTime } from '../text';
 import { stageView, stageLabel, stagesByName, QUICK } from '../stages';
+import { addedCards } from '../added';
 
 const SNOOZE_MS = 10 * 60 * 1000;
 const LIVE_BG = '#166534';
@@ -165,6 +166,13 @@ export default function (v: any, ctx: MobileCtx): any {
     title: g.title, fg: g.fg, count: g.count, caption: cap(g.caption),
     cards: (g.cards || []).map(card),
   }));
+
+  // Policies added on the phone: their own group on top, following the quick views and the Stage filter
+  const quickId: string = self.state.mQuick || 'all';
+  const stagePicked: string[] = self.state.mStage || [];
+  const added = addedCards(ctx).filter((c: any) => (quickId === 'all' || (quickId === 'due7' && c.daysNum != null && c.daysNum <= 7))
+    && (!stagePicked.length || stagePicked.indexOf('new') >= 0) && !v.hasChips);
+  if (added.length) groups.unshift({ title: 'Added by you', fg: '#0B1A47', count: added.length === 1 ? '1 lead' : added.length + ' leads', caption: '', cards: added });
 
   // One line of quick views replaces the board's tabs and pinned key filters. The board's own tab
   // stays on All so the quick views and the Filters sheet see every lead.
