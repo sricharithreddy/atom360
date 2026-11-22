@@ -8,6 +8,42 @@ const TONES: Record<string, string> = { '#2A37B8': 'info', '#9A3412': 'warn', '#
 const cap = (t: any) => { const s = String(t || ''); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; };
 const rupees = (t: any) => { const n = parseInt(String(t || '').replace(/[^0-9]/g, ''), 10); return /₹/.test(String(t || '')) && n > 0 ? n : 0; };
 
+// Chassis and engine numbers live only on the board's queue cards. Read them once from a team-lead
+// view of all leads (they are fixed sample data), keyed by customer name.
+let VEHICLES: Record<string, any> | null = null;
+const plain = (n: any) => String(n || '').replace(/ \(\+1 car\)$/, '').replace(/ \+1 vehicle$/, '');
+function vehicleOf(ctx: MobileCtx, name: any): any {
+  if (!VEHICLES) {
+    const self: any = ctx.self, saved = self.state;
+    VEHICLES = {};
+    try {
+      self.state = { ...saved, me: 'ravi', tab: 'all', f: { preset: null, expMax: 30, months: [], ai: [], src: [], model: [], ins: [], ptype: [], status: [], nxt: [], ren: [], lang: [], kyc: [] } };
+      const all = ctx.fresh();
+      (all.groups || []).forEach((g: any) => (g.cards || []).forEach((c: any) => { VEHICLES![plain(c.name)] = { car: c.car, prevCo: c.prevCo }; }));
+    } finally { self.state = saved; }
+  }
+  return VEHICLES[plain(name)] || null;
+}
+
+/** Copy to the clipboard (with a fallback for browsers that block it) and say so. */
+function copyText(ctx: MobileCtx, text: string, done: string, key: string): void {
+  if (!text) return;
+  const ok = () => {
+    ctx.set({ mCopied: key, mToast: done });
+    setTimeout(() => { if (ctx.self.state.mCopied === key) ctx.set({ mCopied: '' }); }, 2000);
+  };
+  const fallback = () => {
+    try {
+      const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); ok();
+    } catch { ctx.note('Could not copy. Press and hold the number to copy it.'); }
+  };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback);
+    else fallback();
+  } catch { fallback(); }
+}
+
 export default function (v: any, ctx: MobileCtx): any {
   const sel = v.sel || {}, pn = v.pn || {}, co = v.co || {}, ow = v.ow || {};
   const flagsIn: any[] = v.flags || [];
@@ -87,24 +123,67 @@ export default function (v: any, ctx: MobileCtx): any {
       return;
     }
     if (blocked && fl.sub && fl.sub === co.blockWhy) return; // the banner says it
+    if (/renewed (with us|this customer)|issued the policy|Not renewed/i.test(String(fl.label || ''))) return; // the policy card covers this
     const label = String(fl.label || '').replace(/\.$/, '');
     if (!label) return;
     chips.push({ t: label, cls: tone === 'ai' ? '-purple' : tone === 'warn' ? '-orange' : tone === 'stop' ? '-red' : '' });
     if (ctx.shown(fl.actShow) && fl.actLabel) merge = { label: fl.actLabel, act: (e: any) => { if (typeof fl.act === 'function') fl.act(e); ctx.note('Merge request sent to your supervisor.'); } };
   });
 
-  // ---- key facts
-  const pv = v.pv || {};
-  const tile = (k: string) => ((pv.tiles || []).filter((t: any) => t.k === k)[0] || {}).v || '';
+  // ---- vehicle: reg, chassis, engine/motor numbers, each with copy and a "checked against the RC" tick
+  const card = vehicleOf(ctx, sel.name);
+  const lead = ctx.self.state.sel;
+  const chk = ((ctx.self.state.mChk || {})[lead]) || {};
+  const copied = ctx.self.state.mCopied || '';
+  const vrow = (id: string, k: string, val: string) => ({
+    id, k, v: val || 'Not known', has: !!val,
+    copied: copied === lead + ':' + id, checked: !!chk[id],
+    copyLabel: 'Copy ' + k.toLowerCase() + ' ' + val, checkLabel: (chk[id] ? 'Checked: ' : 'Mark as checked against the RC: ') + k.toLowerCase(),
+    copy: () => copyText(ctx, val, k + ' copied', lead + ':' + id),
+    check: () => { const all = { ...(ctx.self.state.mChk || {}) }; all[lead] = { ...chk, [id]: !chk[id] }; ctx.set({ mChk: all }); },
+  });
+  const carRows: any[] = card ? (card.car || []) : [];
+  const carVal = (re: RegExp) => ((carRows.filter((x: any) => re.test(x.k))[0] || {}).v || '');
+  const engineK = carRows.some((x: any) => /^Motor/.test(x.k)) ? 'Motor no' : 'Engine no';
+  const vehicle = {
+    model: carVal(/^Model/) || String(sel.vehicle || '').split(' · ')[0],
+    ev: engineK === 'Motor no',
+    rows: [vrow('reg', 'Reg no', carVal(/^Reg/)), vrow('chassis', 'Chassis no', carVal(/^Chassis/)), vrow('engine', engineK, carVal(/^(Engine|Motor)/))],
+  };
+  const nChecked = vehicle.rows.filter((r: any) => r.checked).length;
+
+  // ---- policy: renewal type first (OD only / TP only / OD + TP), then the details needed to quote
+  const pp = v.pp || {};
+  const tile = (k: string) => ((pp.tiles || []).filter((t: any) => t.k === k)[0] || {}) as any;
+  const typeRaw = String(pp.typeLine || '').split(' · ')[0] || String(card && card.prevCo ? String(card.prevCo).split(' · ')[1] || '' : '');
+  const known = !!pp.ins && pp.ins !== 'Not known' && !!typeRaw;
+  const od = tile('Own damage cover'), tp = tile('Third party cover');
+  const tpEnd = String(tp.v || '').split(' – ')[1] || '';
+  const odEnd = String(od.v || '').split(' – ')[1] || '';
+  const rtype = !known ? { label: 'Policy type not known', note: 'Ask for last year’s policy copy.', cls: '-unknown' }
+    : /OD only/i.test(typeRaw) ? { label: 'OD only renewal', note: 'Third party is already covered till ' + (tpEnd || 'a later year') + '. Quote own damage only.', cls: '-od' }
+    : /TP only/i.test(typeRaw) ? { label: 'TP only renewal', note: 'Third party cover only. No own damage, no NCB.', cls: '-tp' }
+    : { label: 'OD + TP renewal', note: 'Own damage and third party renew together.', cls: '-both' };
+  const claim = (v.claimOpts || []).filter((o: any) => o.press === 'true')[0];
+  const kv = (k: string, val: any, fg?: string) => ({ k, v: val || '—', fg: fg || '' });
+  const policy = {
+    type: rtype,
+    polNo: known ? String(pp.polNo || '') : '',
+    polCopied: copied === lead + ':pol',
+    copyPol: () => copyText(ctx, String(pp.polNo || ''), 'Policy number copied', lead + ':pol'),
+    insurer: known ? pp.ins : '',
+    rows: [
+      kv(/OD only/i.test(typeRaw) ? 'OD ends' : 'Policy ends', sel.end ? (odEnd || sel.end) + ' · ' + sel.days : odEnd, sel.daysFg),
+      /OD only/i.test(typeRaw) ? kv('TP ends', tpEnd) : kv('Premium paid', tile('Premium paid').v),
+      kv('NCB', sel.ncbNew ? String(sel.ncbNew).replace('→', ' → ') : sel.ncb),
+      kv('IDV', sel.idv),
+      kv('Claim last year', claim ? (claim.label === 'No claim' ? 'No' : 'Yes') : 'Not asked', claim ? '' : '#9A3412'),
+      kv('Financed by', tile('Financed by').v || 'None'),
+    ].filter((r) => r.v && r.v !== '—'),
+  };
+
+  if (/OD only|TP only/i.test(typeRaw) && known) chips.unshift({ t: /OD only/i.test(typeRaw) ? 'OD only renewal' : 'TP only renewal', cls: 'm-sum-chip-type' });
   const stat = (k: string) => (pn.stats || []).filter((row: any) => row.k === k)[0] || {};
-  const facts = [
-    { k: 'Policy ends', v: sel.end ? sel.end + ' · ' + sel.days : '', fg: sel.daysFg || '' },
-    { k: 'Last year', v: [sel.prev && sel.prev !== 'Unknown' ? sel.prev : '', tile('Premium paid')].filter(Boolean).join(' · ') || 'Not known', fg: '' },
-    { k: 'NCB', v: sel.ncbNew ? String(sel.ncbNew).replace('→', ' → ') : (sel.ncb || '—'), fg: '' },
-    { k: 'IDV', v: sel.idv || '—', fg: '' },
-    { k: 'Attempts', v: stat('Attempts').v || '0', fg: '' },
-    { k: 'Last spoke', v: stat('Last spoke').v || '—', fg: '' },
-  ].filter((f) => !!f.v);
 
   // ---- quotes teaser
   const priced = (v.qTabs || []).map((qt: any) => ({ name: qt.name, amt: qt.amt, n: rupees(qt.amt) })).filter((qt: any) => qt.n > 0);
@@ -129,8 +208,10 @@ export default function (v: any, ctx: MobileCtx): any {
     chips, hasChips: chips.length > 0,
     reassign, hasReassign: !!reassign,
     merge, hasMerge: !!merge,
-    facts,
     quotes,
     hasLast: !!last, lastT: last ? last.t : '', lastWhen: last ? last.when + ' · ' + last.by : '',
+    attempts: (stat('Attempts').v || '0') + ' attempts',
+    vehicle, policy,
+    vehChecked: nChecked === 3 ? 'All checked' : nChecked + ' of 3 checked', vehCls: nChecked === 3 ? '-green' : '',
   };
 }

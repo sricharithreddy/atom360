@@ -82,3 +82,4 @@
 .m-today-bar { display: block; width: 80%; height: 4px; margin-top: 4px; border-radius: 999px; background: #E3E6F1; overflow: hidden; }
 .m-today-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--primary); }
 .m-today-bar.-grad > span { background: linear-gradient(90deg, #4154F9, #7B2FF0 55%, #DE1885); }
+.m-today-rtype { display: inline-block; margin-left: 4px; padding: 1px 8px; border-radius: 999px; background: #FDEBDD; color: #8A2E0C; font-size: 12px; font-weight: 800; vertical-align: 1px; }

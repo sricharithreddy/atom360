@@ -43,6 +43,8 @@ export default function (v: any, ctx: MobileCtx): any {
 
     return {
       name: c.name, model: c.model, reg: c.reg,
+      // OD only / TP only change what to quote, so they show on the card; OD + TP is the usual case
+      rtype: (/·\s*(OD only|TP only)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '',
       why: c.why, whyFg: c.whyFg,
       daysLeft: c.daysLeft, daysFg: c.daysFg, polDate: c.polDate,
       time, hasTime: !!time,

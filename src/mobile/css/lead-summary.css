@@ -111,3 +111,35 @@
 .m-sum-head .m-sum-why { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
 .m-card.m-sum-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
 .m-sum-row .m-sum-ico { flex: 0 0 auto; }
+
+/* policy: renewal type first */
+.m-pol { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; }
+.m-pol-top { display: flex; align-items: center; gap: 10px; }
+.m-pol-type { flex: 0 0 auto; margin: 0; padding: 4px 12px; border-radius: 999px; font-size: 14px; font-weight: 800; letter-spacing: 0.01em; background: var(--primary-soft); color: var(--primary-dark); }
+.m-pol-type.-od { background: #FDEBDD; color: #8A2E0C; }
+.m-pol-type.-tp { background: var(--purple-soft); color: var(--purple); }
+.m-pol-type.-unknown { background: #EEF0F6; color: var(--text); }
+.m-pol-ins { flex: 1 1 0; font-size: 14px; font-weight: 600; color: var(--text); text-align: right; }
+.m-pol-note { font-size: 13px; color: var(--text); }
+.m-pol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; padding-top: 4px; }
+.m-pol-grid dt { font-size: 12px; font-weight: 600; color: var(--muted); }
+.m-pol-grid dd { font-size: 15px; font-weight: 700; color: var(--ink); overflow-wrap: anywhere; }
+
+/* vehicle numbers with copy and check */
+.m-veh { display: flex; flex-direction: column; gap: 2px; padding: 12px 16px 10px; }
+.m-veh-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 4px; }
+.m-veh-top .m-h3 { margin: 0; }
+.m-veh-model { font-weight: 600; color: var(--muted); }
+.m-vrow { display: flex; align-items: center; gap: 6px; min-height: 52px; }
+.m-veh .m-vrow + .m-vrow { border-top: 1px solid var(--line-soft); }
+.m-pol .m-vrow { min-height: 44px; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
+.m-vrow-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.m-vrow-k { font-size: 12px; font-weight: 600; color: var(--muted); }
+.m-vrow-ok { color: var(--green); }
+.m-vrow-v { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink); overflow-wrap: anywhere; user-select: all; -webkit-user-select: all; }
+.m-vbtn { flex: 0 0 auto; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 12px; background: #FFFFFF; color: var(--text); }
+.m-vbtn:active { background: var(--tint); }
+.m-vchk { color: #B6BDD6; }
+.m-vchk[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #FFFFFF; }
+.m-veh-hint { padding-top: 4px; }
+.m-tag.m-sum-chip-type { background: #FDEBDD; color: #8A2E0C; font-weight: 800; }

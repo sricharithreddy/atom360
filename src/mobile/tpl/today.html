@@ -35,7 +35,7 @@
 <span class="m-today-top"><span class="m-today-name m-clip">{{ card.name }}</span><sc-if value="{{ card.hasTime }}"><span class="m-today-time"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{ card.time }}</span></sc-if></span>
 <span class="m-today-car m-clip">{{ card.model }} · {{ card.reg }}</span>
 <span class="m-today-why m-clip2" style="color: {{ card.whyFg }}">{{ card.why }}</span>
-<span class="m-today-days"><strong style="color: {{ card.daysFg }}">{{ card.daysLeft }}</strong> · policy ends {{ card.polDate }}</span>
+<span class="m-today-days"><strong style="color: {{ card.daysFg }}">{{ card.daysLeft }}</strong> · policy ends {{ card.polDate }}<sc-if value="{{ card.rtype }}"> <span class="m-today-rtype">{{ card.rtype }}</span></sc-if></span>
 <sc-if value="{{ card.hasTags }}"><span class="m-today-tags"><sc-for list="{{ card.tags }}" as="tag"><span class="m-tag {{ tag.cls }}"><sc-if value="{{ tag.ai }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>{{ tag.text }}</span></sc-for></span></sc-if>
 <sc-if value="{{ card.hasQuote }}"><span class="m-today-quote"><span class="m-fixed">Best quote</span><span class="m-today-quote-v"><span class="m-clip">{{ card.quoteIns }}</span><strong class="m-fixed">{{ card.quoteAmt }}</strong></span></span></sc-if>
 <sc-if value="{{ card.hasQuote }}" not><span class="m-today-quote"><span>No quotes yet</span></span></sc-if>
