@@ -30,12 +30,13 @@ The phone is a calling tool first and a dashboard second.
 - **No bottom tabs.** The queue gets the whole screen. Stats, Learn and Admin (team lead and admin only) open from the menu behind the initial; on those screens the top bar has a back arrow to Today.
 - **Alerts** (the bell, with a count) hold the promised callback that is due (Call now, Snooze), calls made without an outcome, customers who told the AI they want to renew, and callbacks later today. They used to sit on the Today screen.
 - **Lead cards** on Today have a thin coloured streak on the left for interest: red Hot, orange Warm, blue Cold, grey when calling is blocked or interest is not known. Days to expiry sit in a circle at the top right (magenta with a minus once expired).
+- **Each Today card** also has, as in the sales CRM, a small **summary box** (pulse icon: green Hot, orange Warm, grey otherwise) and a slim **vehicle line** (model and registration) that opens to the registration, chassis and engine (or motor) numbers, each with Copy. It starts closed.
 - **Lead cards** on Today show **OD only** or **TP only** next to the policy end date when the renewal is not the usual OD + TP.
 - **Today** starts with a slim strip of four numbers: calls against target, connected, renewed, and the month against target. Then the lists (Due now, Hot, Follow-ups, All), the one-tap key filters, and the lead cards.
 - **Search** opens as a full screen with the keyboard up. It works from every screen.
 - **A lead opens as a full-screen page** over the queue, so the queue keeps its place. Four tabs:
   - **Overview**: why to call now and the next call time, a few short tags (Hot, With AI, OD only renewal...), the payment or lapsed-policy steps when there are any, then:
-    - Inside the same top card, as in the sales CRM: a one-line **summary** of where things stand (pulse icon: green Hot, orange Warm, grey otherwise), and a one-line **Vehicle** row (model and registration). Tap it to show the registration, chassis and engine (or motor) numbers, each with **Copy**.
+    - **Vehicle**: registration, chassis and engine (or motor) numbers, each with **Copy**.
     - **Policy**: the renewal type first (**OD only**, **TP only** or **OD + TP**, with what it means for the quote), insurer, policy number with Copy, when OD and TP end, NCB, IDV, whether a claim was made last year, and the financier.
     - rows that lead to the best quote and the last contact (with the number of attempts). No scripts or long explanations.
   - **Quotes**: insurer quotes, edit or add a quote, previous policy, send the chosen quote on WhatsApp.

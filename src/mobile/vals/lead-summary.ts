@@ -1,4 +1,5 @@
 import type { MobileCtx } from '../logic';
+import { copyText } from '../copy';
 
 /** Phone-only values for the lead Overview tab, available in the template as m.sum.* */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -23,25 +24,6 @@ function vehicleOf(ctx: MobileCtx, name: any): any {
     } finally { self.state = saved; }
   }
   return VEHICLES[plain(name)] || null;
-}
-
-/** Copy to the clipboard (with a fallback for browsers that block it) and say so. */
-function copyText(ctx: MobileCtx, text: string, done: string, key: string): void {
-  if (!text) return;
-  const ok = () => {
-    ctx.set({ mCopied: key, mToast: done });
-    setTimeout(() => { if (ctx.self.state.mCopied === key) ctx.set({ mCopied: '' }); }, 2000);
-  };
-  const fallback = () => {
-    try {
-      const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); ok();
-    } catch { ctx.note('Could not copy. Press and hold the number to copy it.'); }
-  };
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok, fallback);
-    else fallback();
-  } catch { fallback(); }
 }
 
 export default function (v: any, ctx: MobileCtx): any {
@@ -143,8 +125,6 @@ export default function (v: any, ctx: MobileCtx): any {
   const carRows: any[] = card ? (card.car || []) : [];
   const carVal = (re: RegExp) => ((carRows.filter((x: any) => re.test(x.k))[0] || {}).v || '');
   const engineK = carRows.some((x: any) => /^Motor/.test(x.k)) ? 'Motor no' : 'Engine no';
-  // Collapsed until the caller opens it; stays open or closed across leads once chosen.
-  const vehOpen = !!ctx.self.state.mVehOpen;
   const vehicle = {
     model: carVal(/^Model/) || String(sel.vehicle || '').split(' · ')[0],
     ev: engineK === 'Motor no',
@@ -212,10 +192,5 @@ export default function (v: any, ctx: MobileCtx): any {
     hasLast: !!last, lastT: last ? last.t : '', lastWhen: last ? last.when + ' · ' + last.by : '',
     attempts: (stat('Attempts').v || '0') + ' attempts',
     vehicle, policy,
-    // one-line summary, coloured by interest as in the sales CRM: green good, orange needs attention, grey neutral
-    summary: pn.summary || '', hasSummary: !!pn.summary,
-    pulseCls: interest && interest.v === 'Hot' ? '-good' : interest && interest.v === 'Warm' ? '-warn' : '',
-    vehOpen, vehOpenStr: vehOpen ? 'true' : 'false', vehMore: vehOpen ? 'Hide' : (vehicle.ev ? 'Chassis, motor' : 'Chassis, engine'),
-    toggleVeh: () => ctx.set({ mVehOpen: !vehOpen }),
   };
 }

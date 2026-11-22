@@ -100,3 +100,28 @@
 .m-today-card.m-mood.-warm::before { background: linear-gradient(180deg, #FB923C, #EA580C); }
 .m-today-card.m-mood.-cold::before { background: linear-gradient(180deg, #60A5FA, #2563EB); }
 .m-today-card.m-mood.-none::before { background: #B6BDD6; }
+
+/* summary: a small box, like the sales CRM */
+.m-today-sum { display: flex; align-items: flex-start; gap: 7px; padding: 8px 10px; border-radius: 10px; background: #F4F5FA; font-size: 13px; line-height: 1.35; font-weight: 500; color: var(--ink); }
+.m-today-sum > svg { flex: 0 0 auto; margin-top: 2px; color: var(--muted); }
+.m-today-sum.-good > svg { color: var(--green); }
+.m-today-sum.-warn > svg { color: #EA580C; }
+
+/* vehicle: one slim line that opens to the numbers */
+.m-today-veh { margin: 0 16px; border-top: 1px solid var(--line-soft); }
+.m-today-veh-head { display: flex; align-items: center; gap: 7px; width: 100%; min-height: 44px; padding: 0; border: 0; background: transparent; text-align: left; color: var(--ink); }
+.m-today-veh-ic { flex: 0 0 auto; color: var(--faint); }
+.m-today-veh-v { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
+.m-today-veh-reg { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-weight: 600; color: var(--text); letter-spacing: 0.03em; }
+.m-today-veh-chev { flex: 0 0 auto; color: var(--faint); transition: transform 0.15s ease; }
+.m-today-veh-head[aria-expanded="true"] .m-today-veh-chev { transform: rotate(180deg); }
+.m-today-veh-body { display: flex; flex-direction: column; padding-bottom: 6px; }
+.m-today-vrow { display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.m-today-vrow + .m-today-vrow { border-top: 1px dashed var(--line-soft); }
+.m-today-vk { flex: 0 0 74px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.m-today-vv { flex: 1 1 0; min-width: 0; font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 14px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink); overflow-wrap: anywhere; user-select: all; -webkit-user-select: all; }
+.m-today-vcopy { flex: 0 0 auto; width: 44px; height: 44px; margin-right: -8px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 10px; background: transparent; color: var(--primary); }
+.m-today-vcopy:active { background: var(--tint); }
+@media (prefers-reduced-motion: reduce) { .m-today-veh-chev { transition: none; } }
+.m-today-main .m-today-sum { display: flex; flex-direction: row; }
+.m-today-sum > .m-clip2 { flex: 1 1 0; min-width: 0; display: -webkit-box; }

@@ -1,4 +1,5 @@
 import type { MobileCtx } from '../logic';
+import { copyText } from '../copy';
 
 const SNOOZE_MS = 10 * 60 * 1000;
 const LIVE_BG = '#166534';
@@ -75,8 +76,23 @@ export default function (v: any, ctx: MobileCtx): any {
     const moodCls = MOOD_CLS[mood] || '-none';
     const moodSay = blocked ? 'Calling blocked' : mood ? mood + ' lead' : 'Interest not known';
 
+    // Vehicle: one slim line (model · reg) that opens to the chassis and engine/motor numbers, each copyable
+    const key = plainName(c.name);
+    const vehOpen = !!((s.mCardVeh || {})[key]);
+    const carRows: any[] = c.car || [];
+    const vnum = (re: RegExp) => carRows.filter((x: any) => re.test(x.k))[0] || null;
+    const copiedKey = s.mCopied || '';
+    const vrows = [vnum(/^Reg/), vnum(/^Chassis/), vnum(/^(Engine|Motor)/)].filter(Boolean).map((x: any) => {
+      const id = key + ':' + x.k;
+      return { k: x.k, v: x.v, copied: copiedKey === id, label: 'Copy ' + String(x.k).toLowerCase() + ' ' + x.v, copy: () => copyText(ctx, x.v, x.k + ' copied', id) };
+    });
+
     return {
       moodCls, moodSay,
+      summary: c.summary || '', hasSummary: !!c.summary,
+      pulseCls: mood === 'Hot' ? '-good' : mood === 'Warm' ? '-warn' : '',
+      vehOpen, vehOpenStr: vehOpen ? 'true' : 'false', vrows,
+      toggleVeh: () => { const all = { ...(ctx.self.state.mCardVeh || {}) }; all[key] = !vehOpen; ctx.set({ mCardVeh: all }); },
       days, daysCls, daysAria, hasDays: !!days,
       name: c.name, model: c.model, reg: c.reg,
       why: c.why, whyFg: c.whyFg,
