@@ -46,6 +46,7 @@ npm run build      # type check + production build into dist/
 | `prototype/` | The design board that production runs. |
 | `src/proto/` | The engine that runs the board as a React app. |
 | `src/mobile/` | The phone layout for the board: template parts, styles, and a thin layer over the board's logic. |
+| `src/desk/` | Phone features added to the desktop board at named spots (quote card, add a policy, profile, admin tools...). |
 | `src/features/` | Backend-ready screens served under `/next`: sign-in, today, lead. |
 | `src/styles/app.css` | Design tokens and styles. Sizes are in rem, so density changes in one place. |
 

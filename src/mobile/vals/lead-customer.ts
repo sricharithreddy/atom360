@@ -28,7 +28,7 @@ export default function (v: any, ctx: MobileCtx): any {
     const extra = !has ? '' : t.label === 'Documents' ? n.replace('/', ' of ') + ' accepted' : t.label === 'Coupons' ? n + (canEdit ? ' to apply' : ' unused') : t.label === 'History' ? n + (n === '1' ? ' entry' : ' entries') : n + ' on record';
     return {
       label: t.label === 'Documents' ? 'Docs' : t.label, say: t.label + (extra ? ', ' + extra : ''),
-      selected: histSel && t.label === 'Documents' ? 'true' : t.selected, pick: t.pick, count: t.count, hasCount: has, countBg: t.countBg, countFg: t.countFg,
+      selected: (histSel || ctx.self.state.rec === 'svc') && t.label === 'Documents' ? 'true' : t.selected, pick: t.pick, count: t.count, hasCount: has, countBg: t.countBg, countFg: t.countFg,
     };
   });
   const addOpen = canEdit && ctx.shown(v.addDocShow);
@@ -47,7 +47,7 @@ export default function (v: any, ctx: MobileCtx): any {
 
   // ---- arriving from "Record the answer" (Quotes) or "See history" (Overview): bring Records into view.
   // Other sections may set `mCustJump: Date.now()`; a changed Records tab while away counts too.
-  const onTab = !!v.detailOpen && s.mTab === 'cust';
+  const onTab = !!self.__alt && !!v.detailOpen && s.mTab === 'cust';
   const rec = v.recIsDocs ? 'docs' : v.recIsClaims ? 'claims' : v.recIsCpn ? 'cpn' : 'hist';
   const mem = self.__mCust || (self.__mCust = { on: false, rec: 'hist', jump: 0, sel: null });
   if (onTab) {
@@ -111,7 +111,7 @@ export default function (v: any, ctx: MobileCtx): any {
     mobileText: prof.mobile ? (unmM ? showMobile(prof.mobile) : maskMobile(prof.mobile)) : v.mobileText,
     emailText: prof.email ? (unmE ? prof.email : maskEmail(prof.email)) : v.emailText,
     mobileNew: !!prof.mobile, emailNew: !!prof.email,
-    isDocs: !!v.recIsDocs || histSel,
+    isDocs: !!v.recIsDocs || histSel || ctx.self.state.rec === 'svc',
     canEdit,
     // contact
     exposed, hidden: !exposed && !blocked, blocked,

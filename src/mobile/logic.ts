@@ -15,6 +15,7 @@ import learn from './vals/learn';
 import admin from './vals/admin';
 import adminMessages from './vals/admin-messages';
 import alerts from './vals/alerts';
+import desk, { deskPatch } from './vals/desk';
 import addPolicy from './vals/add-policy';
 import quoteCard from './vals/quote-card';
 import adminExtra from './vals/admin-extra';
@@ -46,7 +47,7 @@ export interface Layer { id: string; open: boolean; close: () => void }
 type Section = (v: any, ctx: MobileCtx) => any;
 const SECTIONS: Record<string, Section> = {
   today, filters, sum: leadSummary, quotes: leadQuotes, cust: leadCustomer, out: outcome,
-  msg: message, stats, learn, admin, admMsg: adminMessages, alerts, hist: leadHistory, add: addPolicy, qcard: quoteCard, adx: adminExtra, mgr: manager,
+  msg: message, stats, learn, admin, admMsg: adminMessages, alerts, hist: leadHistory, add: addPolicy, qcard: quoteCard, adx: adminExtra, mgr: manager, dk: desk,
 };
 
 const shown = (d: any) => d != null && d !== '' && d !== 'none' && d !== false;
@@ -140,6 +141,7 @@ function shellVals(v: any, ctx: MobileCtx) {
     callOffCls: v.callBg === '#8A93B3' ? '-off' : '',
     // toast
     toast, toastOn: !!toast, toastOff: () => set({ mToast: '', toast: '' }),
+    note: s.mToast || '', noteOn: !!s.mToast, noteOff: () => set({ mToast: '' }),
   };
 }
 
@@ -175,7 +177,6 @@ export function withMobile(Base: any): any {
     renderVals() {
       const self: any = this;
       const v = super.renderVals();
-      if (!self.__alt) { self.__mv = null; return v; }
       const ctx: MobileCtx = {
         self, shown,
         set: (patch: any) => self.setState(patch),
@@ -189,6 +190,7 @@ export function withMobile(Base: any): any {
       });
       m.layers = layersOf(v, m, self);
       self.__mv = { v, m };
+      if (!self.__alt) return { ...v, ...deskPatch(v, m, ctx), m };
       return { ...v, m };
     }
 
@@ -199,6 +201,21 @@ export function withMobile(Base: any): any {
       const st = self.__m, root = document.documentElement;
       if (!self.__alt || !self.__mv) {
         if (st.on) { st.on = false; root.classList.remove('m-on', 'm-lock'); }
+        // Desktop: phone-layer notes (mToast) clear themselves; the board's own toast stays as designed.
+        const note = self.__mv ? self.__mv.m.note : '';
+        if (note !== st.dnote) {
+          st.dnote = note;
+          if (st.dtimer) { clearTimeout(st.dtimer); st.dtimer = null; }
+          if (note) st.dtimer = setTimeout(() => { st.dtimer = null; if (self.state.mToast === st.dnote) self.setState({ mToast: '' }); }, TOAST_MS);
+        }
+        if (!st.dbound) {
+          st.dbound = true;
+          window.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key !== 'Escape' || self.__alt || !self.__mv) return;
+            const top = self.__mv.m.layers.filter((l: Layer) => l.open && l.id !== 'lead' && l.id !== 'filters' && l.id !== 'message').pop();
+            if (top) top.close();
+          });
+        }
         return;
       }
       const { v, m } = self.__mv;

@@ -1,0 +1,30 @@
+/* Desktop parity parts. Phone markup inside `.m-app.m-desk`, sized for the desktop board. */
+.m-app.m-desk { min-height: 0; max-width: none; margin: 0; display: block; background: none; font-size: 14px; }
+.m-desk.dk-inline { margin: 8px 0; }
+.m-desk.dk-overlays { position: static; }
+.m-desk .m-sheet { justify-content: center; align-items: center; padding: 24px; }
+.m-desk .m-sheet-card { max-width: 560px; border-radius: 20px; max-height: 90vh; }
+.m-desk .m-sheet.-full .m-sheet-card { height: auto; max-height: 90vh; }
+.m-desk .m-sheet-foot { border-radius: 0 0 20px 20px; }
+.m-desk .m-layer { top: 4vh; bottom: 4vh; border-radius: 20px; overflow: hidden; box-shadow: 0 24px 70px rgba(11, 26, 71, 0.35); border: 1px solid #D3D8E6; }
+.m-desk .m-toast { top: 16px; }
+.m-desk .m-dialog { z-index: 120; }
+/* "Added by you" above the queue */
+.m-desk.dk-added { margin: 0 0 16px; }
+.dk-added-h { display: flex; align-items: baseline; gap: 10px; margin: 0 2px 8px; font-size: 15px; color: #0B1A47; }
+.dk-added-h span { font-size: 13px; color: #5B6482; }
+.dk-added-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+/* queue: stage filter next to the view tabs */
+.dk-stage { display: inline-flex; align-items: center; gap: 8px; margin-left: 12px; font-size: 13px; color: #5B6482; }
+.dk-stage select { height: 32px; padding: 0 8px; border: 1px solid #8A93B3; border-radius: 8px; background: #FFFFFF; color: #0B1A47; font: inherit; font-size: 13px; }
+/* card: sponsored */
+.dk-spon { display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 999px; background: #FFF4D6; color: #8A5A00; font-size: 12px; font-weight: 800; }
+/* quotes: quote card button next to send */
+.dk-qcard { height: 34px; padding: 0 12px; margin-right: 8px; border: 1px solid #0F7A40; border-radius: 10px; background: #FFFFFF; color: #0F7A40; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+/* records: service tab */
+.dk-svc-tab { height: 34px; padding: 0 10px; border: 0; background: transparent; color: #5B6482; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.dk-svc-tab[aria-selected="true"] { color: #0B1A47; box-shadow: inset 0 -2px 0 #3B4CE8; }
+.dk-svc-n { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: #E3E6F1; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+/* rail: data check */
+.dk-rail { width: 52px; padding: 8px 0; border: 0; border-radius: 10px; background: transparent; color: #AEB6D6; display: flex; flex-direction: column; align-items: center; gap: 3px; font: inherit; font-size: 10px; font-weight: 500; cursor: pointer; }
+.dk-rail:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.08); }

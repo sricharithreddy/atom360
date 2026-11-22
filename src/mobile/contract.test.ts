@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { DCLogic, parse } from '../proto/runtime';
 import { assemble } from './assemble';
 import { withMobile } from './logic';
+import { injectDesk } from '../desk/inject';
 
 import bootSrc from '../proto/boot.ts?raw';
 
@@ -158,4 +159,27 @@ describe('phone template and board logic', () => {
     scan(parse(template()));
     expect(bad, 'loop variables that shadow a top-level value: ' + bad.join(', ')).toEqual([]);
   });
+
+  it('desktop: every phone feature finds its place in the board, and every value it uses exists', () => {
+    const board = boardSource();
+    const body = board.slice(board.indexOf('<x-dc>') + 6, board.indexOf('<script type="text/x-dc"')).replace(/<helmet>[\s\S]*?<\/helmet>/, '');
+    const desk = injectDesk(body);
+    expect(desk.missing, 'desktop parts whose anchor is gone: ' + desk.missing.join(', ')).toEqual([]);
+    const ast = parse(desk.template);
+    const holes = new Map<string, Hole>();
+    for (const me of ['anitha', 'ravi', 'vikram']) {
+      for (const view of ['today', 'stats', 'admin']) {
+        const app = makeApp(); app.__alt = false;
+        app.state = { ...app.state, me, view, mAdded: [{ id: 'p1', name: 'Test', mobile: '98765 43210', reg: 'TS09 AB 1234', model: 'Creta', chassis: '', engine: '', insurer: 'Digit', insurerOther: '', polNo: '', ptype: 'OD+TP', odEnd: '2026-12-01', tpEnd: '', ncb: '0', idv: '', leadType: 'Walk-in enquiry', scanned: false, file: '' }] };
+        for (const k of ast.kids) walk(k, [app.renderVals()], holes, []);
+      }
+      for (const sel of [0, 6]) {
+        const app = makeApp(); app.__alt = false;
+        app.state = { ...app.state, me, view: 'today', sel, open: true, rec: 'svc', mAdd: { step: 'form', mode: 'new' }, mQcard: { key: '' }, mSheet: 'datacheck' };
+        for (const k of ast.kids) walk(k, [app.renderVals()], holes, []);
+      }
+    }
+    const missing = [...holes.values()].filter((h) => h.seen && !h.ok).map((h) => h.path).sort();
+    expect(missing, 'desktop values that no longer exist:\n' + missing.join('\n')).toEqual([]);
+  }, 60000);
 });

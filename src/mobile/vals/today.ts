@@ -53,6 +53,17 @@ function priorityOf(c: any, mood: string, blocked: boolean, lateCb: boolean, sta
   return score >= 70 ? 5 : score >= 58 ? 4 : score >= 46 ? 3 : score >= 30 ? 2 : 1;
 }
 
+/** Priority (1-5) and sponsored flag for a board queue card, as the phone works them out. */
+export function cardPriority(ctx: MobileCtx, c: any): { prio: number; sponsored: boolean } {
+  const s = ctx.self.state;
+  const blocked = c.callBg === '#DDE1EE';
+  const mood = blocked ? '' : (c.aiText === 'AI qualified' ? 'Hot' : moodOf(ctx, c.name));
+  const late = String(c.cbShow) !== 'none' && /late/.test(String(c.cbText || ''));
+  const sponsored = !!s.mSponsor && String(c.prevCo || '').split(/\s*·\s*/)[0] === s.mSponsor;
+  const p0 = priorityOf(c, mood, blocked, late, stagesByName(ctx)[plainName(c.name)] || 'new');
+  return { prio: sponsored && !blocked ? Math.min(5, Math.max(4, p0 + 1)) : p0, sponsored };
+}
+
 const MOOD_CLS: Record<string, string> = { Hot: '-hot', Warm: '-warm', Cold: '-cold' };
 
 /** Phone values for the Today queue (m.today.*). Thin: regroups board values for the phone card and wraps a few handlers. */
@@ -182,7 +193,7 @@ export default function (v: any, ctx: MobileCtx): any {
   // One line of quick views replaces the board's tabs and pinned key filters. The board's own tab
   // stays on All so the quick views and the Filters sheet see every lead.
   const allTab = (v.tabs || []).filter((t: any) => t.id === 'all')[0] || null;
-  if (allTab && allTab.selected !== 'true' && !self.__mTodayAll) { self.__mTodayAll = true; setTimeout(() => { self.__mTodayAll = false; allTab.pick(); }, 0); }
+  if (self.__alt && allTab && allTab.selected !== 'true' && !self.__mTodayAll) { self.__mTodayAll = true; setTimeout(() => { self.__mTodayAll = false; allTab.pick(); }, 0); }
   const quickNow = sv.quick;
   const quickList = QUICK.map((q) => ({
     label: q.label, count: sv.quickCounts[q.id] || 0, showCount: q.id !== 'all', selected: quickNow === q.id ? 'true' : 'false',

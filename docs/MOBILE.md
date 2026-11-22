@@ -83,6 +83,28 @@ The phone is a calling tool first and a dashboard second.
 
 Sample figures: the coupons, data check and profile details are examples until the backend provides them. The manager tools (sponsored insurer, moves, breakdowns, coupons, data check) are desk work too, so they also belong in the desktop design.
 
+## Desktop parity
+
+Features that started on the phone are on the desktop board too, using the same logic and data:
+
+| Feature | Where on the desktop |
+| --- | --- |
+| Add a policy (scan or type) | Header **Scan policy** and **+ New enquiry** (they did nothing before); saved policies show above the queue under **Added by you** |
+| Priority stars set by the app | Queue cards (callers can no longer change them) |
+| Sponsored insurer | Admin → Targets and rules; its leads go first on the queue with a **Sponsored** tag |
+| Stage filter | **Stage** selector next to the view tabs |
+| Quote card | **Quote card** button next to *Send quote on WhatsApp* |
+| Quote share history | Policy & quotes column, **Shared with the customer** |
+| Customer profile (sold by us, DOB, profession, edit mobile/email) | Customer column, **Profile** |
+| Service history | Records → **Service** tab |
+| Move by insurer or renewal year | Admin → Team |
+| Coupons and discounts by caller | Stats → Overview (team lead and admin) |
+| Data check | **Data** on the left rail (team lead and admin) |
+
+Phone-only on purpose (space-saving choices for a small screen): the lean cards and summary box, the one-line quick views, the alerts bell, and hiding the owner tag and the duplicate flag.
+
+How it is built: `src/desk/inject.ts` adds these parts to the board's template at named spots, reusing the phone's own markup where it fits (inside `.m-app.m-desk`, styled by `src/desk/desk.css`). The design file itself is not edited for them. If a new board moves one of those spots, the app logs which part could not be placed and `npm test` fails with its name.
+
 ## Showing it on a computer
 
 The live site has a **Desktop / Mobile** switch at the bottom of the left rail. **Mobile** opens the phone layout in a phone frame, with buttons for the phone's Back button and for restarting the demo with fresh sample data. Desktop and phone keep separate sample data, so switching back and forth keeps each where you left it. `/?view=mobile` opens straight in phone view. On a real phone the switch is not shown.
