@@ -52,8 +52,11 @@ export default function (v: any, ctx: MobileCtx): any {
 
     // Tags: only what the summary box, the streak and the circle do not already say.
     const tags: any[] = [];
-    const rtype = (/·\s*(OD only|TP only)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '';
-    if (rtype) tags.push({ text: rtype, cls: 'm-today-rtag', ai: false });
+    // Renewal type (from the previous policy) and lead type, as on the desktop card
+    const ptype = (/·\s*(OD only|TP only|OD\+TP)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '';
+    const rtypeText = ptype === 'OD+TP' ? 'OD + TP' : ptype || 'Type not known';
+    const rtypeCls = ptype === 'OD only' ? '-od' : ptype === 'TP only' ? '-tp' : ptype ? '-both' : '-unknown';
+    const leadType = String(c.srcLine || '').replace(/^Renewal from /, 'From ').split(/\s*·\s*/).filter((x) => x && x !== 'Not known').join(' · ');
     if (on(c.pendShow)) tags.push({ text: 'Outcome not logged', cls: '-orange', ai: false });
     if (on(c.aiShow) && c.aiText !== 'AI qualified') tags.push({ text: /^With AI/.test(c.aiText) ? 'With AI' : c.aiText, cls: '-purple', ai: true });
     if (on(c.kycShow)) tags.push({ text: 'KYC pending', cls: '-orange', ai: false });
@@ -94,6 +97,7 @@ export default function (v: any, ctx: MobileCtx): any {
 
     return {
       moodCls, moodSay,
+      rtypeText, rtypeCls, leadType, hasLeadType: !!leadType,
       summary: reason, hasSummary: !!reason,
       boxTime: reason && hasTime(reason) ? '' : time, late,
       pulseCls: mood === 'Hot' ? '-good' : mood === 'Warm' ? '-warn' : '',
