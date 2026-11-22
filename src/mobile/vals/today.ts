@@ -56,6 +56,15 @@ export default function (v: any, ctx: MobileCtx): any {
     const ptype = (/·\s*(OD only|TP only|OD\+TP)\s*$/.exec(String(c.prevCo || '')) || [])[1] || '';
     const rtypeText = ptype === 'OD+TP' ? 'OD + TP' : ptype || 'Type not known';
     const rtypeCls = ptype === 'OD only' ? '-od' : ptype === 'TP only' ? '-tp' : ptype ? '-both' : '-unknown';
+    // Previous policy cover period; when there is no earlier policy, the expected expiry date alone
+    const period = (t: any) => (/^\d/.test(String(t || '')) && /–/.test(String(t)) ? String(t) : '');
+    const odP = period(c.odCover), tpP = period(c.tpCover);
+    const tpEnd = tpP ? tpP.split(/\s*–\s*/)[1] : '';
+    const cover = !odP ? 'Expected expiry ' + (c.polDate || 'not known')
+      : ptype === 'OD only' ? 'OD ' + odP + (tpEnd ? ' · TP till ' + tpEnd : '')
+      : ptype === 'TP only' ? 'TP ' + (tpP || odP)
+      : odP;
+    const coverKnown = !!odP;
     const leadType = String(c.srcLine || '').replace(/^Renewal from /, 'From ').split(/\s*·\s*/).filter((x) => x && x !== 'Not known').join(' · ');
     if (on(c.pendShow)) tags.push({ text: 'Outcome not logged', cls: '-orange', ai: false });
     if (on(c.aiShow) && c.aiText !== 'AI qualified') tags.push({ text: /^With AI/.test(c.aiText) ? 'With AI' : c.aiText, cls: '-purple', ai: true });
@@ -97,7 +106,7 @@ export default function (v: any, ctx: MobileCtx): any {
 
     return {
       moodCls, moodSay,
-      rtypeText, rtypeCls, leadType, hasLeadType: !!leadType,
+      rtypeText, rtypeCls, leadType, hasLeadType: !!leadType, cover, coverKnown,
       summary: reason, hasSummary: !!reason,
       boxTime: reason && hasTime(reason) ? '' : time, late,
       pulseCls: mood === 'Hot' ? '-good' : mood === 'Warm' ? '-warn' : '',

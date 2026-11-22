@@ -135,3 +135,8 @@
 .m-today-ptype.-tp { background: var(--purple-soft); color: var(--purple); }
 .m-today-ptype.-unknown { background: #EEF0F6; color: var(--muted); font-weight: 700; }
 .m-today-ltype { flex: 1 1 0; font-size: 13px; color: var(--muted); }
+.m-today-cover { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+.m-today-cover > svg { flex: 0 0 auto; color: var(--faint); }
+.m-today-cover { align-items: flex-start; }
+.m-today-cover > svg { margin-top: 1px; }
+.m-today-cover-t { min-width: 0; overflow-wrap: anywhere; }
