@@ -135,11 +135,7 @@
 .m-pol .m-vrow { min-height: 44px; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); }
 .m-vrow-main { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
 .m-vrow-k { font-size: 12px; font-weight: 600; color: var(--muted); }
-.m-vrow-ok { color: var(--green); }
 .m-vrow-v { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--ink); overflow-wrap: anywhere; user-select: all; -webkit-user-select: all; }
 .m-vbtn { flex: 0 0 auto; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 12px; background: #FFFFFF; color: var(--text); }
 .m-vbtn:active { background: var(--tint); }
-.m-vchk { color: #B6BDD6; }
-.m-vchk[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #FFFFFF; }
-.m-veh-hint { padding-top: 4px; }
 .m-tag.m-sum-chip-type { background: #FDEBDD; color: #8A2E0C; font-weight: 800; }

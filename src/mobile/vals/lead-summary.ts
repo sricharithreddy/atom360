@@ -130,17 +130,15 @@ export default function (v: any, ctx: MobileCtx): any {
     if (ctx.shown(fl.actShow) && fl.actLabel) merge = { label: fl.actLabel, act: (e: any) => { if (typeof fl.act === 'function') fl.act(e); ctx.note('Merge request sent to your supervisor.'); } };
   });
 
-  // ---- vehicle: reg, chassis, engine/motor numbers, each with copy and a "checked against the RC" tick
+  // ---- vehicle: reg, chassis, engine/motor numbers, each with copy
   const card = vehicleOf(ctx, sel.name);
   const lead = ctx.self.state.sel;
-  const chk = ((ctx.self.state.mChk || {})[lead]) || {};
   const copied = ctx.self.state.mCopied || '';
   const vrow = (id: string, k: string, val: string) => ({
     id, k, v: val || 'Not known', has: !!val,
-    copied: copied === lead + ':' + id, checked: !!chk[id],
-    copyLabel: 'Copy ' + k.toLowerCase() + ' ' + val, checkLabel: (chk[id] ? 'Checked: ' : 'Mark as checked against the RC: ') + k.toLowerCase(),
+    copied: copied === lead + ':' + id,
+    copyLabel: 'Copy ' + k.toLowerCase() + ' ' + val,
     copy: () => copyText(ctx, val, k + ' copied', lead + ':' + id),
-    check: () => { const all = { ...(ctx.self.state.mChk || {}) }; all[lead] = { ...chk, [id]: !chk[id] }; ctx.set({ mChk: all }); },
   });
   const carRows: any[] = card ? (card.car || []) : [];
   const carVal = (re: RegExp) => ((carRows.filter((x: any) => re.test(x.k))[0] || {}).v || '');
@@ -150,7 +148,6 @@ export default function (v: any, ctx: MobileCtx): any {
     ev: engineK === 'Motor no',
     rows: [vrow('reg', 'Reg no', carVal(/^Reg/)), vrow('chassis', 'Chassis no', carVal(/^Chassis/)), vrow('engine', engineK, carVal(/^(Engine|Motor)/))],
   };
-  const nChecked = vehicle.rows.filter((r: any) => r.checked).length;
 
   // ---- policy: renewal type first (OD only / TP only / OD + TP), then the details needed to quote
   const pp = v.pp || {};
@@ -212,6 +209,5 @@ export default function (v: any, ctx: MobileCtx): any {
     hasLast: !!last, lastT: last ? last.t : '', lastWhen: last ? last.when + ' · ' + last.by : '',
     attempts: (stat('Attempts').v || '0') + ' attempts',
     vehicle, policy,
-    vehChecked: nChecked === 3 ? 'All checked' : nChecked + ' of 3 checked', vehCls: nChecked === 3 ? '-green' : '',
   };
 }
