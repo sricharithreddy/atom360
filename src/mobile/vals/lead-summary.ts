@@ -1,6 +1,7 @@
 import type { MobileCtx } from '../logic';
 import { copyText } from '../copy';
 import { cleanWhy, hasTime } from '../text';
+import { profileOf, soldLabel } from '../profile';
 
 /** Phone-only values for the lead Overview tab, available in the template as m.sum.* */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -82,6 +83,7 @@ export default function (v: any, ctx: MobileCtx): any {
   const interest = (pn.stats || []).filter((row: any) => row.k === 'Interest')[0];
   const aiQualified = flagsIn.some((fl: any) => /^AI qualified/i.test(String(fl.label || '')));
   if (interest && interest.v && interest.v !== '—' && !aiQualified) chips.push({ t: interest.v + (/^(Hot|Warm|Cold)$/.test(interest.v) ? ' lead' : ''), cls: interest.v === 'Hot' ? '-green' : interest.v === 'Warm' ? '-orange' : '' });
+  { const pr = profileOf(ctx, sel.name); chips.push({ t: soldLabel(pr), cls: pr.sold === 'us' ? '-green' : '' }); }
   let reassign: any = null, merge: any = null;
   flagsIn.forEach((fl: any, idx: number) => {
     const tone = TONES[fl.fg] || 'plain';

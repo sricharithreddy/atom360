@@ -1,4 +1,5 @@
 import type { MobileCtx } from '../logic';
+import { PROFESSIONS, profileOf, plain, soldLabel, dobText, maskMobile, showMobile, maskEmail } from '../profile';
 
 /** Customer tab of the lead page: contact, language, address and the Records block.
  *  Thin by design: real booleans from the board's display strings, handlers wrapped with feedback. */
@@ -59,7 +60,57 @@ export default function (v: any, ctx: MobileCtx): any {
   }
   mem.on = onTab;
 
+  // ---- profile: sold by us or elsewhere, DOB, profession; mobile and email can be updated
+  const prof = profileOf(ctx, (v.sel || {}).name);
+  const pkey = plain((v.sel || {}).name);
+  const pe = s.mProfEdit && s.mProfEdit.k === pkey ? s.mProfEdit : null;
+  const setPe = (patch: any) => ctx.set({ mProfEdit: { ...pe, ...patch } });
+  const peErr = pe && pe.tried ? {
+    mobile: pe.mobile && pe.mobile.replace(/\D/g, '').length !== 10 ? 'Enter a 10-digit mobile number.' : '',
+    email: pe.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(pe.email) ? 'Check the email address.' : '',
+  } : { mobile: '', email: '' };
+  const unmM = !!(s.unm && s.unm.m), unmE = !!(s.unm && s.unm.e);
+  const profSave = () => {
+    if (!pe) return;
+    const mob = String(pe.mobile || '').replace(/\D/g, ''), em = String(pe.email || '').trim();
+    if ((pe.mobile && mob.length !== 10) || (em && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))) { setPe({ tried: true }); return; }
+    const all = { ...(s.mProfile || {}) };
+    const before = profileOf(ctx, pkey);
+    all[pkey] = { ...(all[pkey] || {}), dob: pe.dob, prof: pe.prof, ...(mob ? { mobile: mob } : {}), ...(em ? { email: em } : {}) };
+    // a changed mobile or email goes into History, so a number cannot be swapped without a trace
+    const who = (/Signed in as ([^,]+)/.exec(String((v.me && v.me.label) || '')) || [])[1] || 'You';
+    const notes: string[] = [];
+    if (mob && mob !== before.mobile) notes.push('Mobile number updated');
+    if (em && em !== before.email) notes.push('Email updated');
+    const patch: any = { mProfile: all, mProfEdit: null, mToast: 'Customer details saved.' };
+    if (notes.length) {
+      const hadd = { ...(s.hadd || {}) }, k = s.sel;
+      hadd[k] = [{ when: 'Today 1:10 pm', by: who, t: notes.join(' · '), msg: true }].concat(hadd[k] || []);
+      patch.hadd = hadd;
+    }
+    ctx.set(patch);
+  };
+
   return {
+    prof: {
+      soldText: soldLabel(prof), soldUs: prof.sold === 'us', soldCls: prof.sold === 'us' ? '-green' : '', soldAt: prof.sold === 'us' ? prof.soldAt : 'Vehicle bought from another dealer',
+      dob: dobText(prof.dob) || 'Not added', prof: prof.prof || 'Not added',
+      editing: !!pe, edit: () => ctx.set({ mProfEdit: { k: pkey, mobile: '', email: '', dob: prof.dob, prof: prof.prof, tried: false } }),
+      cancel: () => ctx.set({ mProfEdit: null }), save: profSave,
+      f: pe || { mobile: '', email: '', dob: '', prof: '' },
+      on: {
+        mobile: (e: any) => setPe({ mobile: String(e.target.value).replace(/[^\d ]/g, '').slice(0, 11) }),
+        email: (e: any) => setPe({ email: String(e.target.value).trim() }),
+        dob: (e: any) => setPe({ dob: e.target.value }),
+        prof: (e: any) => setPe({ prof: e.target.value }),
+      },
+      profOpts: [{ val: '', label: 'Choose', on: !(pe && pe.prof) }].concat(PROFESSIONS.map((x) => ({ val: x, label: x, on: !!pe && pe.prof === x }))),
+      err: peErr,
+    },
+    // contact rows show an updated number or email (masked the same way until revealed)
+    mobileText: prof.mobile ? (unmM ? showMobile(prof.mobile) : maskMobile(prof.mobile)) : v.mobileText,
+    emailText: prof.email ? (unmE ? prof.email : maskEmail(prof.email)) : v.emailText,
+    mobileNew: !!prof.mobile, emailNew: !!prof.email,
     isDocs: !!v.recIsDocs || histSel,
     canEdit,
     // contact

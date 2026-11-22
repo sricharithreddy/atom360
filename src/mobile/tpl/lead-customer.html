@@ -4,6 +4,26 @@
 <div class="m-banner -info" role="note"><svg class="m-fixed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg><div class="m-grow"><strong class="m-strong">View only.</strong> This is not your lead. You can read everything here, but not change it.</div></div>
 </sc-if>
 
+<section class="m-card -nopad m-cust-card" aria-labelledby="mcuP">
+<div class="m-cust-h m-inline -between"><h2 class="m-h3" id="mcuP">Profile</h2><sc-if value="{{ m.cust.canEdit }}"><sc-if value="{{ m.cust.prof.editing }}" not><button type="button" class="m-link m-cust-act" onClick="{{ m.cust.prof.edit }}">Edit</button></sc-if></sc-if></div>
+<sc-if value="{{ m.cust.prof.editing }}" not>
+<div class="m-cust-row"><div class="m-cust-main"><span class="m-cust-k">Vehicle</span><strong class="m-cust-v"><span class="m-tag {{ m.cust.prof.soldCls }}">{{ m.cust.prof.soldText }}</span></strong><span class="m-tiny">{{ m.cust.prof.soldAt }}</span></div></div>
+<div class="m-cust-row"><div class="m-cust-main"><span class="m-cust-k">Date of birth</span><strong class="m-cust-v">{{ m.cust.prof.dob }}</strong></div></div>
+<div class="m-cust-row"><div class="m-cust-main"><span class="m-cust-k">Profession</span><strong class="m-cust-v">{{ m.cust.prof.prof }}</strong></div></div>
+</sc-if>
+<sc-if value="{{ m.cust.prof.editing }}">
+<div class="m-cust-edit m-stack">
+<div class="m-field"><label for="mpMob">New mobile number</label><input id="mpMob" class="m-input m-num" type="tel" inputmode="numeric" autocomplete="off" value="{{ m.cust.prof.f.mobile }}" onChange="{{ m.cust.prof.on.mobile }}" placeholder="Leave empty to keep the current one"><sc-if value="{{ m.cust.prof.err.mobile }}"><p class="m-error">{{ m.cust.prof.err.mobile }}</p></sc-if></div>
+<div class="m-field"><label for="mpEm">Email</label><input id="mpEm" class="m-input" type="email" inputmode="email" autocomplete="off" value="{{ m.cust.prof.f.email }}" onChange="{{ m.cust.prof.on.email }}" placeholder="Leave empty to keep the current one"><sc-if value="{{ m.cust.prof.err.email }}"><p class="m-error">{{ m.cust.prof.err.email }}</p></sc-if></div>
+<div class="m-grid2">
+<div class="m-field"><label for="mpDob">Date of birth</label><input id="mpDob" class="m-input" type="date" value="{{ m.cust.prof.f.dob }}" onChange="{{ m.cust.prof.on.dob }}"></div>
+<div class="m-field"><label for="mpProf">Profession</label><select id="mpProf" class="m-select" onChange="{{ m.cust.prof.on.prof }}"><sc-for list="{{ m.cust.prof.profOpts }}" as="po"><option value="{{ po.val }}" selected="{{ po.on }}">{{ po.label }}</option></sc-for></select></div>
+</div>
+<p class="m-small">A changed mobile number or email is recorded in History.</p>
+<div class="m-cust-btns"><button type="button" class="m-btn -primary -grow" onClick="{{ m.cust.prof.save }}">Save details</button><button type="button" class="m-btn" onClick="{{ m.cust.prof.cancel }}">Cancel</button></div>
+</div>
+</sc-if>
+</section>
 <section class="m-card -nopad m-cust-card" aria-labelledby="mcuC">
 <h2 class="m-h3 m-cust-h" id="mcuC">Contact</h2>
 <sc-if value="{{ m.cust.hidden }}">
@@ -14,11 +34,11 @@
 </sc-if>
 <sc-if value="{{ m.cust.exposed }}">
 <div class="m-cust-row">
-<div class="m-cust-main"><span class="m-cust-k">Mobile</span><strong class="m-cust-v m-num">{{ mobileText }}</strong></div>
+<div class="m-cust-main"><span class="m-cust-k">Mobile</span><strong class="m-cust-v m-num">{{ m.cust.mobileText }}</strong><sc-if value="{{ m.cust.mobileNew }}"><span class="m-tag -blue m-cust-upd">Updated</span></sc-if></div>
 <button type="button" class="m-iconbtn m-cust-eye" aria-pressed="{{ mPressed }}" aria-label="{{ mEyeLabel }}" onClick="{{ toggleM }}"><sc-if value="{{ m.cust.mMasked }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></sc-if><sc-if value="{{ m.cust.mMasked }}" not><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 5.1A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.9M6.5 6.6A16.6 16.6 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.6-1.2"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path></svg></sc-if></button>
 </div>
 <div class="m-cust-row">
-<div class="m-cust-main"><span class="m-cust-k">Email</span><strong class="m-cust-v m-wrap">{{ emailText }}</strong></div>
+<div class="m-cust-main"><span class="m-cust-k">Email</span><strong class="m-cust-v m-wrap">{{ m.cust.emailText }}</strong><sc-if value="{{ m.cust.emailNew }}"><span class="m-tag -blue m-cust-upd">Updated</span></sc-if></div>
 <button type="button" class="m-iconbtn m-cust-eye" aria-pressed="{{ ePressed }}" aria-label="{{ eEyeLabel }}" onClick="{{ toggleE }}"><sc-if value="{{ m.cust.eMasked }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></sc-if><sc-if value="{{ m.cust.eMasked }}" not><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 5.1A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3 3.9M6.5 6.6A16.6 16.6 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.6-1.2"></path><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path></svg></sc-if></button>
 </div>
 <sc-if value="{{ m.cust.altEditing }}" not>

@@ -1119,15 +1119,15 @@ class Component extends DCLogic {
     const extra = [
       { model: 'Venue S(O) +1', reg: 'TS08 GH 1123', dn: 12, month: 'Nov 2026', ptype: 'OD+TP', ins: 'Bajaj Allianz', src: 'Renewal from service', status: 'Callback', ren: '2nd renewal', lang: 'Hindi', kyc: 'Complete', nxt: 'Due now', hist: 'Picked up, asked for 1 pm', nextTxt: 'Call now · promised 1 pm' },
       { model: 'Verna SX', reg: 'TS08 JQ 9012', dn: 17, month: 'Nov 2026', ptype: 'OD+TP', ins: 'SBI General', src: 'Renewal from sales', status: 'Hot', ren: '1st renewal', lang: 'Hindi', kyc: 'Complete', nxt: 'Due now', hist: 'Agreed · link opened twice, not paid', nextTxt: 'Call now · confirm payment' },
-      { model: 'Venue SX', reg: 'TS10 GA 7781', dn: -4, month: 'Nov 2026', ptype: 'OD+TP', ins: 'Tata AIG', src: 'Own renewal', status: 'Not connected', ren: '4+ renewals', lang: 'English', kyc: 'Complete', nxt: 'Overdue', hist: 'Not answered ×2', nextTxt: 'Call now · book inspection' },
-      { model: 'Creta SX Diesel', reg: 'TS09 EX 4521', dn: 6, month: 'Nov 2026', ptype: 'OD+TP', ins: 'ICICI Lombard', src: 'Own renewal', status: 'Not connected', ren: '3rd renewal', lang: 'Telugu', kyc: 'Incomplete', nxt: 'Today', hist: 'AI no answer ×3 · WhatsApp sent', nextTxt: 'Call today 3:15 pm' },
-      { model: 'Tucson', reg: 'TS09 SB 1010', dn: 7, month: 'Nov 2026', ptype: 'OD+TP', ins: 'HDFC ERGO', src: 'Own renewal', status: 'Hot', ren: '4+ renewals', lang: 'Telugu', kyc: 'Complete', nxt: 'Today', hist: 'Agreed · said he pays today', nextTxt: 'Call 3:30 pm · confirm payment' },
-      { model: 'i20 Asta', reg: 'TS07 HK 2210', dn: 21, month: 'Nov 2026', ptype: 'OD+TP', ins: 'Acko', src: 'Winback', status: 'Not connected', ren: '4+ renewals', lang: 'Telugu', kyc: 'Incomplete', nxt: 'Today', hist: 'Callback due 8 Nov · AI tried today', nextTxt: 'Call today 3:40 pm' },
+      { model: 'Venue SX', reg: 'TS10 GA 7781', dn: -4, month: 'Nov 2026', ptype: 'OD+TP', ins: 'Tata AIG', src: 'Own renewal', status: 'Not connected', ren: '5th renewal', lang: 'English', kyc: 'Complete', nxt: 'Overdue', hist: 'Not answered ×2', nextTxt: 'Call now · book inspection' },
+      { model: 'Creta SX Diesel', reg: 'TS09 EX 4521', dn: 6, month: 'Nov 2026', ptype: 'OD+TP', ins: 'ICICI Lombard', src: 'Own renewal', status: 'Not connected', ren: '5th renewal', lang: 'Telugu', kyc: 'Incomplete', nxt: 'Today', hist: 'AI no answer ×3 · WhatsApp sent', nextTxt: 'Call today 3:15 pm' },
+      { model: 'Tucson', reg: 'TS09 SB 1010', dn: 7, month: 'Nov 2026', ptype: 'OD+TP', ins: 'HDFC ERGO', src: 'Own renewal', status: 'Hot', ren: '7th renewal', lang: 'Telugu', kyc: 'Complete', nxt: 'Today', hist: 'Agreed · said he pays today', nextTxt: 'Call 3:30 pm · confirm payment' },
+      { model: 'i20 Asta', reg: 'TS07 HK 2210', dn: 21, month: 'Nov 2026', ptype: 'OD+TP', ins: 'Acko', src: 'Winback', status: 'Not connected', ren: '6th renewal', lang: 'Telugu', kyc: 'Incomplete', nxt: 'Today', hist: 'Callback due 8 Nov · AI tried today', nextTxt: 'Call today 3:40 pm' },
       { model: 'Exter SX', reg: 'TS09 FB 3301', dn: 28, month: 'Dec 2026', ptype: 'OD only', ins: 'Cholamandalam', src: 'Own renewal', status: 'Not connected', ren: '1st renewal', lang: 'Malayalam', kyc: 'Incomplete', nxt: 'Today', hist: '4 missed calls · AI reached her 1:02 pm', nextTxt: 'Call today 4:20 pm' },
       { model: 'Creta EX', reg: 'TS11 MK 4410', dn: 23, month: 'Dec 2026', ptype: 'OD+TP', ins: 'ICICI Lombard', src: 'Renewal from sales', status: 'Follow-up', ren: '2nd renewal', lang: 'Telugu', kyc: 'Complete', nxt: 'Today', hist: 'Heard quote 6 Nov · AI tried today', nextTxt: 'Call today 4:40 pm' },
       { model: 'Venue', reg: 'TS13 FB 5521', dn: 19, month: 'Nov 2026', ptype: 'OD+TP', ins: 'New India', src: 'Renewal from service', status: 'Callback', ren: '2nd renewal', lang: 'Hindi', kyc: 'Complete', nxt: 'Today', hist: 'Asked for a call after 5 pm', nextTxt: 'Call today 5:00 pm' },
       { model: 'Creta Electric', reg: 'TS09 RV 7720', dn: 14, month: 'Nov 2026', ptype: 'OD+TP', ins: 'Bajaj Allianz', src: 'Own renewal', status: 'Follow-up', ren: '3rd renewal', lang: 'Hindi', kyc: 'Complete', nxt: 'Tomorrow', hist: 'Heard quote · discussing with family', nextTxt: 'Call tomorrow 10 am' },
-      { model: 'Grand i10', reg: 'TS12 LD 0921', dn: 25, month: 'Dec 2026', ptype: 'OD+TP', ins: 'Digit', src: 'Own lost', status: 'Not contacted', ren: '4+ renewals', lang: 'Telugu', kyc: 'Incomplete', nxt: 'Tomorrow', hist: 'No contact yet', nextTxt: 'First call tomorrow 11 am' },
+      { model: 'Grand i10', reg: 'TS12 LD 0921', dn: 25, month: 'Dec 2026', ptype: 'OD+TP', ins: 'Digit', src: 'Own lost', status: 'Not contacted', ren: '4th renewal', lang: 'Telugu', kyc: 'Incomplete', nxt: 'Tomorrow', hist: 'No contact yet', nextTxt: 'First call tomorrow 11 am' },
       { model: 'Aura', reg: 'TS05 AG 3381', dn: 31, month: 'Dec 2026', ptype: 'Not known', ins: 'Not known', src: 'Other data', status: 'Not contacted', ren: 'Not known', lang: 'Hindi', kyc: 'Incomplete', nxt: 'Tomorrow', hist: 'New lead · no policy history', nextTxt: 'First call tomorrow 12 pm' }
     ];
     extra.forEach((x, k) => { const a = aiKind(k); x.aiq = a === 'q'; x.ai = a === 'q' ? 'AI qualified' : (a === 'with' ? 'With AI' : (a === 'soon' ? 'AI calls tomorrow' : 'No AI activity')); });
@@ -1918,7 +1918,8 @@ class Component extends DCLogic {
           const lost = !issued && (contacted ? rnd() < 0.3 * f2 : (age > 25 && rnd() < 0.3)) && lostAt <= TODAY_I;
           const aiq = ai && interested && conns.some(c => c.ai) && rnd() < 0.6;
           const cbP = contacted && rnd() < 0.35;
-          L.push({ d, own: o.n, br: o.br, src, pt, ai, calls, contacted, interested, issued, lost, aiq, cbP, cbKept: cbP && rnd() < o.ok, cbDay: lastConn, lastConn,
+          const yv = (L.length * 37 + d * 11) % 100, yr = ['1st year', '2nd year', '3rd year', '4th year', '5th year', '6th year', '7th year'][yv < 26 ? 0 : yv < 46 ? 1 : yv < 62 ? 2 : yv < 74 ? 3 : yv < 84 ? 4 : yv < 92 ? 5 : 6];   // renewal year, without touching the random sequence
+          L.push({ d, own: o.n, br: o.br, src, pt, ai, yr, calls, contacted, interested, issued, lost, aiq, cbP, cbKept: cbP && rnd() < o.ok, cbDay: lastConn, lastConn,
             issD: issued ? issAt : -1, lostD: lost ? lostAt : -1,
             lostWhy: lost ? (contacted ? pick(LOSTWHY, [30, 22, 20, 4, 10, 6]) : 'Could not reach') : '', prem: 8000 + Math.floor(rnd() * 28) * 1000, exp: d + 30 + Math.floor(rnd() * 16) });
         }
@@ -2011,21 +2012,23 @@ class Component extends DCLogic {
     const barW = (n) => T.all ? Math.max(3, n / T.all * 100).toFixed(1) + '%' : '3%';
     const funnel = [{ label: 'Leads allotted', n: T.all, bg: '#C9CFF8' }, { label: 'Contacted', n: T.con, bg: '#93A0F5' }, { label: 'Interested', n: T.int, bg: '#5B6CF0' }, { label: 'Policy issued', n: T.iss, bg: '#16A34A' }].map(f => ({ label: f.label, n: nf(f.n), pct: pc(f.n, T.all), w: barW(f.n), bg: f.bg }));
     const exits = [{ label: 'Lost', n: T.lost, bg: '#F3B6D2', fg: '#A3134F' }, { label: 'Still open', n: T.open, bg: '#DDE1EE', fg: '#3A4466' }].map(f => ({ label: f.label, n: nf(f.n), pct: pc(f.n, T.all), w: barW(f.n), bg: f.bg, fg: f.fg }));
-    const cc = { c: 0, a: 0, cc: 0, ca: 0 };
-    coh.forEach(l => l.calls.forEach(c => { if (c.ai) { cc.a++; if (c.conn) cc.ca++; } else { cc.c++; if (c.conn) cc.cc++; } }));
+    const cc = { c: 0, a: 0, cc: 0, ca: 0, tc: 0, ta: 0 };
+    coh.forEach(l => l.calls.forEach(c => { if (c.ai) { cc.a++; if (c.conn) { cc.ca++; cc.ta += c.dur || 0; } } else { cc.c++; if (c.conn) { cc.cc++; cc.tc += c.dur || 0; } } }));
+    const avgT = (t, n) => { if (!n) return '—'; const sec = Math.round(t / n); return Math.floor(sec / 60) + ' min ' + String(sec % 60).padStart(2, '0') + ' s'; };
     const ccRows = [
       { k: 'Calls made', t: nf(cc.c + cc.a), c: nf(cc.c), a: nf(cc.a), top: 'none' },
       { k: 'Contacts made', t: nf(cc.cc + cc.ca), c: nf(cc.cc), a: nf(cc.ca), top: 'none' },
       { k: 'Contact rate', t: pc(cc.cc + cc.ca, cc.c + cc.a), c: pc(cc.cc, cc.c), a: pc(cc.ca, cc.a), top: 'none' },
       { k: 'Avg attempts / lead', t: dec(cc.c + cc.a, T.all), c: dec(cc.c, T.all), a: dec(cc.a, T.all), top: '1px solid rgba(11,26,71,0.17)' },
-      { k: 'Avg contacts / lead', t: dec(cc.cc + cc.ca, T.all), c: dec(cc.cc, T.all), a: dec(cc.ca, T.all), top: 'none' }
+      { k: 'Avg contacts / lead', t: dec(cc.cc + cc.ca, T.all), c: dec(cc.cc, T.all), a: dec(cc.ca, T.all), top: 'none' },
+      { k: 'Avg time per call', t: avgT(cc.tc + cc.ta, cc.cc + cc.ca), c: avgT(cc.tc, cc.cc), a: avgT(cc.ta, cc.ca), top: 'none' }
     ];
-    const BYS = [{ id: 'src', label: 'Renewal type' }].concat(isTL ? [{ id: 'own', label: 'Caller' }] : []).concat([{ id: 'pt', label: 'Policy type' }, { id: 'ai', label: 'AI assisted' }]);
+    const BYS = [{ id: 'src', label: 'Renewal type' }].concat(isTL ? [{ id: 'own', label: 'Caller' }] : []).concat([{ id: 'pt', label: 'Policy type' }, { id: 'yr', label: 'Renewal year' }, { id: 'ai', label: 'AI assisted' }]);
     const stBy = BYS.some(b => b.id === this.state.stBy) ? this.state.stBy : 'src';
     const keyOf = (l) => stBy === 'ai' ? (l.ai ? 'AI assisted' : 'Caller only') : l[stBy];
     const groupsB = {}; coh.forEach(l => { const g = keyOf(l); (groupsB[g] = groupsB[g] || []).push(l); });
     const cellsOf = (o) => [{ n: nf(o.all), p: pc(o.all, T.all) }, { n: nf(o.con), p: pc(o.con, o.all) }, { n: nf(o.int), p: pc(o.int, o.all) }, { n: nf(o.iss), p: pc(o.iss, o.all) }, { n: nf(o.lost), p: pc(o.lost, o.all) }, { n: nf(o.open), p: pc(o.open, o.all) }];
-    const bRows = Object.keys(groupsB).map(g => ({ g, o: cnt(groupsB[g]) })).sort((x, y) => y.o.all - x.o.all).map(x => ({ label: x.g, cells: cellsOf(x.o) }));
+    const bRows = Object.keys(groupsB).map(g => ({ g, o: cnt(groupsB[g]) })).sort((x, y) => stBy === 'yr' ? x.g.localeCompare(y.g) : y.o.all - x.o.all).map(x => ({ label: x.g, cells: cellsOf(x.o) }));
 
     // ---- calling tab
     const kpis = [
