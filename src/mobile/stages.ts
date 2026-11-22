@@ -55,23 +55,41 @@ export function stagesByName(ctx: MobileCtx): Record<string, string> {
 }
 
 /** Today's groups with the Stage filter applied, the stage counts (before it), and how many show. */
-export function stageView(v: any, ctx: MobileCtx): { groups: any[]; shown: number; counts: Record<string, number>; picked: string[] } {
+export const QUICK: { id: string; label: string }[] = [
+  { id: 'all', label: 'All' },
+  { id: 'due7', label: 'Due 7 days' },
+  { id: 'pay', label: 'Payment' },
+  { id: 'quote', label: 'Quote sent' },
+];
+const daysOf = (c: any) => { const m = /(\d+)/.exec(String(c.daysLeft || '')); return m ? parseInt(m[1], 10) * (/expired/i.test(String(c.daysLeft || '')) ? -1 : 1) : 999; };
+function quickOk(id: string, c: any, st: string): boolean {
+  if (id === 'due7') return daysOf(c) <= 7; // expired ones are the most overdue, so they count
+  if (id === 'pay') return st === 'link';
+  if (id === 'quote') return st === 'quote';
+  return true;
+}
+
+export function stageView(v: any, ctx: MobileCtx): { groups: any[]; shown: number; counts: Record<string, number>; picked: string[]; quick: string; quickCounts: Record<string, number> } {
   const self: any = ctx.self;
   const picked: string[] = self.state.mStage || [];
+  const quick: string = self.state.mQuick || 'all';
   const cache = self.__mStageView;
-  if (cache && cache.v === v && cache.picked === picked) return cache.out;
+  if (cache && cache.v === v && cache.picked === picked && cache.quick === quick) return cache.out;
   const map = stagesByName(ctx);
   const counts: Record<string, number> = {};
+  const quickCounts: Record<string, number> = {};
   const groups = (v.groups || []).map((g: any) => {
     const cards = (g.cards || []).filter((c: any) => {
       const st = map[plainName(c.name)] || 'new';
       counts[st] = (counts[st] || 0) + 1;
-      return !picked.length || picked.indexOf(st) >= 0;
+      if (picked.length && picked.indexOf(st) < 0) return false;
+      QUICK.forEach((q) => { if (quickOk(q.id, c, st)) quickCounts[q.id] = (quickCounts[q.id] || 0) + 1; });
+      return quickOk(quick, c, st);
     });
     return { ...g, cards, count: cards.length === 1 ? '1 lead' : cards.length + ' leads' };
   }).filter((g: any) => g.cards.length > 0);
   const shown = groups.reduce((n: number, g: any) => n + g.cards.length, 0);
-  const out = { groups, shown, counts, picked };
-  self.__mStageView = { v, picked, out };
+  const out = { groups, shown, counts, picked, quick, quickCounts };
+  self.__mStageView = { v, picked, quick, out };
   return out;
 }

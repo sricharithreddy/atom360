@@ -139,3 +139,8 @@
 .m-today-prio { flex: 0 0 auto; display: inline-flex; gap: 1px; margin-left: auto; padding-left: 8px; align-self: center; }
 .m-today-pstar { fill: #DDE1EE; }
 .m-today-pstar.-on { fill: #F5A623; }
+
+/* one line of quick views */
+.m-seg.-scroll.m-today-tabs > button { flex: 1 0 auto; padding: 0 5px; font-size: 13px; gap: 4px; }
+.m-seg.-scroll.m-today-tabs .m-count { min-width: 16px; height: 17px; padding: 0 4px; font-size: 11px; }
+.m-today-tabs .m-count { min-width: 18px; height: 18px; padding: 0 5px; font-size: 11px; }

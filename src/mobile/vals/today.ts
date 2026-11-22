@@ -1,7 +1,7 @@
 import type { MobileCtx } from '../logic';
 import { copyText } from '../copy';
 import { cleanWhy, hasTime } from '../text';
-import { stageView, stageLabel, stagesByName } from '../stages';
+import { stageView, stageLabel, stagesByName, QUICK } from '../stages';
 
 const SNOOZE_MS = 10 * 60 * 1000;
 const LIVE_BG = '#166534';
@@ -166,20 +166,25 @@ export default function (v: any, ctx: MobileCtx): any {
     cards: (g.cards || []).map(card),
   }));
 
-  const tabs = (v.tabs || []).map((t: any) => ({
-    label: t.label, count: t.count, selected: t.selected, pick: t.pick,
-    countCls: t.id === 'due' && t.count > 0 ? 'm-today-due' : '',
-  }));
-  const curTab = (v.tabs || []).filter((t: any) => t.selected === 'true')[0] || null;
+  // One line of quick views replaces the board's tabs and pinned key filters. The board's own tab
+  // stays on All so the quick views and the Filters sheet see every lead.
   const allTab = (v.tabs || []).filter((t: any) => t.id === 'all')[0] || null;
-  const onAll = !curTab || curTab.id === 'all';
+  if (allTab && allTab.selected !== 'true' && !self.__mTodayAll) { self.__mTodayAll = true; setTimeout(() => { self.__mTodayAll = false; allTab.pick(); }, 0); }
+  const quickNow = sv.quick;
+  const quickList = QUICK.map((q) => ({
+    label: q.label, count: sv.quickCounts[q.id] || 0, showCount: q.id !== 'all', selected: quickNow === q.id ? 'true' : 'false',
+    countCls: q.id === 'due7' && (sv.quickCounts[q.id] || 0) > 0 ? 'm-today-due' : '',
+    pick: () => ctx.set({ mQuick: q.id }),
+  }));
+  const quickLabel = (QUICK.filter((q) => q.id === quickNow)[0] || QUICK[0]).label;
+  const onAll = quickNow === 'all';
 
   const filtered = !!v.hasChips || sv.picked.length > 0;
   const setStage = (list: string[]) => ctx.set({ mStage: list });
   const stageChips = sv.picked.map((id: string) => ({ label: stageLabel(id), remove: () => setStage(sv.picked.filter((x: string) => x !== id)) }));
   const clearAll = () => { v.clearAll(); setStage([]); };
   const empty = groups.length === 0;
-  const emptyTitle = filtered ? 'No leads match these filters' : onAll ? 'No leads in your queue' : 'No leads in ' + curTab.label;
+  const emptyTitle = filtered ? 'No leads match these filters' : onAll ? 'No leads in your queue' : 'No leads in ' + quickLabel;
   const emptyBody = filtered
     ? (onAll ? 'Clear the filters to see all your leads.' : 'Clear the filters, or look in All.')
     : onAll ? 'New leads appear here when they are given to you.' : 'Nothing needs you here right now.';
@@ -201,7 +206,7 @@ export default function (v: any, ctx: MobileCtx): any {
   return {
     scope: isTeam ? 'Team today' : 'Your day so far',
     callsW: (() => { const c = parseInt(String(v.hs && v.hs.calls).replace(/[^0-9]/g, ''), 10) || 0, t = parseInt(String(v.hs && v.hs.callsT).replace(/[^0-9]/g, ''), 10) || 0; return t ? Math.min(100, Math.round((c / t) * 100)) + '%' : '0%'; })(),
-    hasPills: (v.quick || []).length > 0 || (v.chips || []).length > 0 || stageChips.length > 0,
+    hasPills: (v.chips || []).length > 0 || stageChips.length > 0,
     stageChips, clearAll, shown: sv.shown,
     // callback banner
     cbShow: on(cb.homeShow), cbSnoozed: on(cb.snoozedShow),
@@ -209,14 +214,14 @@ export default function (v: any, ctx: MobileCtx): any {
     cbCall: () => { cb.callNow(); landed(); },
     snooze, unsnooze,
     // tabs and filters
-    tabs,
+    tabs: quickList,
     fOn: Number(v.fCount) > 0,
     quick: (v.quick || []).map((q: any) => ({ label: q.label, count: q.count, press: q.press, pick: q.pick, ai: on(q.sparkShow), cls: on(q.sparkShow) ? '-ai' : '' })),
     filtered,
     // queue
     groups, empty, emptyTitle, emptyBody,
     emptyClear: empty && filtered,
-    emptyAll: empty && !onAll && !!allTab,
-    showAll: () => { if (allTab) allTab.pick(); },
+    emptyAll: empty && !onAll,
+    showAll: () => ctx.set({ mQuick: 'all' }),
   };
 }

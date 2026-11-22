@@ -7,13 +7,13 @@
 <div class="m-today-kpi"><span class="m-today-kpi-v m-num">{{ hs.mon }}<small>/{{ hs.monT }}</small></span><span class="m-today-kpi-k">This month</span><span class="m-today-bar -grad" aria-hidden="true"><span style="width: {{ hs.monW }}"></span></span></div>
 </section>
 
-<div class="m-seg -scroll m-today-tabs" role="tablist" aria-label="Lead lists">
-<sc-for list="{{ m.today.tabs }}" as="tb"><button type="button" role="tab" aria-selected="{{ tb.selected }}" onClick="{{ tb.pick }}">{{ tb.label }} <span class="m-count {{ tb.countCls }}">{{ tb.count }}</span></button></sc-for>
+<div class="m-seg -scroll m-today-tabs" role="tablist" aria-label="Quick views">
+<sc-for list="{{ m.today.tabs }}" as="tb"><button type="button" role="tab" aria-selected="{{ tb.selected }}" onClick="{{ tb.pick }}">{{ tb.label }}<sc-if value="{{ tb.showCount }}"> <span class="m-count {{ tb.countCls }}">{{ tb.count }}</span></sc-if></button></sc-for>
 </div>
 
 <sc-if value="{{ m.today.hasPills }}">
-<div class="m-scroller m-today-filters" role="group" aria-label="Filters">
-<sc-for list="{{ m.today.quick }}" as="pill"><button type="button" class="m-chip {{ pill.cls }}" aria-pressed="{{ pill.press }}" onClick="{{ pill.pick }}"><sc-if value="{{ pill.ai }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>{{ pill.label }} <span class="m-chip-count">{{ pill.count }}</span></button></sc-for>
+<div class="m-scroller m-today-filters" role="group" aria-label="Active filters">
+
 <sc-for list="{{ m.today.stageChips }}" as="schip"><button type="button" class="m-chip -on m-today-chip" aria-label="Remove filter {{ schip.label }}" onClick="{{ schip.remove }}">{{ schip.label }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for><sc-for list="{{ chips }}" as="chip"><button type="button" class="m-chip -on m-today-chip" aria-label="Remove filter {{ chip.label }}" onClick="{{ chip.remove }}">{{ chip.label }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for>
 </div>
 </sc-if>
