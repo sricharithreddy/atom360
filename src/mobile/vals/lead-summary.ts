@@ -130,7 +130,7 @@ export default function (v: any, ctx: MobileCtx): any {
   const vehicle = {
     model: carVal(/^Model/) || String(sel.vehicle || '').split(' · ')[0],
     ev: engineK === 'Motor no',
-    reg: carVal(/^Reg/),
+    reg: carVal(/^Reg/) || '',
     rows: [vrow('reg', 'Reg no', carVal(/^Reg/)), vrow('chassis', 'Chassis no', carVal(/^Chassis/)), vrow('engine', engineK, carVal(/^(Engine|Motor)/))],
   };
 
@@ -198,5 +198,8 @@ export default function (v: any, ctx: MobileCtx): any {
     hasLast: !!last, lastT: last ? last.t : '', lastWhen: last ? last.when + ' · ' + last.by : '',
     attempts: (stat('Attempts').v || '0') + ' attempts',
     vehicle, policy,
+    // closed until the caller opens it; stays as chosen while moving between leads
+    vehOpen: !!ctx.self.state.mVehOpen, vehOpenStr: ctx.self.state.mVehOpen ? 'true' : 'false',
+    toggleVeh: () => ctx.set({ mVehOpen: !ctx.self.state.mVehOpen }),
   };
 }

@@ -31,8 +31,15 @@
 
 
 
-<section class="m-card m-veh" aria-labelledby="mvehT">
-<div class="m-veh-top"><h2 class="m-h3" id="mvehT">Vehicle <span class="m-veh-model">· {{ m.sum.vehicle.model }}</span></h2></div>
+<section class="m-card m-veh -fold" aria-label="Vehicle">
+<button type="button" class="m-vfold-head" aria-expanded="{{ m.sum.vehOpenStr }}" aria-controls="mvehBody" onClick="{{ m.sum.toggleVeh }}">
+<svg class="m-vfold-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14M6 17l1.5-5.5A2 2 0 0 1 9.4 10h5.2a2 2 0 0 1 1.9 1.5L18 17"></path><path d="M4 17v2M20 17v2"></path></svg>
+<span class="m-vfold-k">Vehicle</span>
+<span class="m-vfold-v">{{ m.sum.vehicle.model }} · <span class="m-vfold-reg">{{ m.sum.vehicle.reg }}</span></span>
+<svg class="m-vfold-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<sc-if value="{{ m.sum.vehOpen }}">
+<div class="m-vfold-body" id="mvehBody">
 <sc-for list="{{ m.sum.vehicle.rows }}" as="vr">
 <div class="m-vrow">
 <div class="m-vrow-main"><span class="m-vrow-k">{{ vr.k }}</span><span class="m-vrow-v">{{ vr.v }}</span></div>
@@ -41,6 +48,8 @@
 </sc-if>
 </div>
 </sc-for>
+</div>
+</sc-if>
 </section>
 
 <section class="m-card m-pol" aria-labelledby="mpolT">

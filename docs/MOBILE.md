@@ -41,7 +41,7 @@ The phone is a calling tool first and a dashboard second.
 - **Search** opens as a full screen with the keyboard up. It works from every screen.
 - **A lead opens as a full-screen page** over the queue, so the queue keeps its place. Four tabs:
   - **Overview**: why to call now and the next call time, a few short tags (Hot, With AI, OD only renewal...), the payment or lapsed-policy steps when there are any, then:
-    - **Vehicle**: registration, chassis and engine (or motor) numbers, each with **Copy**.
+    - **Vehicle** (one line with the model and registration until tapped): registration, chassis and engine (or motor) numbers, each with **Copy**.
     - **Policy**: the renewal type first (**OD only**, **TP only** or **OD + TP**, with what it means for the quote), insurer, policy number with Copy, when OD and TP end, NCB, IDV, whether a claim was made last year, and the financier.
     - rows that lead to the best quote and the last contact (with the number of attempts). No scripts or long explanations, and no fact said twice: the reason drops what the Policy box or a tag already says, and the next-call time shows only when the reason has no time in it.
   - **Quotes**: insurer quotes, edit or add a quote, previous policy, send the chosen quote on WhatsApp.

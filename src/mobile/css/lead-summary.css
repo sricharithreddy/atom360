@@ -140,3 +140,17 @@
 .m-vbtn:active { background: var(--tint); }
 .m-tag.m-sum-chip-type { background: #FDEBDD; color: #8A2E0C; font-weight: 800; }
 
+
+/* lead page vehicle box: one line until opened */
+.m-veh.-fold { padding: 0; gap: 0; overflow: hidden; }
+.m-vfold-head { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 52px; padding: 0 16px; border: 0; background: transparent; text-align: left; color: var(--ink); }
+.m-vfold-head:active { background: var(--tint); }
+.m-vfold-ic { flex: 0 0 auto; color: var(--faint); }
+.m-vfold-k { flex: 0 0 auto; font-size: 15px; font-weight: 700; }
+.m-vfold-v { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--muted); }
+.m-vfold-reg { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-weight: 600; color: var(--text); letter-spacing: 0.03em; }
+.m-vfold-chev { flex: 0 0 auto; color: var(--faint); transition: transform 0.15s ease; }
+.m-vfold-head[aria-expanded="true"] .m-vfold-chev { transform: rotate(180deg); }
+.m-vfold-body { padding: 0 16px 6px; border-top: 1px solid var(--line-soft); }
+.m-vfold-body .m-vrow + .m-vrow { border-top: 1px solid var(--line-soft); }
+@media (prefers-reduced-motion: reduce) { .m-vfold-chev { transition: none; } }
