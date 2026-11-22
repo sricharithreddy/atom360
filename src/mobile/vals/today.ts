@@ -77,14 +77,6 @@ export default function (v: any, ctx: MobileCtx): any {
     const rawTime = on(c.timeShow) ? String(c.timeChip || '') : '';
     const time = rawTime === 'Call now' ? '' : rawTime.replace(/^Next call\s+/, '');
 
-    // Days to expiry as a number in a circle: negative once the policy has expired
-    const dm = /(\d+)/.exec(String(c.daysLeft || ''));
-    const dn = dm ? parseInt(dm[1], 10) : null;
-    const expired = /expired/i.test(String(c.daysLeft || ''));
-    const days = dn == null ? '' : expired ? '−' + dn : String(dn);
-    const daysCls = expired ? '-expired' : dn != null && dn <= 7 ? '-soon' : dn != null && dn <= 15 ? '-near' : '';
-    const daysAria = expired ? 'Policy expired ' + dn + (dn === 1 ? ' day' : ' days') + ' ago, on ' + c.polDate : dn != null ? dn + (dn === 1 ? ' day' : ' days') + ' to expiry, ends ' + c.polDate : 'Expiry date not known';
-
     const mood = blocked ? '' : (c.aiText === 'AI qualified' ? 'Hot' : moodOf(ctx, c.name));
     const moodCls = MOOD_CLS[mood] || '-none';
     const moodSay = blocked ? 'Calling blocked' : mood ? mood + ' lead' : 'Interest not known';
@@ -112,8 +104,9 @@ export default function (v: any, ctx: MobileCtx): any {
       pulseCls: mood === 'Hot' ? '-good' : mood === 'Warm' ? '-warn' : '',
       vehOpen, vehOpenStr: vehOpen ? 'true' : 'false', vrows,
       toggleVeh: () => { const all = { ...(ctx.self.state.mCardVeh || {}) }; all[key] = !vehOpen; ctx.set({ mCardVeh: all }); },
-      days, daysCls, daysAria, hasDays: !!days,
-      name: c.name, model: c.model, reg: c.reg,
+      stars: (c.stars || []).map((x: any) => ({ label: 'Rate ' + x.label, press: x.press, fill: x.fill === 'none' ? 'transparent' : x.fill, stroke: x.stroke, pick: x.pick })),
+      starLabel: c.starLabel || 'Lead rating',
+      name: String(c.name || '').replace(/ \(\+1 car\)$/, ' +1'), model: c.model, reg: c.reg,
       why: c.why, whyFg: c.whyFg,
       daysLeft: c.daysLeft, daysFg: c.daysFg, polDate: c.polDate,
       time, hasTime: !!time,
