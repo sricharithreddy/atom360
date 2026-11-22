@@ -144,9 +144,12 @@ export default function (v: any, ctx: MobileCtx): any {
   const carRows: any[] = card ? (card.car || []) : [];
   const carVal = (re: RegExp) => ((carRows.filter((x: any) => re.test(x.k))[0] || {}).v || '');
   const engineK = carRows.some((x: any) => /^Motor/.test(x.k)) ? 'Motor no' : 'Engine no';
+  // Collapsed until the caller opens it; stays open or closed across leads once chosen.
+  const vehOpen = !!ctx.self.state.mVehOpen;
   const vehicle = {
     model: carVal(/^Model/) || String(sel.vehicle || '').split(' · ')[0],
     ev: engineK === 'Motor no',
+    reg: carVal(/^Reg/),
     rows: [vrow('reg', 'Reg no', carVal(/^Reg/)), vrow('chassis', 'Chassis no', carVal(/^Chassis/)), vrow('engine', engineK, carVal(/^(Engine|Motor)/))],
   };
 
@@ -210,5 +213,7 @@ export default function (v: any, ctx: MobileCtx): any {
     hasLast: !!last, lastT: last ? last.t : '', lastWhen: last ? last.when + ' · ' + last.by : '',
     attempts: (stat('Attempts').v || '0') + ' attempts',
     vehicle, policy,
+    vehOpen, vehOpenStr: vehOpen ? 'true' : 'false', vehMore: vehOpen ? 'Hide' : (vehicle.ev ? 'Chassis, motor' : 'Chassis, engine'),
+    toggleVeh: () => ctx.set({ mVehOpen: !vehOpen }),
   };
 }

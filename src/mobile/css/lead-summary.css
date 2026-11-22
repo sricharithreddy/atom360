@@ -139,3 +139,18 @@
 .m-vbtn { flex: 0 0 auto; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 12px; background: #FFFFFF; color: var(--text); }
 .m-vbtn:active { background: var(--tint); }
 .m-tag.m-sum-chip-type { background: #FDEBDD; color: #8A2E0C; font-weight: 800; }
+
+/* vehicle: collapsed to one line until opened */
+.m-veh { padding: 0; gap: 0; overflow: hidden; }
+.m-veh-head { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px; padding: 10px 14px; border: 0; background: transparent; text-align: left; color: var(--ink); }
+.m-veh-head:active { background: var(--tint); }
+.m-veh-ic { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; background: #EEF0F6; color: var(--text); }
+.m-veh-sum { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.m-veh-title { font-size: 12px; font-weight: 600; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-veh-reg { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 15px; font-weight: 700; letter-spacing: 0.04em; }
+.m-veh-more { flex: 0 0 auto; font-size: 13px; font-weight: 600; color: var(--primary); }
+.m-veh-chev { flex: 0 0 auto; color: var(--primary); transition: transform 0.18s ease; }
+.m-veh-head[aria-expanded="true"] .m-veh-chev { transform: rotate(180deg); }
+.m-veh-body { padding: 0 14px 6px; border-top: 1px solid var(--line-soft); }
+.m-veh-body .m-vrow + .m-vrow { border-top: 1px solid var(--line-soft); }
+@media (prefers-reduced-motion: reduce) { .m-veh-chev { transition: none; } }
