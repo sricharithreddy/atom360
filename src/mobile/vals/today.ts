@@ -8,6 +8,28 @@ const MAX_TAGS = 3;
 
 const cap = (t: string) => (t ? t.charAt(0).toUpperCase() + t.slice(1) : '');
 
+// Interest (Hot / Warm / Cold) is worked out by the board per open lead only. Read it once for every
+// lead from a team-lead view (it is fixed sample data); "AI qualified" always means Hot, as on the lead page.
+let MOODS: Record<string, string> | null = null;
+const plainName = (n: any) => String(n || '').replace(/ \(\+1 car\)$/, '').replace(/ \+1 vehicle$/, '');
+function moodOf(ctx: MobileCtx, name: any): string {
+  if (!MOODS) {
+    const self: any = ctx.self, saved = self.state;
+    MOODS = {};
+    try {
+      for (let k = 0; k < 40; k++) {
+        self.state = { ...saved, me: 'ravi', sel: k, open: true, aiq: {} };
+        const vals = ctx.fresh();
+        if (!vals.sel || !vals.sel.name) break;
+        const it = ((vals.pn && vals.pn.stats) || []).filter((x: any) => x.k === 'Interest')[0];
+        MOODS[plainName(vals.sel.name)] = it ? String(it.v) : '';
+      }
+    } catch { /* fall back to grey */ } finally { self.state = saved; }
+  }
+  return MOODS[plainName(name)] || '';
+}
+const MOOD_CLS: Record<string, string> = { Hot: '-hot', Warm: '-warm', Cold: '-cold' };
+
 /** Phone values for the Today queue (m.today.*). Thin: regroups board values for the phone card and wraps a few handlers. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function (v: any, ctx: MobileCtx): any {
@@ -50,7 +72,12 @@ export default function (v: any, ctx: MobileCtx): any {
     const daysCls = expired ? '-expired' : dn != null && dn <= 7 ? '-soon' : dn != null && dn <= 15 ? '-near' : '';
     const daysAria = expired ? 'Policy expired ' + dn + (dn === 1 ? ' day' : ' days') + ' ago, on ' + c.polDate : dn != null ? dn + (dn === 1 ? ' day' : ' days') + ' to expiry, ends ' + c.polDate : 'Expiry date not known';
 
+    const mood = blocked ? '' : (c.aiText === 'AI qualified' ? 'Hot' : moodOf(ctx, c.name));
+    const moodCls = MOOD_CLS[mood] || '-none';
+    const moodSay = blocked ? 'Calling blocked' : mood ? mood + ' lead' : 'Interest not known';
+
     return {
+      moodCls, moodSay,
       days, daysCls, daysAria, hasDays: !!days,
       name: c.name, model: c.model, reg: c.reg,
       why: c.why, whyFg: c.whyFg,

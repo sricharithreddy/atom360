@@ -29,6 +29,7 @@ The phone is a calling tool first and a dashboard second.
 - **Top bar on Today:** a search bar with the **filters** button inside it on the right, the **alerts** bell, and the signed-in person's initial.
 - **No bottom tabs.** The queue gets the whole screen. Stats, Learn and Admin (team lead and admin only) open from the menu behind the initial; on those screens the top bar has a back arrow to Today.
 - **Alerts** (the bell, with a count) hold the promised callback that is due (Call now, Snooze), calls made without an outcome, customers who told the AI they want to renew, and callbacks later today. They used to sit on the Today screen.
+- **Lead cards** on Today have a thin coloured streak on the left for interest: red Hot, orange Warm, blue Cold, grey when calling is blocked or interest is not known. Days to expiry sit in a circle at the top right (magenta with a minus once expired).
 - **Lead cards** on Today show **OD only** or **TP only** next to the policy end date when the renewal is not the usual OD + TP.
 - **Today** starts with a slim strip of four numbers: calls against target, connected, renewed, and the month against target. Then the lists (Due now, Hot, Follow-ups, All), the one-tap key filters, and the lead cards.
 - **Search** opens as a full screen with the keyboard up. It works from every screen.

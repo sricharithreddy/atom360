@@ -92,3 +92,11 @@
 .m-today-dleft.-expired { color: #FFFFFF; background: var(--magenta); box-shadow: none; }
 .m-tag.m-today-rtag { background: #FDEBDD; color: #8A2E0C; font-weight: 800; }
 .m-tag.m-today-timetag { background: var(--primary-soft); color: var(--primary-dark); }
+
+/* interest streak down the left edge of each card */
+.m-today-card.m-mood { position: relative; }
+.m-today-card.m-mood::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #B6BDD6; z-index: 1; }
+.m-today-card.m-mood.-hot::before { background: linear-gradient(180deg, #F04438, #D92D20); }
+.m-today-card.m-mood.-warm::before { background: linear-gradient(180deg, #FB923C, #EA580C); }
+.m-today-card.m-mood.-cold::before { background: linear-gradient(180deg, #60A5FA, #2563EB); }
+.m-today-card.m-mood.-none::before { background: #B6BDD6; }
