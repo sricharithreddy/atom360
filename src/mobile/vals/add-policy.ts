@@ -6,15 +6,10 @@ import { INSURERS, LEAD_TYPES, NCBS, emptyPolicy, sampleScan, normReg, regOk, di
 export default function (v: any, ctx: MobileCtx): any {
   const self: any = ctx.self;
   const s = self.state;
-  const a = s.mAdd || null;
+  const isOpen = !!s.mAdd;
+  const a = s.mAdd || { step: 'none' };
   const list: Policy[] = s.mAdded || [];
-  if (!a) {
-    return {
-      open: false,
-      start: () => ctx.set({ mAdd: { step: 'choose' }, mSheet: null }),
-      layers: [{ id: 'add-policy', open: false, close: () => ctx.set({ mAdd: null }) }],
-    };
-  }
+  const start = () => ctx.set({ mAdd: { step: 'choose' }, mSheet: null });
   const f: Policy = a.f || emptyPolicy();
   const set = (patch: any) => ctx.set({ mAdd: { ...a, ...patch } });
   const field = (k: keyof Policy, clean?: (t: string) => string) => (e: any) => {
@@ -85,7 +80,7 @@ export default function (v: any, ctx: MobileCtx): any {
 
   const opt = (list2: string[], cur: string) => list2.map((x) => ({ val: x, label: x, on: x === cur }));
   return {
-    open: true,
+    open: isOpen, start,
     choose: a.step === 'choose', reading: a.step === 'reading', form: a.step === 'form',
     title: a.step === 'form' ? (a.mode === 'edit' ? f.name || 'Policy' : f.scanned ? 'Check the scanned details' : 'Add a policy') : 'Add a policy',
     file: a.file || f.file || '', thumb: a.thumb || '', hasThumb: !!a.thumb,
@@ -108,6 +103,6 @@ export default function (v: any, ctx: MobileCtx): any {
     err: { name: shown('name'), mobile: shown('mobile'), reg: shown('reg'), chassis: shown('chassis'), odEnd: shown('odEnd'), tpEnd: shown('tpEnd'), insurerOther: shown('insurerOther') },
     chassisN: f.chassis.length + ' of 17',
     dup: dup ? 'Already a lead: ' + dup.name + ' has ' + reg + '.' : '', hasDup: !!dup,
-    layers: [{ id: 'add-policy', open: true, close }],
+    layers: [{ id: 'add-policy', open: isOpen, close }],
   };
 }
