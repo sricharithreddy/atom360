@@ -54,7 +54,6 @@ export default function (v: any, ctx: MobileCtx): any {
     if (on(c.pendShow)) tags.push({ text: 'Outcome not logged', cls: '-orange', ai: false });
     if (on(c.cbShow)) tags.push({ text: c.cbText, cls: c.cbFg === LATE_FG ? '-magenta' : '-blue', ai: false });
     if (on(c.aiShow)) tags.push({ text: c.aiText, cls: c.aiText === 'AI qualified' ? 'm-today-aifill' : '-purple', ai: true });
-    if (on(c.ownShow)) tags.push({ text: c.ownText, cls: '', ai: false });
     if (on(c.kycShow)) tags.push({ text: 'KYC pending', cls: '-orange', ai: false });
 
     // The quote the board ranks first among those that have a price.

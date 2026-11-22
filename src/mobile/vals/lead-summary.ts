@@ -102,7 +102,6 @@ export default function (v: any, ctx: MobileCtx): any {
   flagsIn.forEach((fl: any, idx: number) => {
     const tone = TONES[fl.fg] || 'plain';
     if (idx === 0) {
-      if (owner && !viewOnly) chips.push({ t: 'Owner ' + owner, cls: '-blue' });
       const opts = (Array.isArray(fl.selOpts) ? fl.selOpts : []).map((opt: any) => ({ val: opt.val, on: !!opt.on, label: opt.label + (opt.on ? ' (owner now)' : '') }));
       if (ctx.shown(fl.selShow) && opts.length > 1) {
         const cur = opts.filter((opt: any) => opt.on)[0];
