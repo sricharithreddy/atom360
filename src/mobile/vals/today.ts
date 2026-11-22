@@ -1,6 +1,7 @@
 import type { MobileCtx } from '../logic';
 import { copyText } from '../copy';
 import { cleanWhy, hasTime } from '../text';
+import { stageView, stageLabel } from '../stages';
 
 const SNOOZE_MS = 10 * 60 * 1000;
 const LIVE_BG = '#166534';
@@ -130,7 +131,8 @@ export default function (v: any, ctx: MobileCtx): any {
     };
   };
 
-  const groups = (v.groups || []).map((g: any) => ({
+  const sv = stageView(v, ctx);
+  const groups = sv.groups.map((g: any) => ({
     title: g.title, fg: g.fg, count: g.count, caption: cap(g.caption),
     cards: (g.cards || []).map(card),
   }));
@@ -143,7 +145,10 @@ export default function (v: any, ctx: MobileCtx): any {
   const allTab = (v.tabs || []).filter((t: any) => t.id === 'all')[0] || null;
   const onAll = !curTab || curTab.id === 'all';
 
-  const filtered = !!v.hasChips;
+  const filtered = !!v.hasChips || sv.picked.length > 0;
+  const setStage = (list: string[]) => ctx.set({ mStage: list });
+  const stageChips = sv.picked.map((id: string) => ({ label: stageLabel(id), remove: () => setStage(sv.picked.filter((x: string) => x !== id)) }));
+  const clearAll = () => { v.clearAll(); setStage([]); };
   const empty = groups.length === 0;
   const emptyTitle = filtered ? 'No leads match these filters' : onAll ? 'No leads in your queue' : 'No leads in ' + curTab.label;
   const emptyBody = filtered
@@ -167,7 +172,8 @@ export default function (v: any, ctx: MobileCtx): any {
   return {
     scope: isTeam ? 'Team today' : 'Your day so far',
     callsW: (() => { const c = parseInt(String(v.hs && v.hs.calls).replace(/[^0-9]/g, ''), 10) || 0, t = parseInt(String(v.hs && v.hs.callsT).replace(/[^0-9]/g, ''), 10) || 0; return t ? Math.min(100, Math.round((c / t) * 100)) + '%' : '0%'; })(),
-    hasPills: (v.quick || []).length > 0 || (v.chips || []).length > 0,
+    hasPills: (v.quick || []).length > 0 || (v.chips || []).length > 0 || stageChips.length > 0,
+    stageChips, clearAll, shown: sv.shown,
     // callback banner
     cbShow: on(cb.homeShow), cbSnoozed: on(cb.snoozedShow),
     cbSnoozeText: String(cb.snoozeText || '').replace(/\s*It comes back on its own\.?/, ''),

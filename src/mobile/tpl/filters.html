@@ -12,6 +12,18 @@
 <sc-if value="{{ m.filters.keyCustom }}"><button type="button" class="m-link m-fixed" onClick="{{ m.filters.keyReset }}">Reset key filters</button></sc-if>
 </div>
 
+<div class="m-filters-sec {{ m.filters.stage.openCls }}">
+<h3 class="m-filters-h"><button type="button" class="m-filters-cat" aria-expanded="{{ m.filters.stage.openStr }}" aria-controls="mfpanelStage" onClick="{{ m.filters.stage.toggle }}"><span class="m-item-main"><span class="m-filters-cat-t">Stage</span><sc-if value="{{ m.filters.stage.summary }}"><span class="m-item-sub m-clip">{{ m.filters.stage.summary }}</span></sc-if></span><sc-if value="{{ m.filters.stage.badge }}"><span class="m-count m-filters-badge">{{ m.filters.stage.badge }}</span></sc-if><svg class="m-chev m-filters-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button></h3>
+<sc-if value="{{ m.filters.stage.open }}">
+<div class="m-filters-panel" id="mfpanelStage">
+<fieldset class="m-filters-set"><legend class="m-sr">Stage</legend>
+<sc-for list="{{ m.filters.stages }}" as="stg">
+<div class="m-filters-row"><label class="m-check m-filters-opt {{ stg.zeroCls }}"><input type="checkbox" checked="{{ stg.on }}" onChange="{{ stg.toggle }}"><span class="m-grow m-wrap">{{ stg.label }}</span><span class="m-filters-n m-num">{{ stg.count }}</span></label></div>
+</sc-for>
+</fieldset>
+</div>
+</sc-if>
+</div>
 <sc-for list="{{ m.filters.cats }}" as="cat">
 <div class="m-filters-sec {{ cat.openCls }}">
 <h3 class="m-filters-h"><button type="button" class="m-filters-cat" aria-expanded="{{ cat.openStr }}" aria-controls="{{ cat.panelId }}" onClick="{{ cat.toggle }}"><span class="m-item-main"><span class="m-filters-cat-t">{{ cat.label }}</span><sc-if value="{{ cat.summary }}"><span class="m-item-sub m-clip">{{ cat.summary }}</span></sc-if></span><sc-if value="{{ cat.hasBadge }}"><span class="m-count m-filters-badge" aria-label="{{ cat.badgeLabel }}">{{ cat.badge }}</span></sc-if><svg class="m-chev m-filters-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button></h3>
@@ -55,7 +67,7 @@
 </div>
 <div class="m-sheet-foot m-filters-foot">
 <sc-if value="{{ m.filters.hasFootNote }}"><p class="m-filters-note m-small {{ m.filters.footCls }}" role="status">{{ m.filters.footNote }}</p></sc-if>
-<sc-if value="{{ m.filters.hasActive }}"><button type="button" class="m-btn -quiet m-fixed" onClick="{{ clearAll }}">Clear all</button></sc-if>
+<sc-if value="{{ m.filters.hasActive }}"><button type="button" class="m-btn -quiet m-fixed" onClick="{{ m.filters.clearAll }}">Clear all</button></sc-if>
 <button type="button" class="m-btn -primary -grow" onClick="{{ toggleFilters }}">{{ m.filters.showText }}</button>
 </div>
 </section>

@@ -98,8 +98,9 @@ function shellVals(v: any, ctx: MobileCtx) {
     // sheets owned by the shell
     menuOpen: sheet === 'menu', searchOpen: sheet === 'search', outOpen: sheet === 'outcome' && isLead, alertsOpen: sheet === 'alerts',
     openAlerts: () => set({ mSheet: 'alerts' }),
-    filterOn: Number(v.fCount) > 0,
-    filterAria: Number(v.fCount) > 0 ? 'Filters, ' + v.fCount + ' on' : 'Filters',
+    filterN: Number(v.fCount) + (s.mStage || []).length,
+    filterOn: Number(v.fCount) + (s.mStage || []).length > 0,
+    filterAria: Number(v.fCount) + (s.mStage || []).length > 0 ? 'Filters, ' + (Number(v.fCount) + (s.mStage || []).length) + ' on' : 'Filters',
     // Stats, Learn and Admin live in the menu (no bottom tabs: the queue gets the whole screen)
     menuNav: [
       { id: 'today', label: 'Today', sub: 'Your lead queue', go: () => { set({ mSheet: null }); nav(v.nav.today)(); }, cur: view === 'today' ? 'page' : 'false', dot: '' },

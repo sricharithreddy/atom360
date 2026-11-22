@@ -1,4 +1,5 @@
 import type { MobileCtx } from '../logic';
+import { STAGES, stageView } from '../stages';
 
 /** Category ids in the fixed order of the board's `fCats` (the board does not expose them on the items). */
 const IDS = ['exp', 'ai', 'src', 'model', 'ins', 'ptype', 'status', 'nxt', 'ren', 'lang', 'kyc'];
@@ -92,13 +93,27 @@ export default function (v: any, ctx: MobileCtx): any {
       toggle: () => {
         if (open) { ctx.set({ mFiltersOpen: false }); return; }
         c.pick();
-        ctx.set({ mFiltersOpen: true });
+        ctx.set({ mFiltersOpen: true, mStageOpen: false });
         reveal();
       },
     };
   });
 
-  const shown = Number(v.shownCount) || 0;
+  // Stage (phone-only filter): open on its own, so it does not fight the board's one-open-category rule
+  const sv = stageView(v, ctx);
+  const stageOpen = !!s.mStageOpen;
+  const stages = STAGES.map((st, n) => {
+    const on = sv.picked.indexOf(st.id) >= 0, count = sv.counts[st.id] || 0;
+    return { uid: 'mfs' + n, label: st.label, count, on, zeroCls: count || on ? '' : '-zero',
+      toggle: () => ctx.set({ mStage: on ? sv.picked.filter((x: string) => x !== st.id) : sv.picked.concat([st.id]) }) };
+  });
+  const stage = {
+    open: stageOpen, openStr: stageOpen ? 'true' : 'false', openCls: stageOpen ? '-open' : '',
+    badge: sv.picked.length ? String(sv.picked.length) : '', summary: stages.filter((x) => x.on).map((x) => x.label).join(', '),
+    toggle: () => { if (!stageOpen && expanded) ctx.set({ mFiltersOpen: false }); ctx.set({ mStageOpen: !stageOpen }); },
+  };
+
+  const shown = sv.shown;
   const tabNow = (v.tabs || []).find((t: any) => t.selected === 'true');
   const view = tabNow && tabNow.id !== 'all' ? tabNow.label : '';
   const footNote = shown === 0
@@ -118,7 +133,9 @@ export default function (v: any, ctx: MobileCtx): any {
     keyNote: favN + ' of 4 key filters on Today',
     keyCustom: ctx.shown(v.favResetShow),
     keyReset: () => v.favReset(),
-    active: v.fCount, hasActive: !!v.hasChips,
+    stage, stages,
+    clearAll: () => { v.clearAll(); ctx.set({ mStage: [] }); },
+    active: v.fCount, hasActive: !!v.hasChips || sv.picked.length > 0,
     showText: shown === 1 ? 'Show 1 lead' : 'Show ' + shown + ' leads',
     footNote: limitMsg ? LIMIT : footNote, hasFootNote: limitMsg || !!footNote, footCls: limitMsg ? '-warn' : '',
   };

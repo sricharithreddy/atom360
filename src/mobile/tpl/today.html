@@ -14,12 +14,12 @@
 <sc-if value="{{ m.today.hasPills }}">
 <div class="m-scroller m-today-filters" role="group" aria-label="Filters">
 <sc-for list="{{ m.today.quick }}" as="pill"><button type="button" class="m-chip {{ pill.cls }}" aria-pressed="{{ pill.press }}" onClick="{{ pill.pick }}"><sc-if value="{{ pill.ai }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 6.6L21 11l-6.6 2.4L12 20l-2.4-6.6L3 11l6.6-2.4z"></path></svg></sc-if>{{ pill.label }} <span class="m-chip-count">{{ pill.count }}</span></button></sc-for>
-<sc-for list="{{ chips }}" as="chip"><button type="button" class="m-chip -on m-today-chip" aria-label="Remove filter {{ chip.label }}" onClick="{{ chip.remove }}">{{ chip.label }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for>
+<sc-for list="{{ m.today.stageChips }}" as="schip"><button type="button" class="m-chip -on m-today-chip" aria-label="Remove filter {{ schip.label }}" onClick="{{ schip.remove }}">{{ schip.label }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for><sc-for list="{{ chips }}" as="chip"><button type="button" class="m-chip -on m-today-chip" aria-label="Remove filter {{ chip.label }}" onClick="{{ chip.remove }}">{{ chip.label }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-for>
 </div>
 </sc-if>
 
 <sc-if value="{{ m.today.filtered }}">
-<div class="m-today-shown"><p class="m-small" role="status">Showing <strong class="m-strong">{{ shownCount }}</strong> of {{ totalCount }}</p><button type="button" class="m-link" onClick="{{ clearAll }}">Clear all</button></div>
+<div class="m-today-shown"><p class="m-small" role="status">Showing <strong class="m-strong">{{ m.today.shown }}</strong> of {{ totalCount }}</p><button type="button" class="m-link" onClick="{{ m.today.clearAll }}">Clear all</button></div>
 </sc-if>
 
 <sc-for list="{{ m.today.groups }}" as="grp">
@@ -58,7 +58,7 @@
 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13h4l1.5 3h5L16 13h4"></path><path d="M6 5h12l2 8v6H4v-6z"></path></svg>
 <h2 class="m-h3">{{ m.today.emptyTitle }}</h2>
 <p>{{ m.today.emptyBody }}</p>
-<sc-if value="{{ m.today.emptyClear }}"><button type="button" class="m-btn -primary" onClick="{{ clearAll }}">Clear filters</button></sc-if>
+<sc-if value="{{ m.today.emptyClear }}"><button type="button" class="m-btn -primary" onClick="{{ m.today.clearAll }}">Clear filters</button></sc-if>
 <sc-if value="{{ m.today.emptyAll }}"><button type="button" class="m-btn" onClick="{{ m.today.showAll }}">Show all leads</button></sc-if>
 </div>
 </sc-if>
