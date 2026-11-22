@@ -55,3 +55,5 @@
 /* room for the dock at the end of each tab */
 .m-lead .m-layer-body { padding-bottom: calc(96px + var(--safe-b)); }
 .m-lead:has(.m-lead-live) .m-layer-body { padding-bottom: calc(124px + var(--safe-b)); }
+.m-searchbar-add { border-radius: 0 999px 999px 0; }
+.m-searchbar .m-searchbar-f:not(.m-searchbar-add) { border-radius: 0; }

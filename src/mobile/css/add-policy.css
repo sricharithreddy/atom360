@@ -19,7 +19,3 @@
 .m-ap .m-error { margin-top: -6px; }
 .m-ap-remove { margin-top: 8px; }
 
-/* round + button on Today */
-.m-fab { position: fixed; right: max(16px, calc(50% - 280px + 16px)); bottom: calc(20px + var(--safe-b)); z-index: 30; width: 58px; height: 58px; border: 0; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF; background: linear-gradient(135deg, #4154F9, #7B2FF0 60%, #DE1885); box-shadow: 0 10px 26px rgba(91, 47, 240, 0.40); }
-.m-fab:active { transform: scale(0.96); }
-.m-app[data-view="today"] .m-main { padding-bottom: calc(96px + var(--safe-b)); }
